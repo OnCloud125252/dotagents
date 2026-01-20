@@ -8,6 +8,11 @@ This is my development environment. Follow these preferences and conventions.
 - Prefer async/await over promises
 - Use meaningful variable names, avoid single letters except for loop indices
 - Always use const/let, never var in JavaScript/TypeScript
+- Use camelCase for variables and functions
+- Use PascalCase for classes and components
+- Use SCREAMING_SNAKE_CASE for constants
+- Be descriptive and avoid abbreviations
+- Ensure names reflect purpose
 
 ## Node.js Development
 - **Always use `bun` by default** for Node.js projects
