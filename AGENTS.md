@@ -13,6 +13,7 @@ This is my development environment. Follow these preferences and conventions.
 - Use SCREAMING_SNAKE_CASE for constants
 - Be descriptive and avoid abbreviations
 - Ensure names reflect purpose
+- Avoid using barrel imports
 
 ## Node.js Development
 - **Always use `bun` by default** for Node.js projects
