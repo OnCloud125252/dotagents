@@ -1,0 +1,14 @@
+---
+name: Auto Command Issue Resolver
+argument-hint: [command]
+description: Auto-diagnose and fix errors in commands to achieve Exit Code 0
+---
+
+Act as a Senior DevOps Engineer. I am attempting to run the command $ARGUMENTS.
+
+Your goal is to achieve an Exit Code 0. Analyze the ouput of the command, codebase and/or error logs and perform the following:
+- Diagnose: Identify the root cause of the failure (syntax, dependency, type error, or logic).
+- Fix: Rewrite the necessary code blocks to resolve the error.
+- Verify: Explain why this fix will satisfy the compiler/interpreter and result in a successful build.
+
+If multiple files are involved, clearly indicate the filename for every code block."
