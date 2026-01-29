@@ -1,8 +1,10 @@
+description = "Ruthlessly refactor code with extreme prejudice for maximum simplicity and clarity"
+model = "claude-opus-4-5"
+
+prompt = """
 ---
 name: Code Simplifier
-description: Ruthlessly refactor code with extreme prejudice for maximum simplicity and clarity
 argument-hint: [target]
-model: claude-opus-4-5
 ---
 
 Use the `code-simplifier:code-simplifier` "agent" to **ruthlessly and aggressively simplify** code. Be EXTREMELY bold in refactoring - the goal is radical simplification, not incremental improvements.
@@ -54,3 +56,4 @@ Use the `code-simplifier:code-simplifier` "agent" to **ruthlessly and aggressive
 **Philosophy:** Code should be trivially easy to understand and modify. Anything less is technical debt. Be bold, be aggressive, be thorough. Rewrite rather than patch. Simplify rather than accommodate complexity.
 
 This command complements `/cleanup` by focusing on radical quality improvements to active code, while `/cleanup` removes unused code and reorganizes structure.
+"""

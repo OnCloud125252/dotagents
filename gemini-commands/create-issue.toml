@@ -1,0 +1,102 @@
+description = "Create a GitHub issue with intelligent label detection and optional template support"
+model = "claude-haiku-4-5"
+allowed_tools = ["Bash(gh issue create:*)", "Bash(gh label list)", "Bash(gh issue view:*)", "Bash(pbcopy)", "Bash(echo:*)"]
+disable_model_invocation = true
+
+prompt = """
+---
+name: GitHub Issue Creator
+argument-hint: <title> [--body "description"] [--label bug|feature|docs]
+---
+
+Create a GitHub issue using the `gh` CLI with smart defaults and label detection.
+
+### Arguments
+Parse `$ARGUMENTS` to extract:
+- **title**: Required. The issue title (first argument or quoted string)
+- **--body** or **-b**: Optional. Issue description/body
+- **--label** or **-l**: Optional. Comma-separated labels
+- **--assignee** or **-a**: Optional. Assignee username (use `@me` for self)
+
+### Process
+
+1. **Parse Arguments**:
+   - If `$ARGUMENTS` is empty, display usage and exit
+   - Extract title (everything before first `--` flag, or quoted string)
+   - Extract optional flags: `--body`, `--label`, `--assignee`
+
+2. **Smart Label Detection** (if no `--label` provided):
+   - Analyze the title to suggest appropriate labels:
+     - Contains "bug", "fix", "error", "crash", "broken" → suggest `bug`
+     - Contains "feature", "add", "implement", "new" → suggest `enhancement` or `feature`
+     - Contains "doc", "readme", "typo" → suggest `documentation`
+     - Contains "refactor", "cleanup", "improve" → suggest `improvement`
+     - Contains "test" → suggest `testing`
+     - Contains "security", "vulnerability" → suggest `security`
+   - Run `gh label list --limit 50` to verify label exists in repo
+   - Only apply labels that exist in the repository
+
+3. **Build Command**:
+   ```bash
+   gh issue create --title "TITLE" [--body "BODY"] [--label "LABELS"] [--assignee "USER"]
+   ```
+
+4. **Execute and Capture**:
+   - Run the `gh issue create` command
+   - Capture the output (includes the issue URL)
+   - Extract the issue number and URL from output
+
+5. **Copy to Clipboard**:
+   - Copy the issue URL to clipboard using `pbcopy`
+   - Display success message with issue details
+
+### Output Format
+
+Display a confirmation with:
+```
+✓ Issue #123 created successfully
+  Title: <issue title>
+  Labels: <applied labels>
+  URL: https://github.com/owner/repo/issues/123
+
+✓ URL copied to clipboard
+```
+
+Use ANSI colors:
+- Green (`\\033[32m`) for success checkmarks
+- Cyan (`\\033[36m`) for URLs and issue numbers
+- Reset (`\\033[0m`) after colored text
+
+### Examples
+
+**Simple issue:**
+```
+/create-issue Fix login button not responding
+```
+→ Creates issue with title, auto-detects `bug` label
+
+**With body:**
+```
+/create-issue Add dark mode support --body "Users have requested a dark theme option for better night-time usage"
+```
+→ Creates issue with title and description, auto-detects `enhancement` label
+
+**With explicit labels:**
+```
+/create-issue Update API documentation --label documentation,good-first-issue
+```
+→ Creates issue with specified labels
+
+**Full options:**
+```
+/create-issue Implement user search --body "Add search functionality to find users by name or email" --label feature --assignee @me
+```
+→ Creates issue with all options specified
+
+### Error Handling
+
+- If `gh` is not authenticated, display: "Please run `gh auth login` first"
+- If not in a git repository, display: "Not in a GitHub repository"
+- If title is empty, display usage instructions
+- If specified label doesn't exist, warn but continue without it
+"""
