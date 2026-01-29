@@ -39,15 +39,13 @@ This is my development environment. Follow these preferences and conventions.
 ## Testing Requirements
 - Always run tests after making changes if test scripts exist
 - Run linting and type checking before completing tasks
-- Check for these common scripts: `npm run test`, `npm run lint`, `npm run typecheck`
 
 ## Development Workflow
+- **Use `using-superpowers` skill when starting any conversation** - establishes how to find and use skills, requiring Skill tool invocation before ANY response including clarifying questions
 - **Always create a todo list before starting any operation** to track tasks and provide visibility
 - Always read existing code before making changes
 - Follow existing patterns and conventions in the codebase
 - Prefer modifying existing files over creating new ones
-- Never create documentation files unless explicitly requested
-- **Use "code-simplifier:code-simplifier" agent to **ruthlessly and aggressively simplify** code after large code changes** (major features, refactors, etc.) to cleanup and maintain code quality
 - **Avoid running background tasks** like `bun run dev` - use foreground execution instead for better visibility and control
 
 ## File Operations
@@ -61,10 +59,8 @@ This is my development environment. Follow these preferences and conventions.
 ## Security Guidelines
 - Never commit sensitive information (API keys, passwords, tokens)
 - Always use environment variables for configuration
-- Check .gitignore before adding new files
 
 ## Tool Usage Preferences
-- Use `trash` instead of `rm` for safer file deletion (files can be recovered from trash)
 - Use ripgrep (`rg`) instead of grep for searching
 - Prefer using Glob and Grep tools over bash find/grep commands
 - Always use absolute paths when working with files
