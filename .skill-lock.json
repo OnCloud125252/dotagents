@@ -1,0 +1,44 @@
+{
+  "version": 3,
+  "skills": {
+    "readme": {
+      "source": "dropseed/plain",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/dropseed/plain.git",
+      "skillPath": ".claude/skills/readme/SKILL.md",
+      "skillFolderHash": "a4080466a3f2fe3db91345e1b347e253e364b8fe",
+      "installedAt": "2026-01-28T05:22:03.116Z",
+      "updatedAt": "2026-01-28T05:22:03.116Z"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "c2f31172b6f256272305a5e6e7228b258446899f",
+      "installedAt": "2026-01-28T05:22:10.216Z",
+      "updatedAt": "2026-01-28T05:22:10.216Z"
+    },
+    "using-git-worktrees": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/using-git-worktrees/SKILL.md",
+      "skillFolderHash": "18255639c7e7df746447d0e6cbded2cf0278b061",
+      "installedAt": "2026-01-28T05:40:27.215Z",
+      "updatedAt": "2026-01-29T07:01:11.157Z"
+    },
+    "using-superpowers": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/using-superpowers/SKILL.md",
+      "skillFolderHash": "986738c8d463796edec77e86824e53c6b03e61da",
+      "installedAt": "2026-01-29T07:01:11.101Z",
+      "updatedAt": "2026-01-29T07:01:11.101Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  }
+}
