@@ -36,6 +36,24 @@
       "skillFolderHash": "986738c8d463796edec77e86824e53c6b03e61da",
       "installedAt": "2026-01-29T07:01:11.101Z",
       "updatedAt": "2026-01-29T07:01:11.101Z"
+    },
+    "update-docs": {
+      "source": "vercel/next.js",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel/next.js.git",
+      "skillPath": ".claude/skills/update-docs/SKILL.md",
+      "skillFolderHash": "",
+      "installedAt": "2026-01-29T08:07:51.026Z",
+      "updatedAt": "2026-01-29T08:07:51.026Z"
+    },
+    "docs-writer": {
+      "source": "google-gemini/gemini-cli",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/google-gemini/gemini-cli.git",
+      "skillPath": ".gemini/skills/docs-writer/SKILL.md",
+      "skillFolderHash": "906ac15ecb09488d96c2b3226b9dbf71820d2c4f",
+      "installedAt": "2026-01-29T08:08:10.458Z",
+      "updatedAt": "2026-01-29T08:08:10.458Z"
     }
   },
   "dismissed": {
