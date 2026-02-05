@@ -1,7 +1,7 @@
 ---
 name: Changelog Generator
 description: Generate a user-facing changelog of new features and bug fixes since a commit
-model: claude-haiku-4-5
+model: claude-sonnet-4-5
 argument-hint: [from_commit] [language]
 ---
 
@@ -31,7 +31,8 @@ Generate a concise, user-facing changelog with intelligent grouping and natural 
    - `fix*` subjects → **Bug Fixes**
    - Commits with `BREAKING CHANGE:` in body → **Breaking Changes**
    - `perf*` → **Performance Improvements**
-   - Ignore: docs, chore, refactor, test, style, ci, build
+   - `docs*` → **Documentation Updates**
+   - Ignore: chore, refactor, test, style, ci, build
    - Strip conventional commit prefixes (`feat(scope): description` → `description`)
 
 5. **Intelligent Grouping & Summarization**:
@@ -50,10 +51,10 @@ Generate a concise, user-facing changelog with intelligent grouping and natural 
      - New Features
      - Bug Fixes
      - Performance Improvements
+     - Documentation Updates
    - **Section format**:
-     - Bold section name with colon: `**New Features:**` or `**新功能：**`
-     - Blank line after section header
-     - Bullet points: `* **Bold title**: Description`
+     - H2 heading with colon: `## New Features:` or `## 新功能：`
+     - Bullet points directly after (no blank line): `* **Bold title**: Description`
      - If `--show-commits` flag present: append ` (hash)` to each bullet
    - **Language-specific formatting**:
      - Traditional Chinese: Use full-width colon `：` for section headers
@@ -63,9 +64,9 @@ Generate a concise, user-facing changelog with intelligent grouping and natural 
 
 7. **Translate Content**: 
    - Translate section headings based on language:
-     - Traditional Chinese: "新功能：", "錯誤修復：", "重大變更：", "效能改善："
-     - Simplified Chinese: "新功能：", "错误修复：", "重大变更：", "性能改进："
-     - Japanese: "新機能：", "バグ修正：", "破壊的変更：", "パフォーマンス改善："
+     - Traditional Chinese: "新功能：", "錯誤修復：", "重大變更：", "效能改善：", "文件更新："
+     - Simplified Chinese: "新功能：", "错误修复：", "重大变更：", "性能改进：", "文档更新："
+     - Japanese: "新機能：", "バグ修正：", "破壊的変更：", "パフォーマンス改善：", "ドキュメント更新："
    - Translate feature/fix titles and descriptions naturally
    - Keep technical terms (API names, component names, variable names) in English
    - Ensure natural phrasing in target language

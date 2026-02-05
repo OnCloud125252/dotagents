@@ -15,22 +15,6 @@ This is my development environment. Follow these preferences and conventions.
 - Ensure names reflect purpose
 - Avoid using barrel imports
 
-## Node.js Development
-- **Always use `bun` by default** for Node.js projects
-  - `bun install` - install dependencies
-  - `bun run <script>` - run package.json scripts
-  - `bun add <package>` - add dependencies
-  - `bun remove <package>` - remove dependencies
-  - `bun <file.ts>` - run TypeScript files directly
-- Only use npm or yarn if the project explicitly requires it (e.g., existing lock files)
-
-## iOS Development
-- **Verify builds with xcbeautify** for cleaner output
-  - `xcodebuild -scheme <SchemeName> -configuration Debug -sdk iphonesimulator build | xcbeautify`
-  - Example: `xcodebuild -scheme iGotYouHaha -configuration Debug -sdk iphonesimulator build | xcbeautify`
-- Use XcodeGen (`project.yml`) for project generation instead of committing `.xcodeproj`
-- Install xcbeautify: `brew install xcbeautify`
-
 ## Git Commit Conventions
 - Follow Conventional Commits format (feat, fix, docs, style, refactor, test, chore)
 - Keep commit messages under 72 characters
