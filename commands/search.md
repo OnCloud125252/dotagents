@@ -2,7 +2,7 @@
 name: Agent Search
 description: Provides a `/search` command that makes AI Agent act as a search engine, performing web searches and returning summarized results with citations.
 model: claude-sonnet-4-5
-argument-hint:
+argument-hint: [query]
 ---
 
 # Search Command
