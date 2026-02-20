@@ -1,0 +1,66 @@
+description = "Create commits for recent changes. Multiple commits are allowed for logical grouping."
+
+prompt = """
+---
+name: Create Commits
+---
+
+Create commits for all recent changes. You MUST split changes into multiple logical commits when appropriate - each commit should represent a single cohesive change.
+
+### Process:
+
+1. Run `git status --porcelain` to see all changed and untracked files
+2. Run `git diff` to review unstaged changes and `git diff --cached` to review any already-staged changes
+3. Run `git log -n 10 --oneline` to match the project's existing commit style and identify common scopes
+4. **Group changes into logical commits** - analyze which files belong together based on:
+   - Related functionality or feature
+   - Same type of change (e.g., all docs together, all test files together)
+   - Same module or directory scope
+   - Dependencies (changes that only make sense together)
+5. For each logical group, in dependency order (foundational changes first):
+   a. Stage only the relevant files with `git add <specific files>`
+   b. Generate a commit message following the rules below
+   c. Create the commit with `git commit -m "message"`
+6. After all commits, run `git log --oneline -n <number of new commits>` to display the results
+
+### Grouping Guidelines:
+- **DO split** when changes touch unrelated areas (e.g., a new feature + a docs update + a config change)
+- **DO NOT split** tightly coupled changes that would break individually (e.g., a new function and its caller)
+- Prefer 2-5 commits for a typical set of changes; use 1 if everything is truly cohesive
+- If only one logical group exists, create a single commit - don't force artificial splits
+
+### Message Generation Rules
+
+**Auto-detect the most appropriate type based on file changes:**
+  - `feat`: New files, new functions/methods, new features
+  - `fix`: Changes to existing logic that resolve issues
+  - `docs`: Changes to .md, .txt, comments, or documentation files
+  - `style`: Formatting, whitespace, semicolons (no logic changes)
+  - `refactor`: Code restructuring without changing functionality
+  - `test`: Adding or modifying test files
+  - `chore`: Build scripts, configs, dependencies, tool changes
+  - `perf`: Performance improvements
+  - `ci`: CI/CD configuration changes
+
+**Scope detection:**
+- Derive from common directory or module name
+- Use existing scopes from recent commits when applicable
+- Omit if changes span multiple areas
+
+**Description guidelines:**
+- Start with lowercase verb (add, update, fix, remove, etc.)
+- Keep under 50 characters
+- Be specific but concise
+- No period at the end
+
+**Body guidelines (for complex changes):**
+- Include if changes affect 3+ files or have breaking changes
+- Explain the what and why, not the how
+- Wrap at 72 characters
+- Separate from subject with blank line
+
+**Output format:**
+- No markdown formatting in the commit message itself
+- NEVER include "Generated with", "Co-authored-by", or any AI/tool attribution in the commit message
+- No meta-information about how the message was created in the commit message
+"""

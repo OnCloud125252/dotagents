@@ -53,7 +53,10 @@ Analyze staged changes and create a Conventional Commits compliant message.
 **Output format:**
 - Generate the commit message and copy it to clipboard using `echo "message" | pbcopy`
 - Display the commit message to the user
-- Add a colored confirmation note using ANSI escape codes: "✓ Copied to clipboard - paste with Cmd+V in VSCode"
+- Add a colored confirmation note using ANSI escape codes:
+  ```
+  echo -e "\\033[32m✓ Copied to clipboard\\033[0m - paste with \\033[36mCmd+V\\033[0m in VSCode"
+  ```
 - No markdown formatting in the commit message itself
 - Include body/footer only when necessary
 - NEVER include "Generated with", "Co-authored-by", or any AI/tool attribution in the commit message
