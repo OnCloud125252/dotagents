@@ -6,4 +6,3 @@
   - `bun remove <package>` - remove dependencies
   - `bun <file.ts>` - run TypeScript files directly
 - Only use npm or yarn if the project explicitly requires it (e.g., existing lock files)
-- 
