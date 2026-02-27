@@ -28,15 +28,6 @@
       "installedAt": "2026-01-28T05:40:27.215Z",
       "updatedAt": "2026-01-29T07:01:11.157Z"
     },
-    "using-superpowers": {
-      "source": "obra/superpowers",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/obra/superpowers.git",
-      "skillPath": "skills/using-superpowers/SKILL.md",
-      "skillFolderHash": "986738c8d463796edec77e86824e53c6b03e61da",
-      "installedAt": "2026-01-29T07:01:11.101Z",
-      "updatedAt": "2026-01-29T07:01:11.101Z"
-    },
     "update-docs": {
       "source": "vercel/next.js",
       "sourceType": "github",
@@ -54,6 +45,16 @@
       "skillFolderHash": "906ac15ecb09488d96c2b3226b9dbf71820d2c4f",
       "installedAt": "2026-01-29T08:08:10.458Z",
       "updatedAt": "2026-01-29T08:08:10.458Z"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/anthropics/skills.git",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "skillFolderHash": "",
+      "pluginName": "example-skills",
+      "installedAt": "2026-02-27T07:10:17.842Z",
+      "updatedAt": "2026-02-27T07:10:17.842Z"
     }
   },
   "dismissed": {
