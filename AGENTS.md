@@ -29,6 +29,7 @@ This is my development environment. Follow these preferences and conventions.
 - Follow existing patterns and conventions in the codebase
 - Prefer modifying existing files over creating new ones
 - **Avoid running background tasks** like `bun run dev` - use foreground execution instead for better visibility and control
+- **Spawn multiple subagents in parallel** when tasks are independent and can be done concurrently - this maximizes efficiency and reduces completion time
 
 ## File Operations
 
