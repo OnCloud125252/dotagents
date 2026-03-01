@@ -37,7 +37,7 @@ macOS package manager. Required to install everything else.
 JSON processor for parsing hook event data from stdin.
 
 - **Install:** `brew install jq`
-- **Used by:** `hooks/notify.sh`
+- **Used by:** `hooks/notify.sh`, `claude-statusline/statusline.sh`, `claude-statusline/last-user-input.sh`
 
 ---
 
