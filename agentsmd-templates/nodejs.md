@@ -1,4 +1,5 @@
 ## Node.js Development
+
 - **Always use `bun` by default** for Node.js projects
   - `bun install` - install dependencies
   - `bun run <script>` - run package.json scripts
