@@ -1,0 +1,1 @@
+output=$(cat ~/.claude/projects/*/${CCSTATUSLINE_CLAUDE_SESSION_ID}.jsonl 2>/dev/null | jq -r 'select(.type == "user" and .message.role == "user" and (.message.content | type == "string") and (.message.content | startswith("<") | not) and (.message.content | startswith("Caveat") | not)) | .message.content' | tail -1) && echo "${output:-N/A}" || echo "N/A"
