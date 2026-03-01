@@ -2,7 +2,7 @@
 
 ## Project Context
 
-This is my development environment. Follow these preferences and conventions.
+This is a shared development environment for AI coding assistants. It contains hooks, status line scripts, slash commands, and skills. See [dependency.md](dependency.md) for external tool requirements.
 
 ## Code Style Preferences
 
@@ -54,3 +54,11 @@ This is my development environment. Follow these preferences and conventions.
 - Use ripgrep (`rg`) instead of grep for searching
 - Prefer using Glob and Grep tools over bash find/grep commands
 - Always use absolute paths when working with files
+
+## Key Files
+
+| File | Purpose |
+|---|---|
+| `hooks/notify.sh` | macOS notifications using growlrrr (`grrr`) |
+| `claude-statusline/statusline.sh` | Terminal status line via `bunx ccstatusline` |
+| `dependency.md` | External tool install guide and reference |
