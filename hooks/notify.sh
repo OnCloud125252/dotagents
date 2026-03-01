@@ -14,8 +14,11 @@ case "$event" in
       exit 0
     fi
 
-    # Extract last assistant message, truncate to 200 chars for notification
-    last_msg=$(echo "$input" | jq -r '.last_assistant_message // "Task complete."')
+    # Extract last assistant message, skip if empty
+    last_msg=$(echo "$input" | jq -r '.last_assistant_message // ""')
+    if [ -z "$last_msg" ]; then
+      exit 0
+    fi
     claude_session_id=$(echo "$input" | jq -r '.session_id // "claude-session"')
     if [ ${#last_msg} -gt 200 ]; then
       message="$(echo "$last_msg" | head -c 200) ......"$'\n'"[See terminal for full message]"
@@ -34,7 +37,10 @@ case "$event" in
     ;;
 
   Notification)
-    message=$(echo "$input" | jq -r '.message // "Claude needs your attention"')
+    message=$(echo "$input" | jq -r '.message // ""')
+    if [ -z "$message" ]; then
+      exit 0
+    fi
     claude_session_id=$(echo "$input" | jq -r '.session_id // "claude-session"')
 
     grrr \
