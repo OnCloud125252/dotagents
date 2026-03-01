@@ -10,7 +10,8 @@ jq_filter='
   if (startswith("<") | not) and (startswith("Caveat") | not) then
     .
   elif test("<command-name>") then
-    capture("<command-name>(?<cmd>[^<]+)</command-name>") | .cmd
+    capture("<command-name>(?<cmd>[^<]+)</command-name>") | .cmd |
+    select(. != "/clear")
   else
     empty
   end
