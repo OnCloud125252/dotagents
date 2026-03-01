@@ -11,7 +11,7 @@ jq_filter='
     .
   elif test("<command-name>") then
     capture("<command-name>(?<cmd>[^<]+)</command-name>") | .cmd |
-    select(. != "/clear")
+    select(. != "/clear" and . != "/exit")
   else
     empty
   end
