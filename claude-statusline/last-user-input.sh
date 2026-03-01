@@ -5,10 +5,15 @@ jq_filter='
   select(
     .type == "user" and
     .message.role == "user" and
-    (.message.content | type == "string") and
-    (.message.content | startswith("<") | not) and
-    (.message.content | startswith("Caveat") | not)
-  ) | .message.content
+    (.message.content | type == "string")
+  ) | .message.content |
+  if (startswith("<") | not) and (startswith("Caveat") | not) then
+    .
+  elif test("<command-name>") then
+    capture("<command-name>(?<cmd>[^<]+)</command-name>") | .cmd
+  else
+    empty
+  end
 '
 
 output=$(jq -r "$jq_filter" "$session_file" 2>/dev/null | tail -1)
