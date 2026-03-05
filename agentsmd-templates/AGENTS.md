@@ -15,7 +15,7 @@
 
 ## Testing Requirements
 
-- Always run tests after making changes if test scripts exist
+- Prefer TDD workflow (write tests first)
 - Run linting and type checking before completing tasks
 
 ## Development Workflow
