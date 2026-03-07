@@ -18,6 +18,10 @@
 - Prefer TDD workflow (write tests first)
 - Run linting and type checking before completing tasks
 
+## Best Practices
+
+- When running scripts or commands that depend on the current git worktree, always verify the working directory first. Use `pwd` or check `.git` to confirm you're in the correct location, especially when working with feature branches or worktrees.
+
 ## Development Workflow
 
 - **Always use askQuestionTools** for gathering information and clarifying requirements before starting any task
@@ -31,6 +35,10 @@
 ## File Operations
 
 - **ALWAYS use `trash` instead of `rm`** for file deletion
+
+## Editing Guidelines
+
+- After making multiple file edits, always verify the changes were applied correctly by reading the modified files before marking a task complete. Check for stale references or incomplete replacements.
 
 ## Language Preferences
 
