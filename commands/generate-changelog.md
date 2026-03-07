@@ -8,6 +8,7 @@ argument-hint: [from_commit] [language]
 Generate a concise, user-facing changelog with intelligent grouping and natural language descriptions inMarkdown format.
 
 ### Arguments
+
 - $1: starting ref (commit/tag/branch). Default: latest tag; fallback HEAD~20
 - $2: output language. Default: "English". Common: "Traditional Chinese", "Simplified Chinese", "Japanese", "Korean"
 
@@ -55,14 +56,14 @@ Generate a concise, user-facing changelog with intelligent grouping and natural 
    - **Section format**:
      - H2 heading with colon: `## New Features:` or `## 新功能：`
      - Bullet points directly after (no blank line): `* **Bold title**: Description`
-     - If `--show-commits` flag present: append ` (hash)` to each bullet
+     - If `--show-commits` flag present: append `(hash)` to each bullet
    - **Language-specific formatting**:
      - Traditional Chinese: Use full-width colon `：` for section headers
      - English: Use regular colon `:` for section headers
    - Combine related commits intelligently
    - Use natural, user-facing language
 
-7. **Translate Content**: 
+7. **Translate Content**:
    - Translate section headings based on language:
      - Traditional Chinese: "新功能：", "錯誤修復：", "重大變更：", "效能改善：", "文件更新："
      - Simplified Chinese: "新功能：", "错误修复：", "重大变更：", "性能改进：", "文档更新："
@@ -71,12 +72,13 @@ Generate a concise, user-facing changelog with intelligent grouping and natural 
    - Keep technical terms (API names, component names, variable names) in English
    - Ensure natural phrasing in target language
 
-8. **Output & Copy**: 
+8. **Output & Copy**:
    - Display the changelog
    - Copy to clipboard using `pbcopy` (macOS) or `xclip` (Linux) if available
    - Show success message: "✓ Changelog copied to clipboard" (or translated equivalent)
 
 ### Tips
+
 - Use semantic commit messages (conventional commits) for better categorization
 - Related commits in the same area will be automatically grouped
 - The command intelligently summarizes multiple commits into coherent feature descriptions

@@ -10,7 +10,9 @@ disable-model-invocation: true
 Create a GitHub issue using the `gh` CLI with smart defaults and label detection.
 
 ### Arguments
+
 Parse `$ARGUMENTS` to extract:
+
 - **title**: Required. The issue title (first argument or quoted string)
 - **--body** or **-b**: Optional. Issue description/body
 - **--label** or **-l**: Optional. Comma-separated labels
@@ -35,6 +37,7 @@ Parse `$ARGUMENTS` to extract:
    - Only apply labels that exist in the repository
 
 3. **Build Command**:
+
    ```bash
    gh issue create --title "TITLE" [--body "BODY"] [--label "LABELS"] [--assignee "USER"]
    ```
@@ -51,6 +54,7 @@ Parse `$ARGUMENTS` to extract:
 ### Output Format
 
 Display a confirmation with:
+
 ```
 ✓ Issue #123 created successfully
   Title: <issue title>
@@ -61,6 +65,7 @@ Display a confirmation with:
 ```
 
 Use ANSI colors:
+
 - Green (`\033[32m`) for success checkmarks
 - Cyan (`\033[36m`) for URLs and issue numbers
 - Reset (`\033[0m`) after colored text
@@ -68,27 +73,35 @@ Use ANSI colors:
 ### Examples
 
 **Simple issue:**
+
 ```
 /create-issue Fix login button not responding
 ```
+
 → Creates issue with title, auto-detects `bug` label
 
 **With body:**
+
 ```
 /create-issue Add dark mode support --body "Users have requested a dark theme option for better night-time usage"
 ```
+
 → Creates issue with title and description, auto-detects `enhancement` label
 
 **With explicit labels:**
+
 ```
 /create-issue Update API documentation --label documentation,good-first-issue
 ```
+
 → Creates issue with specified labels
 
 **Full options:**
+
 ```
 /create-issue Implement user search --body "Add search functionality to find users by name or email" --label feature --assignee @me
 ```
+
 → Creates issue with all options specified
 
 ### Error Handling
