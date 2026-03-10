@@ -1,7 +1,7 @@
 ---
 name: Changelog Generator
 description: Generate a user-facing changelog of new features and bug fixes since a commit
-model: claude-sonnet-4-5
+model: claude-sonnet-4-6
 argument-hint: [from_commit] [language]
 ---
 
