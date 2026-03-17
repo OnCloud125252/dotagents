@@ -20,6 +20,7 @@
 
 ## Best Practices
 
+- **Always use the LSP** (Language Server Protocol) for code intelligence — leverage go-to-definition, find-references, diagnostics, and symbol lookups instead of relying solely on text search
 - When running scripts or commands that depend on the current git worktree, always verify the working directory first. Use `pwd` or check `.git` to confirm you're in the correct location, especially when working with feature branches or worktrees.
 
 ## Development Workflow
