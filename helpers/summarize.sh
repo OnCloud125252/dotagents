@@ -64,11 +64,11 @@ payload=$(jq -n \
             properties: {
               subtitle: {
                 type: "string",
-                description: "1-4 word brief description in title case (e.g. Notification Hook, Auth Redirect, Database Migration)."
+                description: "2-5 word title-case label describing the specific action or outcome. Never use generic or vague completions."
               },
               message: {
                 type: "string",
-                description: "One sentence detail summary without I, as short as possible (e.g. Added summarization and filtering to notification messages.)."
+                description: "One concise sentence stating what changed or was accomplished. Reference specific files, functions, or components involved. No first person."
               }
             },
             required: ["subtitle", "message"],
