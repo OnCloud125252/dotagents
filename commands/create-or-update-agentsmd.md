@@ -1,6 +1,7 @@
 ---
 name: Create or update AGENTS.md
 description: Create, update, or refactor AGENTS.md with progressive disclosure principles
+model: claude-sonnet-4-6
 ---
 
 Create or update the AGENTS.md file based on the pull request changes, following progressive disclosure principles.

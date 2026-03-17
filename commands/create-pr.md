@@ -1,0 +1,70 @@
+---
+name: Create Pull Request
+description: Push current branch and create a GitHub pull request with smart defaults
+argument-hint: [--base main] [--draft] [--title "title"]
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git branch:*), Bash(git push:*), Bash(git rev-parse:*), Bash(gh pr create:*), Bash(gh pr view:*), Bash(pbcopy)
+model: claude-sonnet-4-6
+---
+
+Create a GitHub pull request for the current branch.
+
+### Arguments
+
+Parse `$ARGUMENTS` to extract:
+
+- **--base** or **-b**: Optional. Base branch (default: `main`)
+- **--draft** or **-d**: Optional. Create as draft PR
+- **--title** or **-t**: Optional. Override the PR title
+- **--no-push**: Optional. Skip pushing (assume already pushed)
+
+### Process
+
+1. **Gather Context** (run these in parallel):
+   - `git status` — check for uncommitted changes
+   - `git rev-parse --abbrev-ref HEAD` — get current branch name
+   - `git log --oneline main..HEAD` — list all commits on this branch
+   - `git diff main...HEAD --stat` — summarize changed files
+   - `git branch -vv | grep '^\*'` — check remote tracking
+
+2. **Safety Checks**:
+   - If there are uncommitted changes, warn the user and ask whether to proceed
+   - If on `main` or `master`, refuse to create PR from the base branch
+   - If no commits ahead of base, inform user there's nothing to PR
+
+3. **Push if Needed**:
+   - If branch has no upstream or is ahead of remote, push with `-u origin <branch>`
+   - If `--no-push` is set, skip this step
+
+4. **Analyze Changes**:
+   - Review ALL commits on the branch (`git log main..HEAD`), not just the latest
+   - Review the full diff (`git diff main...HEAD`) to understand scope
+   - Determine change type: feature, fix, refactor, docs, chore, etc.
+
+5. **Generate PR Content**:
+   - **Title**: Short (under 70 chars), prefixed with type (e.g., `feat:`, `fix:`, `docs:`)
+     - If `--title` provided, use that instead
+   - **Body**: Use this format:
+
+   ```
+   ## Summary
+   <2-4 bullet points describing key changes>
+
+   ## Test plan
+   <Bulleted checklist of how to verify the changes>
+   ```
+
+6. **Create PR**:
+   - Use `gh pr create` with a HEREDOC for the body
+   - Add `--draft` flag if requested
+   - Set `--base` to the specified base branch
+
+7. **Output**:
+   - Display the PR URL
+   - Copy URL to clipboard using `pbcopy`
+
+### Important Rules
+
+- Use Traditional Chinese (zh-TW) if all commit messages are in Chinese; otherwise use English
+- Never fabricate or guess commit details — only use actual git history
+- The summary must reflect ALL commits on the branch, not just the most recent one
+- Do not add AI attribution or "Generated with" lines to the PR body
