@@ -1,2 +1,3 @@
-node_modules
-skills/playwright-skill/.temp-*.js
+/node_modules
+/skills/playwright-skill/.temp-*.js
+/tmp
