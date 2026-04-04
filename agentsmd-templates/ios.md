@@ -1,4 +1,4 @@
-## iOS Development
+# iOS Development
 
 - **Verify builds with xcbeautify** for cleaner output
   - `xcodebuild -scheme <SchemeName> -configuration Debug -sdk iphonesimulator build | xcbeautify`
