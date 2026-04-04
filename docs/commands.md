@@ -19,12 +19,37 @@ instead of `$ARGUMENTS`.
 | Command | Description |
 |---|---|
 | `/auto-resolve` | Run a command and loop diagnose-fix-execute until exit code 0 |
-| `/create-commits` | Group recent changes into logical Conventional Commits |
-| `/create-issue` | Create a GitHub issue via `gh`, auto-detect labels, copy URL |
-| `/create-or-update-agentsmd` | Create or refactor AGENTS.md with progressive disclosure |
-| `/generate-changelog` | Generate a user-facing changelog from git history |
 | `/search` | Web search with synthesized summary and citations |
-| `/simplify` | Ruthlessly refactor code for maximum simplicity |
+
+### `git.*` — Version control
+
+| Command | Description |
+|---|---|
+| `/git.commit` | Group recent changes into logical Conventional Commits |
+| `/git.issue` | Create a GitHub issue via `gh`, auto-detect labels, copy URL |
+| `/git.changelog` | Generate a user-facing changelog from git history |
+| `/git.version` | Analyze git changes and create a new version using `npm version` |
+
+### `pr.*` — Pull requests
+
+| Command | Description |
+|---|---|
+| `/pr.create` | Push current branch and create a GitHub pull request |
+| `/pr.resolve` | Fetch unresolved PR review threads and fix them |
+
+### `docs.*` — Documentation
+
+| Command | Description |
+|---|---|
+| `/docs.agentsmd` | Create or refactor AGENTS.md with progressive disclosure |
+| `/docs.update` | Guided workflow for updating docs based on code changes |
+
+### `code.*` — Code quality
+
+| Command | Description |
+|---|---|
+| `/code.simplify` | Ruthlessly refactor code for maximum simplicity |
+| `/code.react-doctor` | Scan React codebase for issues, output 0-100 score |
 
 ### Gemini-only commands
 
@@ -85,7 +110,7 @@ All artifacts are written to a feature directory (typically `.specify/`):
 Runs the given shell command and enters a recursive **Diagnose → Fix →
 Execute** loop until the command exits with code 0.
 
-### `/create-commits`
+### `/git.commit`
 
 Scans staged and unstaged git changes, groups them into logical commits, and
 creates each with a Conventional Commits message. Supports types: `feat`,
@@ -93,26 +118,69 @@ creates each with a Conventional Commits message. Supports types: `feat`,
 
 No AI attribution is added to commit messages.
 
-### `/create-issue`
+### `/git.issue`
 
 ```
-/create-issue <title> [--body "description"] [--label bug|feature|docs] [--assignee user]
+/git.issue <title> [--body "description"] [--label bug|feature|docs] [--assignee user]
 ```
 
 Creates a GitHub issue via `gh`. Auto-detects labels from title keywords
 (e.g., "bug" → `bug`, "feature" → `enhancement`). Copies the issue URL to
 the clipboard.
 
-### `/generate-changelog`
+### `/git.changelog`
 
 ```
-/generate-changelog [from_commit] [language] [--show-commits]
+/git.changelog [from_commit] [language] [--show-commits]
 ```
 
 Generates a Markdown changelog grouped by feature area. Defaults to the
 latest tag or `HEAD~20`. Supports English, Traditional Chinese, Simplified
 Chinese, Japanese, and Korean. Skips `chore`, `refactor`, `test`, `style`,
 `ci`, and `build` commits.
+
+### `/git.version`
+
+```
+/git.version [--dry-run]
+```
+
+Analyzes git commits since the last tag to determine the appropriate semantic
+version bump, then runs `npm version`.
+
+### `/pr.create`
+
+Push current branch and create a GitHub pull request with smart defaults.
+
+### `/pr.resolve`
+
+Fetch unresolved PR review threads, fix the issues, reply with commit SHA,
+resolve threads via GraphQL, and post a summary comment.
+
+### `/docs.agentsmd`
+
+Create or refactor AGENTS.md with progressive disclosure principles.
+
+### `/docs.update`
+
+Guided workflow for updating documentation based on code changes. Analyzes
+diffs, identifies affected docs, and applies updates with confirmation.
+
+### `/code.simplify`
+
+```
+/code.simplify [target]
+```
+
+Aggressively refactors the target file, directory, or component for maximum
+simplicity. Eliminates code smells, over-engineering, and duplication while
+preserving all functionality and public APIs. Defaults to recently modified
+files.
+
+### `/code.react-doctor`
+
+Scans your React codebase for security, performance, correctness, and
+architecture issues. Outputs a 0-100 score with actionable diagnostics.
 
 ### `/search`
 
@@ -122,14 +190,3 @@ Chinese, Japanese, and Korean. Skips `chore`, `refactor`, `test`, `style`,
 
 Performs a web search and returns a synthesized summary with inline
 `[1], [2]` citations and source links.
-
-### `/simplify`
-
-```
-/simplify [target]
-```
-
-Aggressively refactors the target file, directory, or component for maximum
-simplicity. Eliminates code smells, over-engineering, and duplication while
-preserving all functionality and public APIs. Defaults to recently modified
-files.

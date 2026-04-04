@@ -3,14 +3,14 @@ description = "Auto-diagnose and fix errors in commands to achieve Exit Code 0"
 prompt = """
 ---
 name: Auto Command Issue Resolver
-argument-hint: [command]
+argument-hint: "[command]"
 ---
 
-Act as a Senior DevOps Engineer. Your goal is to run the command `$ARGUMENTS` and ensure it completes successfully with Exit Code 0.
+Act as a Senior DevOps Engineer. Your goal is to run the command `{{args}}` and ensure it completes successfully with Exit Code 0.
 
 Follow this recursive loop logic:
 
-1. **Execute**: Run the command `$ARGUMENTS`.
+1. **Execute**: Run the command `{{args}}`.
 2. **Verify**: Check the exit code.
    - If **Exit Code is 0**: You are done. Report success.
    - If **Exit Code is NOT 0**:

@@ -75,7 +75,7 @@ Use ANSI colors:
 **Simple issue:**
 
 ```
-/create-issue Fix login button not responding
+/git.issue Fix login button not responding
 ```
 
 → Creates issue with title, auto-detects `bug` label
@@ -83,7 +83,7 @@ Use ANSI colors:
 **With body:**
 
 ```
-/create-issue Add dark mode support --body "Users have requested a dark theme option for better night-time usage"
+/git.issue Add dark mode support --body "Users have requested a dark theme option for better night-time usage"
 ```
 
 → Creates issue with title and description, auto-detects `enhancement` label
@@ -91,7 +91,7 @@ Use ANSI colors:
 **With explicit labels:**
 
 ```
-/create-issue Update API documentation --label documentation,good-first-issue
+/git.issue Update API documentation --label documentation,good-first-issue
 ```
 
 → Creates issue with specified labels
@@ -99,7 +99,7 @@ Use ANSI colors:
 **Full options:**
 
 ```
-/create-issue Implement user search --body "Add search functionality to find users by name or email" --label feature --assignee @me
+/git.issue Implement user search --body "Add search functionality to find users by name or email" --label feature --assignee @me
 ```
 
 → Creates issue with all options specified

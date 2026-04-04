@@ -6,7 +6,7 @@
 ## Overview
 
 The `agentsmd-templates/` directory contains modular sections that the
-`/create-or-update-agentsmd` command uses as building blocks. Each template
+`/docs.agentsmd` command uses as building blocks. Each template
 provides conventions for a specific concern (coding standards, git workflow,
 platform, etc.) and can be combined to assemble a full `AGENTS.md`.
 
@@ -23,8 +23,8 @@ platform, etc.) and can be combined to assemble a full `AGENTS.md`.
 
 ## Usage
 
-Templates are consumed by the `/create-or-update-agentsmd` command
-(defined in `commands/create-or-update-agentsmd.md`). The command:
+Templates are consumed by the `/docs.agentsmd` command
+(defined in `commands/docs.agentsmd.md`). The command:
 
 1. Detects the project type (Node.js, iOS, etc.)
 2. Selects relevant templates

@@ -3,25 +3,27 @@ description = "Generate a user-facing changelog of new features and bug fixes si
 prompt = """
 ---
 name: Changelog Generator
-argument-hint: [from_commit] [language]
+argument-hint: "[from_commit] [language]"
 ---
 
 Generate a concise, user-facing changelog with intelligent grouping and natural language descriptions in Markdown format.
 
 ### Arguments
-- $1: starting ref (commit/tag/branch). Default: latest tag; fallback HEAD~20
-- $2: output language. Default: "English". Common: "Traditional Chinese", "Simplified Chinese", "Japanese", "Korean"
+
+Parse `{{args}}` to extract:
+- First argument: starting ref (commit/tag/branch). Default: latest tag; fallback HEAD~20
+- Second argument: output language. Default: "English". Common: "Traditional Chinese", "Simplified Chinese", "Japanese", "Korean"
+- `--show-commits` flag: if present, include commit hashes in output; otherwise omit them
 
 ### Process
 
-1. **Parse Arguments**: Extract `$1` (ref), `$2` (language), and `$3` (flag) from $ARGUMENTS. Trim quotes.
-   - If $1 missing: try `git describe --tags --abbrev=0`; fallback to HEAD~20
-   - If $2 missing: use "English"
-   - If $3 is `--show-commits`: include commit hashes in output; otherwise omit them
+1. **Parse Arguments**: Extract the ref, language, and flag from {{args}}. Trim quotes.
+   - If ref missing: try `git describe --tags --abbrev=0`; fallback to HEAD~20
+   - If language missing: use "English"
 
-2. **Validate Start Ref**: Run `git rev-parse --verify $1`. If invalid, ask for a valid ref.
+2. **Validate Start Ref**: Run `git rev-parse --verify <ref>`. If invalid, ask for a valid ref.
 
-3. **Collect Commits**: Use `git log --no-merges --pretty=format:%H::%s::%b $1..HEAD`
+3. **Collect Commits**: Use `git log --no-merges --pretty=format:%H::%s::%b <ref>..HEAD`
    - If no commits found, state "No new changes since <ref>"
    - Parse each commit: hash, subject, body
    - For each commit, determine type by prefix: feat, fix, refactor, perf, docs, chore, test, style, ci, build
@@ -54,9 +56,9 @@ Generate a concise, user-facing changelog with intelligent grouping and natural 
      - Performance Improvements
      - Documentation Updates
    - **Section format**:
-     - H2 heading with colon: `## New Features:` or `## &#26032;&#21151;&#33021;&#65306;`
+     - H2 heading with colon: `## New Features:` or `## New Features:`
      - Bullet points directly after (no blank line): `* **Bold title**: Description`
-     - If `--show-commits` flag present: append ` (hash)` to each bullet
+     - If `--show-commits` flag present: append `(hash)` to each bullet
    - **Language-specific formatting**:
      - Traditional Chinese: Use full-width colon for section headers
      - English: Use regular colon `:` for section headers
@@ -64,7 +66,10 @@ Generate a concise, user-facing changelog with intelligent grouping and natural 
    - Use natural, user-facing language
 
 7. **Translate Content**:
-   - Translate section headings based on language
+   - Translate section headings based on language:
+     - Traditional Chinese: "New Features", "Bug Fixes", "Breaking Changes", "Performance", "Docs" (in Traditional Chinese)
+     - Simplified Chinese: equivalent in Simplified Chinese
+     - Japanese: equivalent in Japanese
    - Translate feature/fix titles and descriptions naturally
    - Keep technical terms (API names, component names, variable names) in English
    - Ensure natural phrasing in target language
@@ -72,9 +77,10 @@ Generate a concise, user-facing changelog with intelligent grouping and natural 
 8. **Output & Copy**:
    - Display the changelog
    - Copy to clipboard using `pbcopy` (macOS) or `xclip` (Linux) if available
-   - Show success message: "✓ Changelog copied to clipboard" (or translated equivalent)
+   - Show success message
 
 ### Tips
+
 - Use semantic commit messages (conventional commits) for better categorization
 - Related commits in the same area will be automatically grouped
 - The command intelligently summarizes multiple commits into coherent feature descriptions

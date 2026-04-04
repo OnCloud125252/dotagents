@@ -1,0 +1,24 @@
+description = "Create commits for recent changes. Multiple commits are allowed for logical grouping."
+
+prompt = """
+---
+name: Create Commits
+---
+
+Create commits for all recent changes. You MUST split changes into multiple logical commits when appropriate -- each commit should represent a single cohesive change.
+
+# Commit Process
+
+1. Run `git status` and `git diff` to understand all pending changes.
+2. Group changes into logical commits.
+3. For each group, stage the relevant files with `git add <files>` and create a commit with a descriptive message.
+
+# Grouping Guidelines
+
+- NEVER include "Generated with", "Co-authored-by", or any AI/tool attribution in the commit message
+- **DO split** when changes touch unrelated areas (e.g., a new feature + a docs update + a config change)
+- **DO NOT split** tightly coupled changes that would break individually (e.g., a new function and its caller)
+- Prefer 2-5 commits for a typical set of changes; use 1 if everything is truly cohesive
+- If only one logical group exists, create a single commit -- don't force artificial splits
+- No meta-information about how the message was created in the commit message
+"""
