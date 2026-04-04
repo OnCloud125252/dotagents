@@ -1,4 +1,4 @@
-## Node.js Development
+# Node.js Development
 
 - **Always use `bun` by default** for Node.js projects
   - `bun install` - install dependencies

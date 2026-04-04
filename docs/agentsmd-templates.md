@@ -39,7 +39,7 @@ cat agentsmd-templates/coding-standards.md agentsmd-templates/workflow.md > AGEN
 
 ## Template conventions
 
-- Each template is a self-contained Markdown section (starting with `#` or `##`)
+- Each template is a self-contained Markdown section (starting with `#`)
 - Templates use generic placeholders that the command fills in
 - Platform templates (`ios.md`, `nodejs.md`) include tool-specific install instructions
 - `workflow.md` enforces the project-wide rule: **always use `trash` instead of `rm`**
