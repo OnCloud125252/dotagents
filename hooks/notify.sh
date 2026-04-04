@@ -88,20 +88,35 @@ case "$event" in
     if [ -z "$message" ]; then
       exit 0
     fi
+    notification_type=$(echo "$input" | jq -r '.type // ""')
     claude_session_id=$(echo "$input" | jq -r '.session_id // "claude-session"')
-    user_input=$(get_last_user_input "$claude_session_id")
-    summary_json=$(echo "$message" | summarize_message notification "$user_input")
-    subtitle=$(echo "$summary_json" | jq -r '.subtitle' | filter_message)
-    message=$(echo "$summary_json" | jq -r '.message' | filter_message)
 
-    grrr \
-      --title "Claude Code @$project" \
-      --subtitle "$subtitle" \
-      --sound Glass \
-      --appId claude-code \
-      --execute "open -b com.github.wez.wezterm" \
-      --threadId "$claude_session_id" \
-      "$message"
+    if [ "$notification_type" = "idle_prompt" ]; then
+      # Simple fixed notification — no LLM, visually distinct from stop events
+      grrr \
+        --title "Claude Code @$project" \
+        --subtitle "Waiting for Input" \
+        --sound Tink \
+        --appId claude-code \
+        --execute "open -b com.github.wez.wezterm" \
+        --threadId "$claude_session_id" \
+        "Session is idle — check terminal for pending prompts"
+    else
+      # LLM-summarized notification for all other event types
+      user_input=$(get_last_user_input "$claude_session_id")
+      summary_json=$(echo "$message" | summarize_message notification "$user_input")
+      subtitle=$(echo "$summary_json" | jq -r '.subtitle' | filter_message)
+      message=$(echo "$summary_json" | jq -r '.message' | filter_message)
+
+      grrr \
+        --title "Claude Code @$project" \
+        --subtitle "$subtitle" \
+        --sound Glass \
+        --appId claude-code \
+        --execute "open -b com.github.wez.wezterm" \
+        --threadId "$claude_session_id" \
+        "$message"
+    fi
     ;;
 esac
 
