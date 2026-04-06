@@ -125,18 +125,19 @@ For each unresolved thread:
    - If the review suggests a refactor or style change, does it align with the project's established patterns?
 4. Classify the thread into one of:
    - **Actionable — Valid** — the reviewer's feedback is correct and the code genuinely needs the requested change → plan the fix.
-   - **Actionable — Disagree** — the reviewer requests a change, but after verification the current code is correct or the suggestion would cause harm → do NOT fix. Flag for the user to respond manually with a rationale.
-   - **Question/Informational** — reviewer asks a question or leaves a note → do NOT auto-resolve. Flag for the user to respond manually.
+   - **Actionable — Disagree** — the reviewer requests a change, but after verification the current code is correct or the suggestion would cause harm → do NOT fix. Draft a rationale reply explaining why the current code is correct.
+   - **Question/Informational** — reviewer asks a question or leaves a note → draft an answer or acknowledgement reply.
 5. Group valid actionable threads by file for cleaner commits.
 
 Present the plan to the user before proceeding. List each thread with:
 - File and line
 - Reviewer comment (abbreviated)
-- **Verdict**: one of `Will fix`, `Disagree — needs manual response`, or `Question — needs manual response`
+- **Verdict**: one of `Will fix`, `Disagree — will reply with rationale`, or `Question — will reply with answer`
 - For `Will fix` — the proposed fix
-- For `Disagree` — a brief explanation of why the current code is correct
+- For `Disagree` — the draft rationale to be posted as a reply
+- For `Question` — the draft answer to be posted as a reply
 
-**Wait for user approval before applying any fixes.** The user may override any verdict.
+**Wait for user approval before applying any changes.** The user may override any verdict (e.g., change a "Disagree" to "Will fix", edit a draft reply, or skip a thread entirely).
 
 ## Step 4: Apply Fixes, Commit, Push
 
@@ -163,13 +164,18 @@ Present the plan to the user before proceeding. List each thread with:
 
 Process threads **sequentially** to avoid GitHub API race conditions.
 
-For each **actionable** thread that was fixed:
+For **every** thread addressed in this run (fixed, disagreed, or answered):
 
 ### 5a. Reply via REST
 
+Choose the reply body based on the thread's verdict:
+- **Will fix** → `"Fixed in <SHORT_SHA>."`
+- **Disagree** → the rationale explaining why the current code is correct (as approved by the user in Step 3)
+- **Question** → the answer or acknowledgement (as approved by the user in Step 3)
+
 ```bash
 gh api repos/<OWNER>/<REPO>/pulls/<PR_NUMBER>/comments/<DB_ID>/replies \
-  -f body="Fixed in <SHORT_SHA>."
+  -f body="<REPLY_BODY>"
 ```
 
 ### 5b. Resolve via GraphQL
@@ -190,7 +196,7 @@ Re-fetch the review threads (same query as Step 2). Confirm all addressed thread
 
 Report any threads that:
 - Failed to resolve (log the error)
-- Were skipped (questions/informational)
+- Were explicitly skipped by the user during plan approval
 - Remain unresolved for other reasons
 
 ## Step 7: Summary Comment
@@ -206,13 +212,14 @@ gh pr comment <PR_NUMBER> -b "$(cat <<'EOF'
 | # | File | Line | Action | Commit |
 |---|------|------|--------|--------|
 | 1 | `path/to/file` | L42 | Fixed per reviewer request | `abc1234` |
-| 2 | `path/to/other` | L17 | Fixed per reviewer request | `abc1234` |
+| 2 | `path/to/other` | L17 | Replied with rationale (disagree) | — |
+| 3 | `path/to/other` | L25 | Replied with answer | — |
 | ... | | | | |
 
-**Skipped threads** (require manual response):
-- Thread at `path/file:L10` — reviewer asked a question
+**Skipped threads** (excluded by user during plan approval):
+- Thread at `path/file:L10` — user chose to skip
 
-All actionable review threads have been resolved.
+All review threads have been addressed and resolved.
 EOF
 )"
 ```
