@@ -3,6 +3,7 @@ name: Cleanup Worktree
 description: Remove a git worktree and optionally delete its branch. Lists worktrees if no argument given.
 argument-hint: "[worktree-name-or-path]"
 allowed-tools: Bash(git *), AskUserQuestion
+model: claude-sonnet-4-6
 ---
 
 # Cleanup Git Worktree
@@ -35,6 +36,7 @@ git worktree list
 ### 2. Confirm with User
 
 Before removing, show:
+
 - Worktree path
 - Branch name
 - Whether the branch has been merged into main/master
