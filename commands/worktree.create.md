@@ -3,6 +3,7 @@ name: Create Worktree
 description: Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.
 argument-hint: <branch-name | Linear issue ID | Linear issue URL>
 allowed-tools: Bash(git *), Bash(mkdir *), mcp__linear-server__get_issue
+model: claude-sonnet-4-6
 ---
 
 # Worktree from Branch or Linear Issue
@@ -54,12 +55,14 @@ Create a short directory name from the branch:
 - Otherwise, use the last path segment of the branch name, truncated to ~40 chars
 
 Examples:
+
 - `oncloud/sei-381-implement-blacklist-management-in-admin-panel` → `sei-381-blacklist-management`
 - `feat/add-user-search` → `add-user-search`
 
 ### 3. Determine Worktree Base Directory
 
 Priority order:
+
 1. Check CLAUDE.md for a worktree directory preference (e.g., `.claude/worktrees`)
 2. Check if `.claude/worktrees`, `.worktrees`, or `worktrees` exists
 3. Default to `.claude/worktrees`
