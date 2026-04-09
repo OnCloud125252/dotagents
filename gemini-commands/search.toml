@@ -1,9 +1,9 @@
-description = "Provides a /search command that makes AI Agent act as a search engine, performing web searches and returning summarized results with citations."
+description = "Provides a `/search` command that makes AI Agent act as a search engine, performing web searches and returning summarized results with citations."
 
 prompt = """
 ---
 name: Agent Search
-argument-hint: "[query]"
+argument-hint: [query]
 ---
 
 # Search Command
@@ -21,7 +21,7 @@ Provides a `/search` command that makes AI Agent act as a search engine, perform
 ## Instructions
 
 1. When the user invokes `/search [query]`, extract the search query from {{args}}
-2. Search the web for the query using Google Search
+2. Use the WebSearch tool to search for the query
 3. Present the results in a clear, organized format with:
    - A brief summary of what was found
    - Key findings from the top results

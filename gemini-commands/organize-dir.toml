@@ -3,14 +3,14 @@ description = "Organize a directory by moving subdirectories older than a specif
 prompt = """
 ---
 name: Organize Directory
-argument-hint: "[--dry] [--time <duration>] [--archive <dir>] [target-dir]"
+argument-hint: [--dry] [--time <duration>] [--archive <dir>] [target-dir]
 ---
 
 Organize the specified directory by archiving old subdirectories.
 
 ## Arguments
 
-Parse the following from `{{args}}`:
+Parse the following from {{args}}:
 
 - **`--dry`**: Dry run mode. Only show what would be organized without moving any directories or asking for confirmation. When this flag is present, stop after Step 2 (Preview) and do NOT execute Step 3.
 - **`--time <duration>`**: Subdirectories older than this will be moved. Default: `6m` (6 months). Accepts formats like `1y` (1 year), `6m` (6 months), `3m` (3 months), `30d` (30 days), `2w` (2 weeks).
@@ -26,7 +26,7 @@ Parse the following from `{{args}}`:
 3. For each subdirectory, determine its last modified date.
 4. Calculate which subdirectories are older than the specified time threshold relative to today's date.
 5. **Exclude** the archive directory itself and hidden directories (those starting with `.`) from being archived.
-6. **Exclude** regular files -- only move **directories**.
+6. **Exclude** regular files — only move **directories**.
 
 ### Step 2: Preview
 
@@ -36,7 +36,7 @@ Parse the following from `{{args}}`:
    - The archive directory path
    - The time threshold used
 2. Show the total count: `X directories to archive, Y directories to keep`
-3. If `--dry` flag is set: print `(Dry run -- no directories will be moved)` and **STOP here**. Do NOT ask for confirmation and do NOT proceed to Step 3.
+3. If `--dry` flag is set: print `(Dry run — no directories will be moved)` and **STOP here**. Do NOT ask for confirmation and do NOT proceed to Step 3.
 4. Otherwise, **ALWAYS ask the user for confirmation before moving any directories.** Do NOT proceed without explicit approval.
 
 ### Step 3: Execute (skipped in dry mode)
@@ -48,11 +48,11 @@ Parse the following from `{{args}}`:
 
 ## Important Rules
 
-- **NEVER delete anything.** This command only MOVES directories.
+- **NEVER delete anything.** This skill only MOVES directories.
 - **NEVER move regular files**, only directories.
 - **NEVER move hidden directories** (starting with `.`).
 - **NEVER move directories without user confirmation** (unless `--dry` is set).
-- **Only organize top-level subdirectories** -- do not recurse into them to reorganize their contents.
+- **Only organize top-level subdirectories** — do not recurse into them to reorganize their contents.
 - If no subdirectories match the criteria, inform the user and exit gracefully.
 - Use `stat` to reliably get directory modification times.
 - Handle directory names with spaces correctly by quoting paths.
