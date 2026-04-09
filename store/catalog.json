@@ -1,11 +1,21 @@
 {
   "version": 1,
   "repo": "https://github.com/OnCloud125252/dotagents.git",
+  "categories": [
+    { "key": "git", "label": "Git", "note": null },
+    { "key": "pr", "label": "PR", "note": null },
+    { "key": "worktree", "label": "Worktree", "note": null },
+    { "key": "docs", "label": "Docs", "note": null },
+    { "key": "opsx", "label": "OPSX", "note": "requires: openspec CLI" },
+    { "key": "code", "label": "Code", "note": null },
+    { "key": "standalone", "label": "Standalone", "note": null }
+  ],
   "commands": {
     "git/commit": {
       "name": "Create Commits",
       "description": "Create commits for recent changes. Multiple commits are allowed for logical grouping.",
       "path": "commands/git/commit.md",
+      "category": "git",
       "requires_skills": ["commit"],
       "requires_tools": ["git"],
       "model": "claude-sonnet-4-6"
@@ -14,6 +24,7 @@
       "name": "Pull",
       "description": "Run git pull and resolve issues if there's any output from git hook, and ask user how to resolve conflicts.",
       "path": "commands/git/pull.md",
+      "category": "git",
       "requires_skills": [],
       "requires_tools": ["git"],
       "model": "claude-sonnet-4-6"
@@ -22,6 +33,7 @@
       "name": "Push",
       "description": "Run git push and resolve issues if there's any output from git hook, and ask user how to resolve conflicts.",
       "path": "commands/git/push.md",
+      "category": "git",
       "requires_skills": [],
       "requires_tools": ["git"],
       "model": "claude-haiku-4-5"
@@ -30,6 +42,7 @@
       "name": "Changelog Generator",
       "description": "Generate a user-facing changelog of new features and bug fixes since a commit.",
       "path": "commands/git/changelog.md",
+      "category": "git",
       "requires_skills": [],
       "requires_tools": ["git"],
       "model": "claude-sonnet-4-6"
@@ -38,6 +51,7 @@
       "name": "Version",
       "description": "Analyze git changes and create a new version using npm version based on conventional commits.",
       "path": "commands/git/version.md",
+      "category": "git",
       "requires_skills": [],
       "requires_tools": ["git", "npm"],
       "model": "claude-sonnet-4-6"
@@ -46,6 +60,7 @@
       "name": "GitHub Issue Creator",
       "description": "Create a GitHub issue with intelligent label detection and optional template support.",
       "path": "commands/git/issue.md",
+      "category": "git",
       "requires_skills": [],
       "requires_tools": ["gh"],
       "model": "claude-sonnet-4-6"
@@ -54,6 +69,7 @@
       "name": "Create Pull Request",
       "description": "Push current branch and create a GitHub pull request with smart defaults.",
       "path": "commands/pr/create.md",
+      "category": "pr",
       "requires_skills": [],
       "requires_tools": ["git", "gh"],
       "optional_tools": ["mcp:linear"],
@@ -63,6 +79,7 @@
       "name": "Resolve PR Reviews",
       "description": "Fetch unresolved PR review threads, fix the issues, reply with commit SHA, resolve threads via GraphQL, and post a summary comment.",
       "path": "commands/pr/resolve.md",
+      "category": "pr",
       "requires_skills": [],
       "requires_tools": ["git", "gh"],
       "model": null
@@ -71,6 +88,7 @@
       "name": "Create Worktree",
       "description": "Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.",
       "path": "commands/worktree/create.md",
+      "category": "worktree",
       "requires_skills": [],
       "requires_tools": ["git"],
       "optional_tools": ["mcp:linear"],
@@ -80,6 +98,7 @@
       "name": "Merge Worktree",
       "description": "Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.",
       "path": "commands/worktree/merge.md",
+      "category": "worktree",
       "requires_skills": [],
       "requires_tools": ["git"],
       "model": "claude-haiku-4-5"
@@ -88,6 +107,7 @@
       "name": "Cleanup Worktree",
       "description": "Remove a git worktree and optionally delete its branch. Lists worktrees if no argument given.",
       "path": "commands/worktree/cleanup.md",
+      "category": "worktree",
       "requires_skills": [],
       "requires_tools": ["git"],
       "model": "claude-haiku-4-5"
@@ -96,6 +116,7 @@
       "name": "Create or update AGENTS.md",
       "description": "Create, update, or refactor AGENTS.md with progressive disclosure principles.",
       "path": "commands/docs/agentsmd.md",
+      "category": "docs",
       "requires_skills": [],
       "requires_tools": [],
       "model": "claude-sonnet-4-6"
@@ -104,6 +125,7 @@
       "name": "Update Docs",
       "description": "Guided workflow for updating documentation based on code changes. Analyzes diffs, identifies affected docs, and applies updates with confirmation.",
       "path": "commands/docs/update.md",
+      "category": "docs",
       "requires_skills": [],
       "requires_tools": ["git", "pnpm"],
       "model": null
@@ -112,6 +134,7 @@
       "name": "OPSX: Propose",
       "description": "Propose a new change - create it and generate all artifacts in one step.",
       "path": "commands/opsx/propose.md",
+      "category": "opsx",
       "requires_skills": ["openspec-propose"],
       "requires_tools": ["openspec"],
       "model": null
@@ -120,6 +143,7 @@
       "name": "OPSX: Apply",
       "description": "Implement tasks from an OpenSpec change (Experimental).",
       "path": "commands/opsx/apply.md",
+      "category": "opsx",
       "requires_skills": ["openspec-apply-change"],
       "requires_tools": ["openspec"],
       "model": null
@@ -128,6 +152,7 @@
       "name": "OPSX: Explore",
       "description": "Enter explore mode - think through ideas, investigate problems, clarify requirements.",
       "path": "commands/opsx/explore.md",
+      "category": "opsx",
       "requires_skills": ["openspec-explore"],
       "requires_tools": ["openspec"],
       "model": null
@@ -136,6 +161,7 @@
       "name": "OPSX: Archive",
       "description": "Archive a completed change in the experimental workflow.",
       "path": "commands/opsx/archive.md",
+      "category": "opsx",
       "requires_skills": ["openspec-archive-change"],
       "requires_tools": ["openspec"],
       "model": null
@@ -144,6 +170,7 @@
       "name": "React Doctor",
       "description": "Scan React codebase for security, performance, correctness, and architecture issues. Outputs a 0-100 score with actionable diagnostics.",
       "path": "commands/code/react-doctor.md",
+      "category": "code",
       "requires_skills": [],
       "requires_tools": ["npx"],
       "model": null
@@ -152,6 +179,7 @@
       "name": "Agent Search",
       "description": "Perform web searches and return summarized results with citations.",
       "path": "commands/search.md",
+      "category": "standalone",
       "requires_skills": [],
       "requires_tools": [],
       "model": "claude-sonnet-4-6"
@@ -160,6 +188,7 @@
       "name": "Auto Command Issue Resolver",
       "description": "Auto-diagnose and fix errors in commands to achieve Exit Code 0.",
       "path": "commands/auto-resolve.md",
+      "category": "standalone",
       "requires_skills": [],
       "requires_tools": [],
       "model": null
@@ -168,6 +197,7 @@
       "name": "Organize Directory",
       "description": "Organize a directory by moving subdirectories older than a specified time into an archive folder.",
       "path": "commands/organize-dir.md",
+      "category": "standalone",
       "requires_skills": [],
       "requires_tools": [],
       "model": "claude-sonnet-4-6"
@@ -385,26 +415,6 @@
       "check": "command -v pnpm",
       "install": "npm install -g pnpm",
       "description": "Fast, disk-efficient Node.js package manager"
-    },
-    "trash": {
-      "check": "command -v trash",
-      "install": "brew install trash",
-      "description": "Safe file deletion (moves to Trash)"
-    },
-    "bun": {
-      "check": "command -v bun",
-      "install": "brew install bun",
-      "description": "Fast JavaScript runtime"
-    },
-    "jq": {
-      "check": "command -v jq",
-      "install": "brew install jq",
-      "description": "JSON processor for shell scripts"
-    },
-    "rg": {
-      "check": "command -v rg",
-      "install": "brew install ripgrep",
-      "description": "Fast recursive search"
     }
   },
   "optional_integrations": {
