@@ -5,7 +5,7 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash(cat:*), Bash(which:*), Bash(c
 model: claude-sonnet-4-6
 ---
 
-Synchronize all derived files with the current state of commands and skills, then commit and push.
+Synchronize all derived files with the current state of commands, skills, hooks, helpers, and statusline scripts, then commit and push.
 
 ## Phase 1: Scan Current State
 
@@ -17,7 +17,7 @@ Use Glob to find all `commands/**/*.md` files recursively. For each file:
 2. Extract: `name`, `description`, `allowed-tools`, `model`, `argument-hint`
 3. Scan the body for:
    - Skill references: patterns like "Invoke the /X skill", "/X skill using the Skill tool", or Skill tool invocations → record as `requires_skills`
-   - External CLI tools: `openspec`, `npx`, `gh`, `npm`, `pnpm`, `grrr`, `bunx` → record as `requires_tools`
+   - External CLI tools: `openspec`, `npx`, `gh`, `npm`, `pnpm`, `grrr`, `bunx`, `trash`, `jq`, `bun`, `curl` → record as `requires_tools`
    - MCP server tools: `mcp__*` references → record as `optional_tools` with key `mcp:<server-name>`
 4. Derive the command key from the path relative to `commands/` without `.md` extension (e.g., `commands/git/commit.md` → `git/commit`)
 
@@ -33,6 +33,25 @@ Use Glob to find all `skills/*/SKILL.md` files. **Exclude** `skills/.system/`. F
 4. Check if the skill directory has subdirectories (e.g., `rules/`, `references/`) → record as `has_subdirs`
 5. The skill key is the directory name (e.g., `skills/commit/` → `commit`)
 
+### 1c. Discover infrastructure scripts
+
+Scan **all** shell scripts and source files in these directories for external tool dependencies:
+
+- `hooks/*.sh`
+- `helpers/*.sh`
+- `claude-statusline/*.sh`
+
+For each file, detect:
+
+- Direct command invocations (e.g., `jq`, `grrr`, `curl`, `bunx`, `claude`, `open`, `tput`)
+- `brew install` / `brew tap` references
+- `bunx -y <package>` / `npx <package>` patterns
+- `curl` / `fetch` calls to external APIs → record the API as a dependency
+- Environment variable reads (`$VAR_NAME`) that are API keys or runtime config
+- `open -b <bundle-id>` patterns → record the application as a dependency
+
+Record each tool with its source file path. These tools feed into the `external_tools` object in Phase 2 but do NOT create catalog `commands` or `skills` entries.
+
 ## Phase 2: Update `store/catalog.json`
 
 1. Read the current `store/catalog.json`
@@ -45,7 +64,7 @@ Use Glob to find all `skills/*/SKILL.md` files. **Exclude** `skills/.system/`. F
    - Maintain the existing order — append new categories at the end.
 4. Preserve the existing `bundles` object — but validate that all referenced command/skill keys still exist. If a bundle references a deleted item, **remove it from the bundle**. If a bundle references no items, **remove the bundle**.
 5. Check if new commands or skills were added that are not in any bundle — report them at the end so the user can decide whether to add them to bundles later.
-6. Rebuild the `external_tools` object by collecting all unique tool names from `requires_tools` across all commands and skills. For each tool, preserve the existing `check`, `install`, and `description` fields if the tool was already in the catalog. For new tools, use sensible defaults:
+6. Rebuild the `external_tools` object by collecting all unique tool names from `requires_tools` across all commands, skills, **and infrastructure scripts** (hooks, helpers, statusline from Phase 1c). For each tool, preserve the existing `check`, `install`, and `description` fields if the tool was already in the catalog. For new tools, use sensible defaults:
    - `check`: `command -v <tool>`
    - `install`: `brew install <tool>` (or `npm install -g <tool>` for npm packages)
    - `description`: infer from context

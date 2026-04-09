@@ -415,6 +415,36 @@
       "check": "command -v pnpm",
       "install": "npm install -g pnpm",
       "description": "Fast, disk-efficient Node.js package manager"
+    },
+    "trash": {
+      "check": "command -v trash",
+      "install": "brew install trash",
+      "description": "Safe file deletion (moves to Trash)"
+    },
+    "bun": {
+      "check": "command -v bun",
+      "install": "brew install bun",
+      "description": "Fast JavaScript runtime"
+    },
+    "jq": {
+      "check": "command -v jq",
+      "install": "brew install jq",
+      "description": "JSON processor for shell scripts"
+    },
+    "curl": {
+      "check": "command -v curl",
+      "install": "brew install curl",
+      "description": "HTTP client for API requests"
+    },
+    "grrr": {
+      "check": "command -v grrr",
+      "install": "brew install nicholaswilde/tap/growlrrr",
+      "description": "macOS notification CLI (growlrrr) used by the notify.sh hook"
+    },
+    "claude": {
+      "check": "command -v claude",
+      "install": "npm install -g @anthropic-ai/claude-code",
+      "description": "Claude Code CLI used by update-recent-work.sh for non-interactive summarization"
     }
   },
   "optional_integrations": {

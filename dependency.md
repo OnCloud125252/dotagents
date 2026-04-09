@@ -57,7 +57,7 @@ npm package that renders the Claude Code status line in the terminal.
 The Claude Code CLI itself. Used by hooks to invoke inner Claude sessions for summarization.
 
 - **Install:** `npm install -g @anthropic-ai/claude-code`
-- **Used by:** `hooks/update-recent-work.sh` (`claude -p --model sonnet`)
+- **Used by:** `hooks/update-recent-work.sh` (`claude -p --model haiku`)
 
 ---
 
