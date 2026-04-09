@@ -2,6 +2,8 @@
 /skills/playwright-skill/.temp-*.js
 /tmp
 
+/TODO.md
+
 # Claude Code
 /.claude/worktrees
 /.claude/.recent_work.lock
