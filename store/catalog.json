@@ -269,6 +269,14 @@
       "trigger": "When the user wants to finalize and archive a change after implementation is complete",
       "requires_tools": ["openspec"],
       "has_subdirs": false
+    },
+    "i18n": {
+      "name": "i18n",
+      "description": "Guidelines for updating translations or i18n keys. Triggers when working with locale files, translation keys, or internationalization tasks.",
+      "path": "skills/i18n",
+      "trigger": "When working with locale files, translation keys, or internationalization tasks",
+      "requires_tools": [],
+      "has_subdirs": false
     }
   },
   "bundles": {
@@ -318,12 +326,12 @@
     },
     "all-skills": {
       "label": "All Skills",
-      "description": "Every contextual skill (12 total)",
+      "description": "Every contextual skill (13 total)",
       "commands": [],
       "skills": [
         "commit", "readme", "docs-writer", "cli-output-style",
         "react-best-practices", "grafana-dashboards", "humanizer",
-        "find-skills",
+        "find-skills", "i18n",
         "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"
       ]
     },
@@ -342,7 +350,7 @@
       "skills": [
         "commit", "readme", "docs-writer", "cli-output-style",
         "react-best-practices", "grafana-dashboards", "humanizer",
-        "find-skills",
+        "find-skills", "i18n",
         "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"
       ]
     }

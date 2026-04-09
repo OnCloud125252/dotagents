@@ -20,7 +20,7 @@
 This repository is a ready-to-use `.claude` directory template. You can clone it and symlink (or copy) the pieces you need into your own `~/.claude` to get a fully configured Claude Code environment with:
 
 - **21 slash commands** for git workflows, PR automation, worktree management, and more
-- **12 skills** that trigger contextually during conversations
+- **13 skills** that trigger contextually during conversations
 - **3 hooks** for notifications and session persistence
 - **A custom status line** showing git state, working directory, and last prompt
 
@@ -77,6 +77,7 @@ Skills live in [`skills/`](./skills/), each in its own directory with a `SKILL.m
 | [`humanizer`](./skills/humanizer/) | Editing text to sound more natural |
 | [`openspec-*`](./skills/openspec-propose/) | Using the OpenSpec workflow |
 | [`find-skills`](./skills/find-skills/) | Looking for new capabilities |
+| [`i18n`](./skills/i18n/) | Working with locale files or translation keys |
 
 ## Hooks
 
