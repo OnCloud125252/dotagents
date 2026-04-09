@@ -105,7 +105,7 @@
       "description": "Guided workflow for updating documentation based on code changes. Analyzes diffs, identifies affected docs, and applies updates with confirmation.",
       "path": "commands/docs/update.md",
       "requires_skills": [],
-      "requires_tools": ["git"],
+      "requires_tools": ["git", "pnpm"],
       "model": null
     },
     "opsx/propose": {
@@ -230,14 +230,6 @@
       "requires_tools": [],
       "has_subdirs": false
     },
-    "i18n": {
-      "name": "i18n",
-      "description": "Guidelines for updating translations or i18n keys.",
-      "path": "skills/i18n",
-      "trigger": "When working with locale files, translation keys, or internationalization tasks",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
     "find-skills": {
       "name": "find-skills",
       "description": "Helps users discover and install agent skills when they ask questions like how do I do X or is there a skill that can...",
@@ -326,11 +318,11 @@
     },
     "all-skills": {
       "label": "All Skills",
-      "description": "Every contextual skill (13 total)",
+      "description": "Every contextual skill (12 total)",
       "commands": [],
       "skills": [
         "commit", "readme", "docs-writer", "cli-output-style",
-        "react-best-practices", "grafana-dashboards", "humanizer", "i18n",
+        "react-best-practices", "grafana-dashboards", "humanizer",
         "find-skills",
         "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"
       ]
@@ -349,7 +341,7 @@
       ],
       "skills": [
         "commit", "readme", "docs-writer", "cli-output-style",
-        "react-best-practices", "grafana-dashboards", "humanizer", "i18n",
+        "react-best-practices", "grafana-dashboards", "humanizer",
         "find-skills",
         "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"
       ]
@@ -380,6 +372,11 @@
       "check": "command -v openspec",
       "install": "npm install -g openspec",
       "description": "Structured change workflow CLI"
+    },
+    "pnpm": {
+      "check": "command -v pnpm",
+      "install": "npm install -g pnpm",
+      "description": "Fast, disk-efficient Node.js package manager"
     },
     "trash": {
       "check": "command -v trash",

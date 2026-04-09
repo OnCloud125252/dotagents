@@ -74,7 +74,6 @@ Skills live in [`skills/`](./skills/), each in its own directory with a `SKILL.m
 | [`cli-output-style`](./skills/cli-output-style/) | Writing shell scripts with terminal output |
 | [`react-best-practices`](./skills/react-best-practices/) | Working with React/Next.js code |
 | [`grafana-dashboards`](./skills/grafana-dashboards/) | Building monitoring dashboards |
-| [`claude-api`](./skills/claude-api/) | Code imports Anthropic SDK |
 | [`humanizer`](./skills/humanizer/) | Editing text to sound more natural |
 | [`openspec-*`](./skills/openspec-propose/) | Using the OpenSpec workflow |
 | [`find-skills`](./skills/find-skills/) | Looking for new capabilities |
