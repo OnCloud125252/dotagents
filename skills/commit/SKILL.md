@@ -1,3 +1,8 @@
+---
+name: commit
+description: Create a well-formatted git commit message based on the changes staged for commit. Follow best practices for commit message style and content.
+---
+
 # Commit Best Practices Skill
 
 When asked to create commits or work with git commits:

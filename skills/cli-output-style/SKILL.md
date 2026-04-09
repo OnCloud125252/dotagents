@@ -82,7 +82,7 @@ A divider draws a full-width line with an optional bracketed label — useful fo
 ```bash
 print_divider() {
   local color="${1:-$_CLI_PURPLE}" label="${2:-}"
-  local width="${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}"
+  local width="${COLUMNS:-$(tput cols </dev/tty 2>/dev/null || echo 80)}"
   if [[ -n "$label" ]]; then
     local padding=$((width - ${#label} - 6))
     local fill
@@ -95,6 +95,8 @@ print_divider() {
   fi
 }
 ```
+
+> **Why `</dev/tty`?** — `$COLUMNS` is a shell variable, not an environment variable, so child processes (git hooks, subshells, piped scripts) don't inherit it. Plain `tput cols` also fails when stdout isn't a TTY. Redirecting stdin from `/dev/tty` lets `tput` query the controlling terminal directly, giving the correct width even in non-interactive contexts. The `|| echo 80` fallback still covers truly headless environments (CI, cron).
 
 Output:
 ```

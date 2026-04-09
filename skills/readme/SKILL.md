@@ -7,8 +7,6 @@ description: Guidelines for writing and editing Plain package READMEs. Use this 
 
 Each top-level package directory (e.g., `plain-api/`) has a `README.md` symlink pointing to the actual README inside the package (e.g., `plain-api/plain/api/README.md`). **Only edit the README inside the package itself.**
 
-See [`plain-jobs/plain/jobs/README.md`](plain-jobs/plain/jobs/README.md) as a good example.
-
 ## Purpose
 
 The README answers: "How do I use this?" It gets users productive quickly and points them to code for deeper exploration. It is not a complete API reference.
