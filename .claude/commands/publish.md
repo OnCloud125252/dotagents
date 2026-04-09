@@ -36,15 +36,21 @@ Use Glob to find all `skills/*/SKILL.md` files. **Exclude** `skills/.system/`. F
 ## Phase 2: Update `store/catalog.json`
 
 1. Read the current `store/catalog.json`
-2. Rebuild the `commands` and `skills` objects from the scan results in Phase 1
-3. Preserve the existing `bundles` object — but validate that all referenced command/skill keys still exist. If a bundle references a deleted item, **remove it from the bundle**. If a bundle references no items, **remove the bundle**.
-4. Check if new commands or skills were added that are not in any bundle — report them at the end so the user can decide whether to add them to bundles later.
-5. Rebuild the `external_tools` object by collecting all unique tool names from `requires_tools` across all commands and skills. For each tool, preserve the existing `check`, `install`, and `description` fields if the tool was already in the catalog. For new tools, use sensible defaults:
+2. Rebuild the `commands` and `skills` objects from the scan results in Phase 1. Each command must include a `category` field — derive it from the command key prefix (e.g., `git/commit` → `"git"`, `pr/create` → `"pr"`). Root-level commands without a prefix (e.g., `search`, `auto-resolve`) get category `"standalone"`.
+3. Update the `categories` array:
+   - Collect all unique `category` values from the rebuilt commands.
+   - Preserve existing category entries (keep their `label` and `note` fields).
+   - Add new categories for any newly discovered prefixes with `"label"` set to the capitalized prefix and `"note": null`.
+   - Remove categories that no longer have any commands.
+   - Maintain the existing order — append new categories at the end.
+4. Preserve the existing `bundles` object — but validate that all referenced command/skill keys still exist. If a bundle references a deleted item, **remove it from the bundle**. If a bundle references no items, **remove the bundle**.
+5. Check if new commands or skills were added that are not in any bundle — report them at the end so the user can decide whether to add them to bundles later.
+6. Rebuild the `external_tools` object by collecting all unique tool names from `requires_tools` across all commands and skills. For each tool, preserve the existing `check`, `install`, and `description` fields if the tool was already in the catalog. For new tools, use sensible defaults:
    - `check`: `command -v <tool>`
    - `install`: `brew install <tool>` (or `npm install -g <tool>` for npm packages)
    - `description`: infer from context
-6. Preserve the `optional_integrations` object — update `used_by` lists based on current `optional_tools` references.
-7. Write the updated `store/catalog.json`
+7. Preserve the `optional_integrations` object — update `used_by` lists based on current `optional_tools` references.
+8. Write the updated `store/catalog.json`
 
 ### Validation
 
@@ -79,11 +85,11 @@ Read the current `README.md` and check if it needs updates based on the scan res
 
 ## Phase 5: Commit
 
-Invoke the `/git:commit` command using the Command tool.
+Invoke the `/git:commit` command using the Skill tool.
 
 ## Phase 6: Push
 
-Invoke the `/git:push` command using the Command tool.
+Invoke the `/git:push` command using the Skill tool.
 
 ## Summary
 
