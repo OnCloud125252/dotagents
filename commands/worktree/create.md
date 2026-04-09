@@ -3,7 +3,7 @@ name: Create Worktree
 description: Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.
 argument-hint: <branch-name | Linear issue ID | Linear issue URL>
 allowed-tools: Bash(git *), Bash(mkdir *), mcp__linear-server__get_issue
-model: claude-sonnet-4-6
+model: claude-haiku-4-5
 ---
 
 # Worktree from Branch or Linear Issue

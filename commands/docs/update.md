@@ -32,6 +32,7 @@ Look for changes that affect public APIs, configuration, components, or user-fac
 ### Step 3: Apply updates with confirmation
 
 For each change:
+
 1. Show the user what you plan to change
 2. Wait for confirmation before editing
 3. Apply the edit
@@ -40,6 +41,7 @@ For each change:
 ## Validation Checklist
 
 Before committing documentation changes:
+
 - [ ] Frontmatter has required fields
 - [ ] Code blocks have proper attributes
 - [ ] Related links point to valid paths

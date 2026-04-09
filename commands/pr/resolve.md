@@ -21,6 +21,7 @@ allowed-tools:
 Automatically fetch unresolved review threads on a GitHub PR, apply fixes, reply with the commit SHA, resolve threads via GraphQL, and post a summary comment.
 
 Supports two modes:
+
 - **All comments** — pass a PR number or PR URL → addresses every unresolved thread.
 - **Single comment** — pass a review comment URL → addresses only that one thread.
 
@@ -45,9 +46,11 @@ If the argument does not match any of the above, ask the user for a valid PR num
 ### 1b. Detect the repository
 
 If `OWNER/REPO` was not already extracted from a URL:
+
 ```bash
 gh repo view --json nameWithOwner -q .nameWithOwner
 ```
+
 → store as `OWNER/REPO`.
 
 ### 1c. Confirm the PR and check out the branch
@@ -57,6 +60,7 @@ gh pr view <PR_NUMBER> --repo <OWNER>/<REPO> --json state,headRefName -q '.state
 ```
 
 Check out the PR branch and pull latest:
+
 ```bash
 git fetch origin <BRANCH>
 git checkout <BRANCH>
@@ -102,6 +106,7 @@ gh api graphql -f query='
 - **Mode `single`** — find the thread whose comments contain a `databaseId` matching `COMMENT_ID`. If that thread is already resolved, inform the user and exit. If no thread matches, inform the user the comment was not found.
 
 For each matching thread extract:
+
 - `threadId` — the node ID (for GraphQL `resolveReviewThread`)
 - `databaseId` — the first comment's integer ID (for REST reply)
 - `body` — the reviewer's comment text
@@ -130,6 +135,7 @@ For each unresolved thread:
 5. Group valid actionable threads by file for cleaner commits.
 
 Present the plan to the user before proceeding. List each thread with:
+
 - File and line
 - Reviewer comment (abbreviated)
 - **Verdict**: one of `Will fix`, `Disagree — will reply with rationale`, or `Question — will reply with answer`
@@ -144,18 +150,25 @@ Present the plan to the user before proceeding. List each thread with:
 1. Edit the files to address all actionable threads.
 2. **Verify** each change by re-reading the modified files.
 3. Stage specific files (never `git add -A`):
+
    ```bash
    git add <file1> <file2> ...
    ```
+
 4. Commit with a descriptive message referencing the PR:
+
    ```bash
    git commit -m "fix: address review feedback from PR #<PR_NUMBER>"
    ```
+
 5. Push to the remote:
+
    ```bash
    git push origin <BRANCH>
    ```
+
 6. Record the commit SHA:
+
    ```bash
    git rev-parse --short HEAD
    ```
@@ -169,6 +182,7 @@ For **every** thread addressed in this run (fixed, disagreed, or answered):
 ### 5a. Reply via REST
 
 Choose the reply body based on the thread's verdict:
+
 - **Will fix** → `"Fixed in <SHORT_SHA>."`
 - **Disagree** → the rationale explaining why the current code is correct (as approved by the user in Step 3)
 - **Question** → the answer or acknowledgement (as approved by the user in Step 3)
@@ -195,6 +209,7 @@ gh api graphql -f query='
 Re-fetch the review threads (same query as Step 2). Confirm all addressed threads show `isResolved: true`.
 
 Report any threads that:
+
 - Failed to resolve (log the error)
 - Were explicitly skipped by the user during plan approval
 - Remain unresolved for other reasons
