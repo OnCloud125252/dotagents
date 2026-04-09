@@ -1,0 +1,120 @@
+description = "Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear when given an issue ID/URL."
+
+prompt = """
+---
+name: Create Worktree
+argument-hint: <branch-name | Linear issue ID | Linear issue URL>
+---
+
+# Worktree from Branch or Linear Issue
+
+Create a git worktree with a new branch. Accepts either a direct branch name or a Linear issue identifier.
+
+**Announce at start:** "Setting up worktree..."
+
+## Input Parsing
+
+The argument can be one of:
+
+| Input Format | Example | Action |
+|---|---|---|
+| Linear URL | `https://linear.app/zeabur/issue/SEI-381/...` | Extract issue ID (`SEI-381`), fetch from Linear |
+| Linear issue ID | `SEI-381` | Fetch from Linear |
+| Branch name | `feat/my-feature` | Use directly |
+
+### Detecting Linear issue IDs
+
+A Linear issue ID matches the pattern: 2-5 uppercase letters, a hyphen, then digits (e.g., `SEI-381`, `PLA-1004`).
+
+Check both the raw argument and any ID extracted from a URL.
+
+## Steps
+
+### 1. Resolve Branch Name
+
+**If the input is a Linear issue (ID or URL):**
+
+```
+Fetch the issue details from Linear using the issue ID to get:
+- title (for display)
+- gitBranchName (for the branch)
+- status, assignee, labels (for summary)
+```
+
+Use the `gitBranchName` field from the response as the branch name.
+
+**If the input is a plain branch name:**
+
+Use it directly. No Linear lookup needed.
+
+### 2. Derive Worktree Directory Name
+
+Create a short directory name from the branch:
+
+- If branch contains an issue ID (e.g., `sei-381`), use: `<issue-id>-<first-few-keywords>`
+- Otherwise, use the last path segment of the branch name, truncated to ~40 chars
+
+Examples:
+
+- `oncloud/sei-381-implement-blacklist-management-in-admin-panel` → `sei-381-blacklist-management`
+- `feat/add-user-search` → `add-user-search`
+
+### 3. Determine Worktree Base Directory
+
+Priority order:
+
+1. Check CLAUDE.md for a worktree directory preference (e.g., `.claude/worktrees`)
+2. Check if `.claude/worktrees`, `.worktrees`, or `worktrees` exists
+3. Default to `.claude/worktrees`
+
+Ensure the directory exists (`mkdir -p`).
+
+### 4. Check if Branch Already Exists
+
+```bash
+git branch --list "<branch-name>"
+git worktree list
+```
+
+- If the branch and worktree already exist, report the existing path and stop.
+- If the branch exists but no worktree, create worktree from existing branch:
+  `git worktree add <path> <branch-name>` (no `-b` flag).
+- If neither exists, create both:
+  `git worktree add <path> -b <branch-name>`
+
+### 5. Verify
+
+```bash
+cd <worktree-path> && git branch --show-current && pwd
+```
+
+### 6. Report Summary
+
+**If from Linear issue, display:**
+
+| Detail | Value |
+|---|---|
+| **Issue** | `[<ID>](<url>)` — `<title>` |
+| **Status** | `<status>` |
+| **Branch** | `<branch-name>` |
+| **Worktree** | `<relative-path>` |
+
+**If from branch name, display:**
+
+| Detail | Value |
+|---|---|
+| **Branch** | `<branch-name>` |
+| **Worktree** | `<relative-path>` |
+
+## Error Handling
+
+- **Linear issue not found:** Report the error, ask user to provide a branch name instead.
+- **Branch name conflict:** If `-b` fails because the branch exists, retry without `-b`.
+- **Worktree path already in use:** Append a number suffix (e.g., `-2`).
+
+## Do NOT
+
+- Run `npm install`, `pnpm install`, or any dependency installation
+- Run tests
+- Change the working directory of the outer session
+"""
