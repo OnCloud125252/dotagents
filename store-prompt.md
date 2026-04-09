@@ -9,10 +9,12 @@ Follow these phases exactly. Be concise in your output. Use AskUserQuestion for 
 ## Phase 1: Fetch the Catalog
 
 1. Create a temp directory and clone the repo:
+
    ```
    TMPDIR=$(mktemp -d)
    git clone --depth 1 https://github.com/OnCloud125252/dotagents.git "$TMPDIR/dotagents"
    ```
+
    If the clone fails, inform the user and stop.
 
 2. Read the catalog file at `$TMPDIR/dotagents/store/catalog.json`. Parse its contents — this is the source of truth for everything below.
@@ -21,80 +23,55 @@ Follow these phases exactly. Be concise in your output. Use AskUserQuestion for 
 
 ---
 
-## Phase 2: Present the Catalog
+## Phase 2: Detect Already Installed
 
-Display the catalog to the user in this format:
+Before showing the catalog, scan the user's existing setup:
+
+1. List files in `~/.claude/commands/` recursively (if the directory exists). For each `.md` file found, derive its command key (e.g., `~/.claude/commands/git/commit.md` → `git/commit`).
+2. List directories in `~/.claude/skills/` (if it exists). Each subdirectory name is a skill key (e.g., `~/.claude/skills/commit` → `commit`).
+3. Match found keys against catalog.json entries. Mark matches as "installed".
+
+---
+
+## Phase 3: Present the Catalog
+
+**Generate the display dynamically from catalog.json.** Do NOT hardcode item names or numbers.
+
+### Display format
 
 ```
 ========================================
   dotagents Store
 ========================================
 
-COMMANDS (21)
+COMMANDS (<total count>)
 ─────────────────────────────────────────
-  Git
-   1. git:commit      Create commits for recent changes
-   2. git:pull        Pull and resolve conflicts
-   3. git:push        Push with conflict resolution
-   4. git:changelog   Generate user-facing changelog
-   5. git:version     Semantic version bump via npm
-   6. git:issue       Create GitHub issues with labels
+  <Category Label> [<note if present>]
+   <n>. <namespace:name>    <description>         [installed]
+   ...
 
-  PR
-   7. pr:create       Push and create GitHub PR
-   8. pr:resolve      Fix PR review threads
+  <Next Category>
+   ...
 
-  Worktree
-   9. worktree:create   Create worktree from branch/issue
-  10. worktree:merge    Merge worktree branch locally
-  11. worktree:cleanup  Remove worktree and branch
-
-  Docs
-  12. docs:agentsmd    Create/update AGENTS.md
-  13. docs:update      Update docs from code changes
-
-  OPSX [requires: openspec CLI]
-  14. opsx:propose     Propose a new change
-  15. opsx:apply       Implement tasks from a change
-  16. opsx:explore     Think through ideas and problems
-  17. opsx:archive     Archive completed changes
-
-  Code
-  18. code:react-doctor  Scan React codebase (0-100)
-
-  Standalone
-  19. search           Web search with citations
-  20. auto-resolve     Run command until exit 0
-  21. organize-dir     Archive old subdirectories
-
-SKILLS (13)
+SKILLS (<total count>)
 ─────────────────────────────────────────
-  22. commit              Activates when creating git commits
-  23. readme              Activates when editing READMEs
-  24. docs-writer         Activates when working on docs
-  25. cli-output-style    Activates when writing shell scripts
-  26. react-best-practices  64 React/Next.js optimization rules
-  27. grafana-dashboards  Activates when building dashboards
-  28. humanizer           Activates when editing text for naturalness
-  29. i18n                Activates when working with translations
-  30. find-skills         Activates when looking for new capabilities
-  31. openspec-propose    OpenSpec propose workflow
-  32. openspec-apply-change  OpenSpec apply workflow
-  33. openspec-explore    OpenSpec explore workflow
-  34. openspec-archive-change  OpenSpec archive workflow
+  <n>. <skill-name>         <trigger>             [installed]
+  ...
 
 BUNDLES
 ─────────────────────────────────────────
-  A. Essential Git Kit    git commands + commit skill (1-6, 22)
-  B. PR Workflow          PR commands (7-8)
-  C. Worktree             Worktree commands (9-11)
-  D. Documentation        Docs commands + writing skills (12-13, 23-24)
-  E. OpenSpec Suite       OPSX commands + skills (14-17, 31-34)
-  F. All Commands         Items 1-21
-  G. All Skills           Items 22-34
-  H. Full Suite           Everything
+  A. <bundle label>    <bundle description>
+  B. ...
 ========================================
 ```
+
+### Generation rules
+
+1. **Commands**: Read the `categories` array from catalog.json — iterate in order. For each category, find commands whose `category` field matches the category `key`. Display the category `label` as a subheading. If the category has a `note`, append it in brackets (e.g., `OPSX [requires: openspec CLI]`).
+2. **Skills**: List all skills from catalog.json in order. Show `trigger` as the description.
+3. **Numbering**: Number items sequentially across the entire catalog — commands first (starting at 1), then skills (continuing from the last command number).
+4. **Installed marker**: Append `[installed]` to any item detected in Phase 2.
+5. **Bundles**: Assign letters A, B, C... to each bundle from catalog.json. Show the `label` and `description`. Include the item numbers in parentheses.
 
 Then use **AskUserQuestion** to ask:
 > What would you like to install? Enter numbers (e.g. 1,3,5), bundle letters (e.g. A,B), or "all".
@@ -103,19 +80,22 @@ Allow multiple rounds — after each selection, ask "Anything else to add? (or t
 
 ---
 
-## Phase 3: Resolve Dependencies
+## Phase 4: Resolve Dependencies
 
 After the user confirms their selections:
 
-### 3a. Internal cross-dependencies
+### 4a. Internal cross-dependencies
+
 For each selected command, check the `requires_skills` field in catalog.json. If the required skill is NOT already in the user's selections, **automatically add it** and inform the user:
 
 > Auto-added skill: `commit` (required by `git:commit` command)
 
-### 3b. External tool dependencies
+### 4b. External tool dependencies
+
 Collect all `requires_tools` from every selected item. For each unique tool, look up its `check` command in the `external_tools` section of catalog.json and run it.
 
 Report results:
+
 - **Installed**: tool (version)
 - **Missing**: tool — install with: `<install command>`
 
@@ -124,7 +104,8 @@ If any tools are missing, ask the user:
 
 Only run install commands if the user confirms.
 
-### 3c. Optional integrations
+### 4c. Optional integrations
+
 If any selected item has `optional_tools` (e.g., `mcp:linear`), mention it as informational:
 
 > Optional: `pr:create` and `worktree:create` can use the Linear MCP server for issue-based branch naming. This requires configuring the Linear MCP server in Claude Code settings.
@@ -133,9 +114,9 @@ Do NOT block installation on optional tools.
 
 ---
 
-## Phase 4: Install
+## Phase 5: Install
 
-### 4a. Pre-flight checks
+### 5a. Pre-flight checks
 
 1. Check if `~/.claude/commands` exists. If it's a **symlink**, warn the user:
    > `~/.claude/commands` is a symlink to `<target>`. Installing here will modify the symlink target. Options: (a) Install to symlink target, (b) Replace symlink with a directory, (c) Cancel
@@ -144,9 +125,10 @@ Do NOT block installation on optional tools.
 2. If `~/.claude/commands` doesn't exist, create it: `mkdir -p ~/.claude/commands`
 3. Same checks for `~/.claude/skills` if skills are being installed.
 
-### 4b. Install commands
+### 5b. Install commands
 
 For each selected command (keyed like `git/commit` in catalog.json):
+
 1. Read the `path` field (e.g., `commands/git/commit.md`)
 2. Determine the destination: `~/.claude/<path>` (e.g., `~/.claude/commands/git/commit.md`)
 3. Create subdirectory if needed: `mkdir -p ~/.claude/commands/git/`
@@ -156,9 +138,10 @@ For each selected command (keyed like `git/commit` in catalog.json):
    - If **different**: ask user via AskUserQuestion: "File already exists and differs: `~/.claude/commands/git/commit.md`. Overwrite / Skip / Backup (rename existing to .backup)?"
 5. Copy the file: `cp "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
 
-### 4c. Install skills
+### 5c. Install skills
 
 For each selected skill (keyed like `commit` in catalog.json):
+
 1. Read the `path` field (e.g., `skills/commit`)
 2. Destination: `~/.claude/<path>` (e.g., `~/.claude/skills/commit`)
 3. If the destination directory already exists:
@@ -169,7 +152,7 @@ For each selected skill (keyed like `commit` in catalog.json):
 
 ---
 
-## Phase 5: Usage Guide
+## Phase 6: Usage Guide
 
 After installation, show a summary grouped by what was installed:
 
@@ -181,8 +164,6 @@ After installation, show a summary grouped by what was installed:
 COMMANDS INSTALLED
 ─────────────────────────────────────────
   /git:commit     — Create commits for recent changes
-  /git:pull       — Pull and resolve conflicts
-  /pr:create      — Push and create GitHub PR
   ...
 
   Usage: Type the slash command in Claude Code (e.g. /git:commit)
@@ -190,11 +171,15 @@ COMMANDS INSTALLED
 SKILLS INSTALLED
 ─────────────────────────────────────────
   commit          — Activates automatically when creating git commits
-  readme          — Activates automatically when editing READMEs
   ...
 
   Skills activate automatically based on context.
   No slash command needed.
+
+SKIPPED (already installed)
+─────────────────────────────────────────
+  /git:pull       — identical version already present
+  ...
 
 NOTES
 ─────────────────────────────────────────
@@ -205,9 +190,10 @@ NOTES
 
 ---
 
-## Phase 6: Cleanup
+## Phase 7: Cleanup
 
 Remove the temp clone:
+
 ```
 rm -rf "$TMPDIR"
 ```
