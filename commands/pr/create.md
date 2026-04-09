@@ -2,8 +2,8 @@
 name: Create Pull Request
 description: Push current branch and create a GitHub pull request with smart defaults
 argument-hint: [--base main] [--draft] [--title "title"]
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git branch:*), Bash(git push:*), Bash(git rev-parse:*), Bash(gh pr create:*), Bash(gh pr view:*), Bash(pbcopy)
-model: claude-sonnet-4-6
+allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git branch:*), Bash(git push:*), Bash(git rev-parse:*), Bash(gh pr create:*), Bash(gh pr view:*), Bash(pbcopy), mcp__linear-server__get_issue
+model: claude-haiku-4-5
 ---
 
 Create a GitHub pull request for the current branch.
@@ -26,26 +26,39 @@ Parse `$ARGUMENTS` to extract:
    - `git diff main...HEAD --stat` — summarize changed files
    - `git branch -vv | grep '^\*'` — check remote tracking
 
-2. **Safety Checks**:
+2. **Detect Linear Issue** (from the branch name):
+   - Check if the branch name contains a Linear issue ID — a segment matching 2-5 letters, a hyphen, then digits (e.g., `sei-381`, `PLA-1004`). Match case-insensitively.
+   - If found, uppercase it (e.g., `sei-381` → `SEI-381`) and call `mcp__linear-server__get_issue` to fetch the issue's `title`, `identifier`, and `url`.
+   - If no issue ID is found in the branch name, or the fetch fails, skip this step and proceed without Linear context.
+
+3. **Safety Checks**:
    - If there are uncommitted changes, warn the user and ask whether to proceed
    - If on `main` or `master`, refuse to create PR from the base branch
    - If no commits ahead of base, inform user there's nothing to PR
 
-3. **Push if Needed**:
+4. **Push if Needed**:
    - If branch has no upstream or is ahead of remote, push with `-u origin <branch>`
    - If `--no-push` is set, skip this step
 
-4. **Analyze Changes**:
+5. **Analyze Changes**:
    - Review ALL commits on the branch (`git log main..HEAD`), not just the latest
    - Review the full diff (`git diff main...HEAD`) to understand scope
    - Determine change type: feature, fix, refactor, docs, chore, etc.
 
-5. **Generate PR Content**:
-   - **Title**: Short (under 70 chars), prefixed with type (e.g., `feat:`, `fix:`, `docs:`)
-     - If `--title` provided, use that instead
+6. **Generate PR Content**:
+   - **Title**: Short (under 70 chars), prefixed with type.
+     - If `--title` provided, use that instead (skip all generation below)
+     - If a Linear issue was fetched: `<type>(<ISSUE-ID>): <Linear issue title>`
+       - Example: `feat(SEI-381): Implement blacklist management`
+       - The type prefix (`feat`, `fix`, etc.) is still determined from commit analysis
+       - Shorten the Linear issue title if needed to stay under 70 chars
+     - If no Linear issue: `<type>: <summary from commits>` (existing behavior)
    - **Body**: Use this format:
 
    ```
+   ## Linear Issue <!-- Only if a Linear issue was fetched -->
+   [<ISSUE-ID>](<issue url>) — <issue title>
+
    ## Summary
    <2-4 bullet points describing key changes>
 
@@ -53,14 +66,15 @@ Parse `$ARGUMENTS` to extract:
    <Bulleted checklist of how to verify the changes>
    ```
 
-6. **Create PR**:
+   Omit the `## Linear Issue` section entirely if no Linear issue was detected.
+
+7. **Create PR**:
    - Use `gh pr create` with a HEREDOC for the body
    - Add `--draft` flag if requested
    - Set `--base` to the specified base branch
 
-7. **Output**:
+8. **Output**:
    - Display the PR URL
-   - Copy URL to clipboard using `pbcopy`
 
 ### Important Rules
 

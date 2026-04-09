@@ -1,0 +1,223 @@
+---
+name: Merge Worktree
+description: Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.
+argument-hint: "<source> [target] [--squash | --rebase | --merge]"
+allowed-tools: Bash(git *), AskUserQuestion
+model: claude-haiku-4-5
+---
+
+# Merge Worktree Branch Locally
+
+Merge a worktree's feature branch into a target branch locally, without going through a pull request. This command only merges — it does NOT remove worktrees or delete branches. Use `/worktree.cleanup` separately for that.
+
+**Announce at start:** "Preparing to merge worktree..."
+
+## Arguments
+
+Parse `$ARGUMENTS` to extract positional args first, then flags:
+
+- **1st positional** (`<source>`): Worktree name, directory name, path, or branch name (optional — prompts if omitted)
+- **2nd positional** (`[target]`): Target branch to merge into (optional — defaults to the repository's default branch, usually `main`)
+- **--squash** or **-s**: Squash all commits into one (default if no strategy specified)
+- **--rebase** or **-r**: Rebase commits onto target
+- **--merge** or **-m**: Regular merge commit (preserves branch history)
+
+Default strategy is **squash**.
+
+### Resolve Default Branch
+
+If no target is given, detect the default branch:
+
+```bash
+git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
+```
+
+If that fails, fall back to `main`. Store the result as `<target-branch>`.
+
+### Examples
+
+| Command | Source | Target |
+|---|---|---|
+| `/worktree.merge a b` | `a` | `b` |
+| `/worktree.merge a` | `a` | default branch (`main`) |
+| `/worktree.merge a develop --rebase` | `a` | `develop` |
+| `/worktree.merge` | (ask user) | default branch (`main`) |
+
+## Steps
+
+### 1. List Worktrees & Resolve Source
+
+```bash
+git worktree list
+```
+
+**If no source argument given:** Display the worktree list (excluding the main worktree) and ask the user which one to merge.
+
+**If source argument given:** Match against:
+
+1. Worktree directory name (e.g., `sei-381-blacklist-management`)
+2. Full or partial path
+3. Branch name (e.g., `feat/my-feature`)
+
+If no match, report the error and stop.
+
+**Validate target branch exists:**
+
+```bash
+git rev-parse --verify <target-branch>
+```
+
+If the target branch does not exist, report the error and stop.
+
+### 2. Gather Branch Context
+
+Run these in parallel:
+
+```bash
+# Branch name of the worktree
+git -C <worktree-path> branch --show-current
+
+# Commits unique to this branch (ahead of target)
+git rev-list --count <target-branch>..<branch-name>
+
+# One-line log of unique commits
+git log --oneline <target-branch>..<branch-name>
+
+# Check for uncommitted changes in worktree
+git -C <worktree-path> status --short
+
+# Check target branch is clean (if it has a worktree, check that; otherwise check current)
+git status --short
+
+# Current target position
+git log --oneline -1 <target-branch>
+```
+
+### 3. Pre-Merge Checks
+
+Present a summary:
+
+| Detail | Value |
+|---|---|
+| **Source branch** | `<branch-name>` |
+| **Target branch** | `<target-branch>` |
+| **Worktree** | `<worktree-path>` |
+| **Commits ahead** | `<count>` |
+| **Worktree status** | Clean / Dirty |
+| **Target status** | Clean / Dirty |
+| **Strategy** | Squash / Rebase / Merge |
+
+**Block on these conditions:**
+
+- **Branch has 0 commits ahead of target:** Nothing to merge. Inform user and stop.
+- **Worktree is dirty (uncommitted changes):** Warn and ask the user to commit or stash first. Do NOT proceed.
+- **Target branch worktree is dirty:** Warn and ask user to commit or stash changes first. Do NOT proceed.
+
+**Ask for confirmation** before proceeding with the merge.
+
+### 4. Ensure Target is Up to Date
+
+```bash
+# Fetch to know remote state, but don't fail if no remote
+git fetch origin <target-branch> 2>/dev/null || true
+```
+
+If `<target-branch>` is behind `origin/<target-branch>`, inform the user and ask whether to pull first or proceed anyway.
+
+### 5. Perform Merge
+
+#### Strategy: Squash (default)
+
+```bash
+git checkout <target-branch>
+git merge --squash <branch-name>
+```
+
+Then create the commit. The commit message should be:
+
+- **Single commit on branch:** Use that commit's message as-is
+- **Multiple commits:** Combine into a summary. Format:
+
+  ```
+  <type>: <concise summary of the branch's changes>
+
+  Squashed from <branch-name> (<N> commits):
+  - <commit message 1>
+  - <commit message 2>
+  - ...
+  ```
+
+```bash
+git commit -m "<message>"
+```
+
+#### Strategy: Rebase
+
+```bash
+git rebase <target-branch> <branch-name>
+git checkout <target-branch>
+git merge --ff-only <branch-name>
+```
+
+If rebase has conflicts, abort and inform the user:
+
+```bash
+git rebase --abort
+```
+
+#### Strategy: Merge
+
+```bash
+git checkout <target-branch>
+git merge --no-ff <branch-name> -m "merge: <branch-name> into <target-branch>"
+```
+
+### 6. Handle Conflicts
+
+If any merge strategy produces conflicts:
+
+1. Report which files have conflicts
+2. Abort the merge to restore clean state:
+
+   ```bash
+   git merge --abort   # for merge/squash
+   git rebase --abort  # for rebase
+   ```
+
+3. Inform the user they need to resolve conflicts manually or try a different strategy
+4. Do NOT attempt automatic conflict resolution
+
+### 7. Verify
+
+After successful merge:
+
+```bash
+git log --oneline -5 <target-branch>
+```
+
+Show the user the resulting `<target-branch>` history.
+
+### 8. Report
+
+```
+Merged: <branch-name> → <target-branch> (<strategy>)
+Commits: <N> commits merged
+```
+
+Suggest the user can run `/worktree.cleanup` to remove the worktree and branch if desired.
+
+## Safety
+
+- **ALWAYS confirm** before performing the merge
+- **ALWAYS check** for uncommitted changes in both worktree and target branch
+- **NEVER force-merge** or auto-resolve conflicts
+- **NEVER proceed** with a dirty worktree
+- **ABORT cleanly** on conflicts — leave the repo in its original state
+
+## Do NOT
+
+- Remove worktrees, delete branches, or clean up anything — use `/worktree.cleanup` for that
+- Push to remote (this is a local-only operation)
+- Run tests or install dependencies
+- Modify files in the worktree
+- Change the working directory of the outer session permanently
