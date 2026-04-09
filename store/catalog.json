@@ -1,0 +1,412 @@
+{
+  "version": 1,
+  "repo": "https://github.com/OnCloud125252/dotagents.git",
+  "commands": {
+    "git/commit": {
+      "name": "Create Commits",
+      "description": "Create commits for recent changes. Multiple commits are allowed for logical grouping.",
+      "path": "commands/git/commit.md",
+      "requires_skills": ["commit"],
+      "requires_tools": ["git"],
+      "model": "claude-sonnet-4-6"
+    },
+    "git/pull": {
+      "name": "Pull",
+      "description": "Run git pull and resolve issues if there's any output from git hook, and ask user how to resolve conflicts.",
+      "path": "commands/git/pull.md",
+      "requires_skills": [],
+      "requires_tools": ["git"],
+      "model": "claude-sonnet-4-6"
+    },
+    "git/push": {
+      "name": "Push",
+      "description": "Run git push and resolve issues if there's any output from git hook, and ask user how to resolve conflicts.",
+      "path": "commands/git/push.md",
+      "requires_skills": [],
+      "requires_tools": ["git"],
+      "model": "claude-haiku-4-5"
+    },
+    "git/changelog": {
+      "name": "Changelog Generator",
+      "description": "Generate a user-facing changelog of new features and bug fixes since a commit.",
+      "path": "commands/git/changelog.md",
+      "requires_skills": [],
+      "requires_tools": ["git"],
+      "model": "claude-sonnet-4-6"
+    },
+    "git/version": {
+      "name": "Version",
+      "description": "Analyze git changes and create a new version using npm version based on conventional commits.",
+      "path": "commands/git/version.md",
+      "requires_skills": [],
+      "requires_tools": ["git", "npm"],
+      "model": "claude-sonnet-4-6"
+    },
+    "git/issue": {
+      "name": "GitHub Issue Creator",
+      "description": "Create a GitHub issue with intelligent label detection and optional template support.",
+      "path": "commands/git/issue.md",
+      "requires_skills": [],
+      "requires_tools": ["gh"],
+      "model": "claude-sonnet-4-6"
+    },
+    "pr/create": {
+      "name": "Create Pull Request",
+      "description": "Push current branch and create a GitHub pull request with smart defaults.",
+      "path": "commands/pr/create.md",
+      "requires_skills": [],
+      "requires_tools": ["git", "gh"],
+      "optional_tools": ["mcp:linear"],
+      "model": "claude-haiku-4-5"
+    },
+    "pr/resolve": {
+      "name": "Resolve PR Reviews",
+      "description": "Fetch unresolved PR review threads, fix the issues, reply with commit SHA, resolve threads via GraphQL, and post a summary comment.",
+      "path": "commands/pr/resolve.md",
+      "requires_skills": [],
+      "requires_tools": ["git", "gh"],
+      "model": null
+    },
+    "worktree/create": {
+      "name": "Create Worktree",
+      "description": "Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.",
+      "path": "commands/worktree/create.md",
+      "requires_skills": [],
+      "requires_tools": ["git"],
+      "optional_tools": ["mcp:linear"],
+      "model": "claude-haiku-4-5"
+    },
+    "worktree/merge": {
+      "name": "Merge Worktree",
+      "description": "Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.",
+      "path": "commands/worktree/merge.md",
+      "requires_skills": [],
+      "requires_tools": ["git"],
+      "model": "claude-haiku-4-5"
+    },
+    "worktree/cleanup": {
+      "name": "Cleanup Worktree",
+      "description": "Remove a git worktree and optionally delete its branch. Lists worktrees if no argument given.",
+      "path": "commands/worktree/cleanup.md",
+      "requires_skills": [],
+      "requires_tools": ["git"],
+      "model": "claude-haiku-4-5"
+    },
+    "docs/agentsmd": {
+      "name": "Create or update AGENTS.md",
+      "description": "Create, update, or refactor AGENTS.md with progressive disclosure principles.",
+      "path": "commands/docs/agentsmd.md",
+      "requires_skills": [],
+      "requires_tools": [],
+      "model": "claude-sonnet-4-6"
+    },
+    "docs/update": {
+      "name": "Update Docs",
+      "description": "Guided workflow for updating documentation based on code changes. Analyzes diffs, identifies affected docs, and applies updates with confirmation.",
+      "path": "commands/docs/update.md",
+      "requires_skills": [],
+      "requires_tools": ["git"],
+      "model": null
+    },
+    "opsx/propose": {
+      "name": "OPSX: Propose",
+      "description": "Propose a new change - create it and generate all artifacts in one step.",
+      "path": "commands/opsx/propose.md",
+      "requires_skills": ["openspec-propose"],
+      "requires_tools": ["openspec"],
+      "model": null
+    },
+    "opsx/apply": {
+      "name": "OPSX: Apply",
+      "description": "Implement tasks from an OpenSpec change (Experimental).",
+      "path": "commands/opsx/apply.md",
+      "requires_skills": ["openspec-apply-change"],
+      "requires_tools": ["openspec"],
+      "model": null
+    },
+    "opsx/explore": {
+      "name": "OPSX: Explore",
+      "description": "Enter explore mode - think through ideas, investigate problems, clarify requirements.",
+      "path": "commands/opsx/explore.md",
+      "requires_skills": ["openspec-explore"],
+      "requires_tools": ["openspec"],
+      "model": null
+    },
+    "opsx/archive": {
+      "name": "OPSX: Archive",
+      "description": "Archive a completed change in the experimental workflow.",
+      "path": "commands/opsx/archive.md",
+      "requires_skills": ["openspec-archive-change"],
+      "requires_tools": ["openspec"],
+      "model": null
+    },
+    "code/react-doctor": {
+      "name": "React Doctor",
+      "description": "Scan React codebase for security, performance, correctness, and architecture issues. Outputs a 0-100 score with actionable diagnostics.",
+      "path": "commands/code/react-doctor.md",
+      "requires_skills": [],
+      "requires_tools": ["npx"],
+      "model": null
+    },
+    "search": {
+      "name": "Agent Search",
+      "description": "Perform web searches and return summarized results with citations.",
+      "path": "commands/search.md",
+      "requires_skills": [],
+      "requires_tools": [],
+      "model": "claude-sonnet-4-6"
+    },
+    "auto-resolve": {
+      "name": "Auto Command Issue Resolver",
+      "description": "Auto-diagnose and fix errors in commands to achieve Exit Code 0.",
+      "path": "commands/auto-resolve.md",
+      "requires_skills": [],
+      "requires_tools": [],
+      "model": null
+    },
+    "organize-dir": {
+      "name": "Organize Directory",
+      "description": "Organize a directory by moving subdirectories older than a specified time into an archive folder.",
+      "path": "commands/organize-dir.md",
+      "requires_skills": [],
+      "requires_tools": [],
+      "model": "claude-sonnet-4-6"
+    }
+  },
+  "skills": {
+    "commit": {
+      "name": "commit",
+      "description": "Create a well-formatted git commit message based on the changes staged for commit. Follow best practices for commit message style and content.",
+      "path": "skills/commit",
+      "trigger": "When creating git commits",
+      "requires_tools": ["git"],
+      "has_subdirs": false
+    },
+    "readme": {
+      "name": "readme",
+      "description": "Guidelines for writing and editing Plain package READMEs.",
+      "path": "skills/readme",
+      "trigger": "When creating or updating README files",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
+    "docs-writer": {
+      "name": "docs-writer",
+      "description": "Use for writing, reviewing, and editing documentation for Gemini CLI.",
+      "path": "skills/docs-writer",
+      "trigger": "When working on documentation files (.md) or docs/ directory",
+      "requires_tools": [],
+      "has_subdirs": true
+    },
+    "cli-output-style": {
+      "name": "cli-output-style",
+      "description": "CLI output style guide for writing shell scripts and commands with consistent colors, symbols, dividers, and formatting.",
+      "path": "skills/cli-output-style",
+      "trigger": "When writing or modifying shell scripts that produce terminal output",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
+    "react-best-practices": {
+      "name": "react-best-practices",
+      "description": "React and Next.js performance optimization guidelines from Vercel Engineering. 64 rules covering async patterns, bundle optimization, server components, and more.",
+      "path": "skills/react-best-practices",
+      "trigger": "When working with React/Next.js code, components, data fetching, or bundle optimization",
+      "requires_tools": [],
+      "has_subdirs": true
+    },
+    "grafana-dashboards": {
+      "name": "grafana-dashboards",
+      "description": "Create and manage production Grafana dashboards for real-time visualization of system and application metrics.",
+      "path": "skills/grafana-dashboards",
+      "trigger": "When building monitoring dashboards, visualizing metrics, or creating operational observability interfaces",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
+    "humanizer": {
+      "name": "humanizer",
+      "description": "Remove signs of AI-generated writing from text. Based on Wikipedia's comprehensive Signs of AI writing guide.",
+      "path": "skills/humanizer",
+      "trigger": "When editing or reviewing text to make it sound more natural and human-written",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
+    "i18n": {
+      "name": "i18n",
+      "description": "Guidelines for updating translations or i18n keys.",
+      "path": "skills/i18n",
+      "trigger": "When working with locale files, translation keys, or internationalization tasks",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
+    "find-skills": {
+      "name": "find-skills",
+      "description": "Helps users discover and install agent skills when they ask questions like how do I do X or is there a skill that can...",
+      "path": "skills/find-skills",
+      "trigger": "When user is looking for new capabilities or wants to extend Claude Code",
+      "requires_tools": ["npx"],
+      "has_subdirs": false
+    },
+    "openspec-propose": {
+      "name": "openspec-propose",
+      "description": "Propose a new change with all artifacts generated in one step.",
+      "path": "skills/openspec-propose",
+      "trigger": "When the user wants to describe what they want to build and get a complete proposal",
+      "requires_tools": ["openspec"],
+      "has_subdirs": false
+    },
+    "openspec-apply-change": {
+      "name": "openspec-apply-change",
+      "description": "Implement tasks from an OpenSpec change.",
+      "path": "skills/openspec-apply-change",
+      "trigger": "When the user wants to start or continue implementing tasks from a change",
+      "requires_tools": ["openspec"],
+      "has_subdirs": false
+    },
+    "openspec-explore": {
+      "name": "openspec-explore",
+      "description": "Enter explore mode - a thinking partner for exploring ideas, investigating problems, and clarifying requirements.",
+      "path": "skills/openspec-explore",
+      "trigger": "When the user wants to think through something before or during a change",
+      "requires_tools": ["openspec"],
+      "has_subdirs": false
+    },
+    "openspec-archive-change": {
+      "name": "openspec-archive-change",
+      "description": "Archive a completed change in the experimental workflow.",
+      "path": "skills/openspec-archive-change",
+      "trigger": "When the user wants to finalize and archive a change after implementation is complete",
+      "requires_tools": ["openspec"],
+      "has_subdirs": false
+    }
+  },
+  "bundles": {
+    "essential-git": {
+      "label": "Essential Git Kit",
+      "description": "Git commands + commit skill for a complete git workflow",
+      "commands": ["git/commit", "git/pull", "git/push", "git/changelog", "git/version", "git/issue"],
+      "skills": ["commit"]
+    },
+    "pr-workflow": {
+      "label": "PR Workflow",
+      "description": "GitHub pull request creation and review resolution",
+      "commands": ["pr/create", "pr/resolve"],
+      "skills": []
+    },
+    "worktree": {
+      "label": "Worktree Management",
+      "description": "Git worktree creation, merging, and cleanup",
+      "commands": ["worktree/create", "worktree/merge", "worktree/cleanup"],
+      "skills": []
+    },
+    "docs": {
+      "label": "Documentation",
+      "description": "AGENTS.md management and documentation updates",
+      "commands": ["docs/agentsmd", "docs/update"],
+      "skills": ["docs-writer", "readme"]
+    },
+    "openspec-suite": {
+      "label": "OpenSpec Suite",
+      "description": "Full OpenSpec workflow: propose, apply, explore, archive",
+      "commands": ["opsx/propose", "opsx/apply", "opsx/explore", "opsx/archive"],
+      "skills": ["openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"]
+    },
+    "all-commands": {
+      "label": "All Commands",
+      "description": "Every slash command (21 total)",
+      "commands": [
+        "git/commit", "git/pull", "git/push", "git/changelog", "git/version", "git/issue",
+        "pr/create", "pr/resolve",
+        "worktree/create", "worktree/merge", "worktree/cleanup",
+        "docs/agentsmd", "docs/update",
+        "opsx/propose", "opsx/apply", "opsx/explore", "opsx/archive",
+        "code/react-doctor",
+        "search", "auto-resolve", "organize-dir"
+      ],
+      "skills": []
+    },
+    "all-skills": {
+      "label": "All Skills",
+      "description": "Every contextual skill (13 total)",
+      "commands": [],
+      "skills": [
+        "commit", "readme", "docs-writer", "cli-output-style",
+        "react-best-practices", "grafana-dashboards", "humanizer", "i18n",
+        "find-skills",
+        "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"
+      ]
+    },
+    "full-suite": {
+      "label": "Full Suite",
+      "description": "Everything - all commands and all skills",
+      "commands": [
+        "git/commit", "git/pull", "git/push", "git/changelog", "git/version", "git/issue",
+        "pr/create", "pr/resolve",
+        "worktree/create", "worktree/merge", "worktree/cleanup",
+        "docs/agentsmd", "docs/update",
+        "opsx/propose", "opsx/apply", "opsx/explore", "opsx/archive",
+        "code/react-doctor",
+        "search", "auto-resolve", "organize-dir"
+      ],
+      "skills": [
+        "commit", "readme", "docs-writer", "cli-output-style",
+        "react-best-practices", "grafana-dashboards", "humanizer", "i18n",
+        "find-skills",
+        "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"
+      ]
+    }
+  },
+  "external_tools": {
+    "git": {
+      "check": "git --version",
+      "install": "brew install git",
+      "description": "Version control system"
+    },
+    "gh": {
+      "check": "gh --version",
+      "install": "brew install gh",
+      "description": "GitHub CLI for issues and PRs"
+    },
+    "npm": {
+      "check": "command -v npm",
+      "install": "brew install node",
+      "description": "Node.js package manager"
+    },
+    "npx": {
+      "check": "command -v npx",
+      "install": "brew install node",
+      "description": "Node.js package executor"
+    },
+    "openspec": {
+      "check": "command -v openspec",
+      "install": "npm install -g openspec",
+      "description": "Structured change workflow CLI"
+    },
+    "trash": {
+      "check": "command -v trash",
+      "install": "brew install trash",
+      "description": "Safe file deletion (moves to Trash)"
+    },
+    "bun": {
+      "check": "command -v bun",
+      "install": "brew install bun",
+      "description": "Fast JavaScript runtime"
+    },
+    "jq": {
+      "check": "command -v jq",
+      "install": "brew install jq",
+      "description": "JSON processor for shell scripts"
+    },
+    "rg": {
+      "check": "command -v rg",
+      "install": "brew install ripgrep",
+      "description": "Fast recursive search"
+    }
+  },
+  "optional_integrations": {
+    "mcp:linear": {
+      "description": "Linear issue tracking MCP server. Enables fetching issue details for branch naming and PR context.",
+      "used_by": ["pr/create", "worktree/create"],
+      "setup": "Configure the Linear MCP server in your Claude Code MCP settings."
+    }
+  }
+}
