@@ -111,7 +111,7 @@ Output either the single line NO_UPDATE_NEEDED or the full updated markdown (not
 
 # ---------- Call Sonnet ----------
 RESULT=$(echo "$PROMPT" \
-  | RECENT_WORK_UPDATING=1 claude -p --model sonnet --no-session-persistence 2>/dev/null) || exit 0
+  | RECENT_WORK_UPDATING=1 claude -p --model haiku --no-session-persistence 2>/dev/null) || exit 0
 
 # Check response
 case "$RESULT" in
