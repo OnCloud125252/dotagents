@@ -9,7 +9,13 @@ All external tools required by this environment. Install everything with the [qu
 # Install Homebrew if not present: https://brew.sh
 
 # Core CLI tools
-brew install jq trash ripgrep bun
+brew install git gh jq curl trash ripgrep bun node pnpm
+
+# Claude CLI
+npm install -g @anthropic-ai/claude-code
+
+# OpenSpec CLI
+npm install -g openspec
 
 # Notifications
 brew tap moltenbits/tap
@@ -19,25 +25,66 @@ grrr apps add --appId claude-code --appIcon ~/.claude/hooks/claude-icon.png
 
 # Status line
 bunx -y ccstatusline@latest
+
+# Environment variables
+# Set CLAUDE_CODE_SUMMARIZER_API_KEY to an OpenAI API key for notification summaries
 ```
 
 ---
 
-## Homebrew
+## Bun
 
-macOS package manager. Required to install everything else.
+JavaScript runtime. Provides `bunx` for running npm packages without global install.
 
-- **Install:** <https://brew.sh>
-- **Used by:** all dependency installation below
+- **Install:** `brew install bun`
+- **Used by:** `claude-statusline/statusline.sh`
 
 ---
 
-## jq
+## ccstatusline
 
-JSON processor for parsing hook event data from stdin.
+npm package that renders the Claude Code status line in the terminal.
 
-- **Install:** `brew install jq`
-- **Used by:** `hooks/notify.sh`, `claude-statusline/statusline.sh`, `claude-statusline/last-user-input.sh`
+- **Invoked as:** `bunx -y ccstatusline@latest`
+- **Configured in:** `~/.claude/settings.json` -> `statusLine`
+- **Receives:** session JSON via stdin, `CCSTATUSLINE_CLAUDE_SESSION_ID` env var
+- **Used by:** `claude-statusline/statusline.sh`
+
+---
+
+## Claude CLI
+
+The Claude Code CLI itself. Used by hooks to invoke inner Claude sessions for summarization.
+
+- **Install:** `npm install -g @anthropic-ai/claude-code`
+- **Used by:** `hooks/update-recent-work.sh` (`claude -p --model sonnet`)
+
+---
+
+## curl
+
+HTTP client for making API requests. Pre-installed on macOS but listed here as a critical runtime dependency.
+
+- **Install:** `brew install curl` (or use macOS system curl)
+- **Used by:** `helpers/summarize.sh` (calls OpenAI API)
+
+---
+
+## gh (GitHub CLI)
+
+GitHub's official CLI for managing issues, pull requests, and repository operations.
+
+- **Install:** `brew install gh`
+- **Used by:** `commands/git/issue.md`, `commands/pr/create.md`, `commands/pr/resolve.md`
+
+---
+
+## git
+
+Distributed version control system. Used by nearly every command in this project.
+
+- **Install:** `brew install git` (or use Xcode Command Line Tools)
+- **Used by:** `commands/git/commit.md`, `commands/git/changelog.md`, `commands/git/version.md`, `commands/git/issue.md`, `commands/git/pull.md`, `commands/git/push.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/worktree/create.md`, `commands/worktree/cleanup.md`, `commands/worktree/merge.md`, `commands/docs/update.md`
 
 ---
 
@@ -116,7 +163,7 @@ growlrrr send [<options>] <message>
 
 1. Check permissions: System Settings > Notifications > growlrrr (or `claude-code`) > Allow Notifications
 2. Re-authorize: `grrr authorize`
-3. Check Focus/DnD is off (growlrrr respects system DnD — there is no override flag)
+3. Check Focus/DnD is off (growlrrr respects system DnD -- there is no override flag)
 
 **Custom icon not showing:**
 
@@ -126,38 +173,89 @@ growlrrr send [<options>] <message>
 
 ---
 
-## Bun
+## Homebrew
 
-JavaScript runtime. Provides `bunx` for running npm packages without global install.
+macOS package manager. Required to install everything else.
 
-- **Install:** `brew install bun`
-- **Used by:** `~/.claude/settings.json` (status line)
-
----
-
-## ccstatusline
-
-npm package that renders the Claude Code status line in the terminal.
-
-- **Invoked as:** `bunx -y ccstatusline@latest`
-- **Configured in:** `~/.claude/settings.json` → `statusLine`
-- **Receives:** session JSON via stdin, `CCSTATUSLINE_CLAUDE_SESSION_ID` env var
+- **Install:** <https://brew.sh>
+- **Used by:** all dependency installation below
 
 ---
 
-## trash
+## jq
 
-Safe file deletion — moves to Trash instead of permanent `rm`. Required by project conventions (see `CLAUDE.md`).
+JSON processor for parsing hook event data and session files.
 
-- **Install:** `brew install trash`
-- **Used by:** all file deletion operations
+- **Install:** `brew install jq`
+- **Used by:** `hooks/notify.sh`, `hooks/load-recent-work.sh`, `hooks/update-recent-work.sh`, `helpers/summarize.sh`, `claude-statusline/statusline.sh`, `claude-statusline/last-user-input.sh`
 
-| Command | Description |
-|---|---|
-| `trash file.txt` | Move file to Trash |
-| `trash -r directory/` | Recursively trash a directory |
-| `trash-list` | View trashed files |
-| `trash-restore` | Recover deleted files |
+---
+
+## Linear MCP Server
+
+MCP server providing access to Linear issue tracking. Enables commands to fetch issue details for branch naming and PR context.
+
+- **Tool name:** `mcp__linear-server__get_issue`
+- **Configured in:** Claude Code MCP settings
+- **Used by:** `commands/pr/create.md`, `commands/worktree/create.md`
+
+---
+
+## Node.js (npm / npx)
+
+JavaScript runtime providing `npm` (package manager) and `npx` (package executor). Required for several commands and npx-based tools.
+
+- **Install:** `brew install node`
+- **Used by:** `commands/git/version.md` (`npm version`), `commands/code/react-doctor.md` (`npx -y react-doctor@latest`), `skills/find-skills/SKILL.md` (`npx skills`)
+
+---
+
+## OpenAI API
+
+Used for summarizing notification messages via GPT-4.1-nano. Requires an API key set as an environment variable.
+
+- **Environment variable:** `CLAUDE_CODE_SUMMARIZER_API_KEY`
+- **Endpoint:** `https://api.openai.com/v1/chat/completions`
+- **Model:** `gpt-4.1-nano`
+- **Used by:** `helpers/summarize.sh` (called by `hooks/notify.sh`)
+
+Falls back to raw message truncation if the API key is missing.
+
+---
+
+## openspec
+
+CLI tool for managing structured change workflows (proposals, designs, specs, tasks).
+
+- **Install:** `npm install -g openspec`
+- **Used by:** `commands/opsx/propose.md`, `commands/opsx/apply.md`, `commands/opsx/archive.md`, `commands/opsx/explore.md`
+
+---
+
+## pbcopy
+
+macOS clipboard utility. Pre-installed on all Macs.
+
+- **Install:** built-in (macOS system utility)
+- **Used by:** `commands/git/changelog.md`, `commands/git/issue.md`, `commands/pr/create.md`
+
+---
+
+## pnpm
+
+Fast, disk space efficient package manager. Referenced as an alternative to npm in documentation workflows.
+
+- **Install:** `brew install pnpm`
+- **Used by:** `commands/docs/update.md`
+
+---
+
+## react-doctor
+
+npm package that scans React codebases for security, performance, correctness, and architecture issues. Auto-installs via npx.
+
+- **Invoked as:** `npx -y react-doctor@latest . --verbose --diff`
+- **Used by:** `commands/code/react-doctor.md`
 
 ---
 
@@ -167,6 +265,31 @@ Fast recursive search. Preferred over `grep` per project conventions.
 
 - **Install:** `brew install ripgrep`
 - **Used by:** code search workflows
+
+---
+
+## skills CLI
+
+npm package for discovering and installing agent skills from the open skills ecosystem. Auto-installs via npx.
+
+- **Invoked as:** `npx skills find [query]`, `npx skills add <package>`
+- **Used by:** `skills/find-skills/SKILL.md`
+
+---
+
+## trash
+
+Safe file deletion -- moves to Trash instead of permanent `rm`. Required by project conventions (see `CLAUDE.md`).
+
+- **Install:** `brew install trash`
+- **Used by:** all file deletion operations, `commands/worktree/cleanup.md`
+
+| Command | Description |
+|---|---|
+| `trash file.txt` | Move file to Trash |
+| `trash -r directory/` | Recursively trash a directory |
+| `trash-list` | View trashed files |
+| `trash-restore` | Recover deleted files |
 
 ---
 
