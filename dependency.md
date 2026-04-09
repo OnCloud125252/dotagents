@@ -84,7 +84,7 @@ GitHub's official CLI for managing issues, pull requests, and repository operati
 Distributed version control system. Used by nearly every command in this project.
 
 - **Install:** `brew install git` (or use Xcode Command Line Tools)
-- **Used by:** `commands/git/commit.md`, `commands/git/changelog.md`, `commands/git/version.md`, `commands/git/issue.md`, `commands/git/pull.md`, `commands/git/push.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/worktree/create.md`, `commands/worktree/cleanup.md`, `commands/worktree/merge.md`, `commands/docs/update.md`
+- **Used by:** `commands/git/commit.md`, `commands/git/changelog.md`, `commands/git/version.md`, `commands/git/issue.md`, `commands/git/pull.md`, `commands/git/push.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/worktree/create.md`, `commands/worktree/cleanup.md`, `commands/worktree/merge.md`, `commands/docs/update.md`, `skills/commit/SKILL.md`
 
 ---
 
@@ -228,7 +228,7 @@ Falls back to raw message truncation if the API key is missing.
 CLI tool for managing structured change workflows (proposals, designs, specs, tasks).
 
 - **Install:** `npm install -g openspec`
-- **Used by:** `commands/opsx/propose.md`, `commands/opsx/apply.md`, `commands/opsx/archive.md`, `commands/opsx/explore.md`
+- **Used by:** `commands/opsx/propose.md`, `commands/opsx/apply.md`, `commands/opsx/archive.md`, `commands/opsx/explore.md`, `skills/openspec-propose/SKILL.md`, `skills/openspec-apply-change/SKILL.md`, `skills/openspec-explore/SKILL.md`, `skills/openspec-archive-change/SKILL.md`
 
 ---
 
