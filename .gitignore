@@ -6,6 +6,4 @@
 
 # Claude Code
 /.claude/worktrees
-/.claude/.recent_work.lock
-/.claude/.recent_work_last_update
-/.claude/RECENT_WORK.md
+/.claude/recent-work
