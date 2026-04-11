@@ -21,11 +21,9 @@ Push the current branch to the remote repository and handle any issues that aris
 
    - **Rejected (non-fast-forward)**: The remote has changes you don't have locally.
      1. Inform the user their push was rejected
-     2. Ask the user how to proceed:
-        - **Pull and retry** (`git pull` then `git push`)
-        - **Pull with rebase** (`git pull --rebase` then `git push`)
-        - **Abort** — do nothing
-     3. NEVER suggest or use `--force` unless the user explicitly requests it
+     2. Default to **pull (merge) and retry** (`git pull` then `git push`)
+     3. Only use rebase (`git pull --rebase`) if the user explicitly requests it
+     4. NEVER suggest or use `--force` unless the user explicitly requests it
 
    - **Hook output**: If pre-push hooks produce output or errors, display the output and diagnose the issue. Attempt to fix automatically if possible (e.g., linting errors), then retry the push.
 

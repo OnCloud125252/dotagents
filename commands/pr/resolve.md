@@ -242,7 +242,7 @@ EOF
 ## Error Handling
 
 - **API rate limit** → wait 60 seconds, retry once.
-- **Push failure** → run `git pull --rebase origin <BRANCH>`, then retry push.
+- **Push failure** → run `git pull origin <BRANCH>` (merge), then retry push.
 - **GraphQL mutation error** → log the error, continue with remaining threads, report all failures at the end.
 - **Permission error** → inform the user they may lack write access or the thread may already be resolved.
 - **Outdated thread** → still attempt to resolve; note in summary if the diff context has changed.
