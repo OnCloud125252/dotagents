@@ -36,6 +36,10 @@
 - **Spawn multiple subagents in parallel** when tasks are independent and can be done concurrently
 - Never output "Generated with Claude Code" or "Co-Authored-By"
 
+## Git Workflow
+
+- **Always use merge as the default** for all git operations (e.g., `git pull`, branch integration) — do not rebase unless explicitly requested
+
 ## File Operations
 
 - **ALWAYS use `trash` instead of `rm`** for file deletion
