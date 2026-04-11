@@ -18,11 +18,11 @@ Parse `$ARGUMENTS` to extract positional args first, then flags:
 
 - **1st positional** (`<source>`): Worktree name, directory name, path, or branch name (optional — prompts if omitted)
 - **2nd positional** (`[target]`): Target branch to merge into (optional — defaults to the repository's default branch, usually `main`)
-- **--squash** or **-s**: Squash all commits into one (default if no strategy specified)
+- **--merge** or **-m**: Regular merge commit, preserves branch history (default if no strategy specified)
+- **--squash** or **-s**: Squash all commits into one
 - **--rebase** or **-r**: Rebase commits onto target
-- **--merge** or **-m**: Regular merge commit (preserves branch history)
 
-Default strategy is **squash**.
+Default strategy is **merge**.
 
 ### Resolve Default Branch
 
@@ -126,7 +126,14 @@ If `<target-branch>` is behind `origin/<target-branch>`, inform the user and ask
 
 ### 5. Perform Merge
 
-#### Strategy: Squash (default)
+#### Strategy: Merge (default)
+
+```bash
+git checkout <target-branch>
+git merge --no-ff <branch-name> -m "merge: <branch-name> into <target-branch>"
+```
+
+#### Strategy: Squash
 
 ```bash
 git checkout <target-branch>
@@ -163,13 +170,6 @@ If rebase has conflicts, abort and inform the user:
 
 ```bash
 git rebase --abort
-```
-
-#### Strategy: Merge
-
-```bash
-git checkout <target-branch>
-git merge --no-ff <branch-name> -m "merge: <branch-name> into <target-branch>"
 ```
 
 ### 6. Handle Conflicts

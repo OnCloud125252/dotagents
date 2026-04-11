@@ -29,7 +29,7 @@ Pull the latest changes from the remote repository and handle any issues that ar
 
    - **Hook output**: If pre-merge or post-merge hooks produce output or errors, display the output and diagnose the issue. Attempt to fix automatically if possible, otherwise report to the user.
 
-   - **Diverged branches**: If the local and remote have diverged, inform the user and ask whether to merge or rebase.
+   - **Diverged branches**: If the local and remote have diverged, default to merge. Only rebase if the user explicitly requests it.
 
    - **Other errors** (authentication, network, etc.): Display the error and suggest next steps.
 
