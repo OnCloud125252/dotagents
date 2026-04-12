@@ -75,6 +75,21 @@ log_error()   { echo -e "$_CLI_CROSS $1"; }
 
 Name these functions with a prefix matching your tool (e.g., `_mytool_info`, `_deploy_success`) to avoid collisions in sourced environments. For standalone scripts, short names like `log_info` work fine.
 
+### Terminal Width
+
+Compute the terminal width **once** at the top of the script — not inside functions. This ensures all dividers render at the same width, even if the shell environment shifts mid-execution (e.g., after subprocesses redirect stdout).
+
+```bash
+# Terminal width — compute once; try /dev/tty in a subshell to suppress errors
+_CLI_WIDTH="${COLUMNS:-$( (tput cols </dev/tty) 2>/dev/null || tput cols 2>/dev/null || echo 80)}"
+```
+
+> **Why this pattern?**
+> - `$COLUMNS` is a shell variable, not an environment variable, so child processes (git hooks, subshells, piped scripts) don't inherit it.
+> - `tput cols </dev/tty` lets `tput` query the controlling terminal directly, giving the correct width even in non-interactive contexts (git hooks, piped scripts).
+> - The `/dev/tty` redirect is wrapped in a **subshell** `( ... ) 2>/dev/null` — if the device is unavailable (CI, cron, non-interactive agents), the shell's "Device not configured" error is captured by the outer stderr redirect instead of leaking to the user.
+> - The fallback chain: `$COLUMNS` → `tput cols </dev/tty` → `tput cols` → `80`.
+
 ### Divider Function
 
 A divider draws a full-width line with an optional bracketed label — useful for framing command output:
@@ -82,7 +97,7 @@ A divider draws a full-width line with an optional bracketed label — useful fo
 ```bash
 print_divider() {
   local color="${1:-$_CLI_PURPLE}" label="${2:-}"
-  local width="${COLUMNS:-$(tput cols </dev/tty 2>/dev/null || echo 80)}"
+  local width="$_CLI_WIDTH"
   if [[ -n "$label" ]]; then
     local padding=$((width - ${#label} - 6))
     local fill
@@ -95,8 +110,6 @@ print_divider() {
   fi
 }
 ```
-
-> **Why `</dev/tty`?** — `$COLUMNS` is a shell variable, not an environment variable, so child processes (git hooks, subshells, piped scripts) don't inherit it. Plain `tput cols` also fails when stdout isn't a TTY. Redirecting stdin from `/dev/tty` lets `tput` query the controlling terminal directly, giving the correct width even in non-interactive contexts. The `|| echo 80` fallback still covers truly headless environments (CI, cron).
 
 Output:
 ```
