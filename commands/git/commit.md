@@ -1,9 +1,11 @@
 ---
 name: Create Commits
-allowed-tools: Bash(git diff:*), Bash(git log:*), Bash(git status:*), Bash(git add:*), Bash(git commit:*), Bash(git reset:*)
+allowed-tools: Bash(git diff:*), Bash(git log:*), Bash(git status:*), Bash(git add:*), Bash(git commit:*), Bash(git reset:*), Bash(bun run check:fix-unsafe:*)
 description: Create commits for recent changes. Multiple commits are allowed for logical grouping.
 model: claude-sonnet-4-6
 ---
+
+Before doing anything else, run `bun run check:fix-unsafe` (or equivalent) to auto-fix lint and formatting issues. Do NOT stage the resulting changes — leave them unstaged so they can be grouped into the correct logical commits alongside the related source changes.
 
 Create commits for all recent changes. You MUST split changes into multiple logical commits when appropriate — each commit should represent a single cohesive change. Invoke the /commit skill using the Skill tool to handle the commit creation
 
