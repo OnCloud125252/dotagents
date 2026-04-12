@@ -33,6 +33,40 @@ Before showing the catalog, scan the user's existing setup:
 
 ---
 
+## Phase 2b: Check for Updates
+
+For every item marked "installed" in Phase 2, compare against the catalog version:
+
+### Commands
+
+For each installed command (keyed like `git/commit`):
+
+1. Build the catalog file path: `$TMPDIR/dotagents/<path>` (using the `path` field from catalog.json)
+2. Build the local file path: `$HOME/.claude/<path>`
+3. Run: `diff -q "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
+4. If files **differ**, change the marker from "installed" to **"update available"**
+
+### Skills
+
+For each installed skill (keyed like `commit`):
+
+1. Compare `SKILL.md` files: `diff -q "$TMPDIR/dotagents/<path>/SKILL.md" "$HOME/.claude/<path>/SKILL.md"`
+2. If they differ, change the marker to **"update available"**
+3. Optionally: also check if the catalog version has files the local version doesn't (new additions). If so, also mark as "update available"
+
+### Summary
+
+After scanning, report:
+
+```
+Installed: <n> items up to date
+Updates available: <n> items
+```
+
+Store the "update available" items in a list for use in Phase 3 display and Phase 5 install logic.
+
+---
+
 ## Phase 3: Present the Catalog
 
 **Generate the display dynamically from catalog.json.** Do NOT hardcode item names or numbers.
@@ -70,11 +104,16 @@ BUNDLES
 1. **Commands**: Read the `categories` array from catalog.json — iterate in order. For each category, find commands whose `category` field matches the category `key`. Display the category `label` as a subheading. If the category has a `note`, append it in brackets (e.g., `OPSX [requires: openspec CLI]`).
 2. **Skills**: List all skills from catalog.json in order. Show `trigger` as the description.
 3. **Numbering**: Number items sequentially across the entire catalog — commands first (starting at 1), then skills (continuing from the last command number).
-4. **Installed marker**: Append `[installed]` to any item detected in Phase 2.
+4. **Status marker**: Append the marker from Phase 2/2b to each item:
+   - `[installed]` — present locally and matches catalog version
+   - `[update available]` — present locally but differs from catalog version
+   - No marker — not installed yet
 5. **Bundles**: Assign letters A, B, C... to each bundle from catalog.json. Show the `label` and `description`. Include the item numbers in parentheses.
 
 Then use **AskUserQuestion** to ask:
-> What would you like to install? Enter numbers (e.g. 1,3,5), bundle letters (e.g. A,B), or "all".
+> What would you like to install? Enter numbers (e.g. 1,3,5), bundle letters (e.g. A,B), "update" to update all outdated items, or "all".
+
+If the user selects "update", automatically include all items marked "update available" in the selection. Confirm the list before proceeding.
 
 Allow multiple rounds — after each selection, ask "Anything else to add? (or type 'done')". Collect all selections before proceeding.
 
@@ -135,7 +174,7 @@ For each selected command (keyed like `git/commit` in catalog.json):
 4. If the destination file already exists:
    - Compare contents with `diff -q`
    - If **identical**: skip silently
-   - If **different**: ask user via AskUserQuestion: "File already exists and differs: `~/.claude/commands/git/commit.md`. Overwrite / Skip / Backup (rename existing to .backup)?"
+   - If **different** (this is an update): inform the user briefly ("Updating `~/.claude/commands/git/commit.md`") and overwrite. For updates the user explicitly selected, skip the Overwrite/Skip/Backup prompt — they already chose to update.
 5. Copy the file: `cp "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
 
 ### 5c. Install skills
@@ -147,7 +186,7 @@ For each selected skill (keyed like `commit` in catalog.json):
 3. If the destination directory already exists:
    - Compare SKILL.md contents with `diff -q`
    - If **identical**: skip silently
-   - If **different**: ask user: "Skill directory already exists and differs: `~/.claude/skills/commit/`. Overwrite / Skip / Backup?"
+   - If **different** (this is an update): inform the user briefly ("Updating skill `commit`") and overwrite. For updates the user explicitly selected, skip the prompt — they already chose to update.
 4. Copy the entire directory: `cp -r "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
 
 ---
@@ -179,6 +218,11 @@ SKILLS INSTALLED
 SKIPPED (already installed)
 ─────────────────────────────────────────
   /git:pull       — identical version already present
+  ...
+
+UPDATED
+─────────────────────────────────────────
+  /git:commit     — updated to latest version
   ...
 
 NOTES
