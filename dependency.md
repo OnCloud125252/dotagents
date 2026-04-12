@@ -37,7 +37,7 @@ bunx -y ccstatusline@latest
 JavaScript runtime. Provides `bunx` for running npm packages without global install.
 
 - **Install:** `brew install bun`
-- **Used by:** `claude-statusline/statusline.sh`
+- **Used by:** `claude-statusline/statusline.sh`, `commands/git/commit.md` (example script reference)
 
 ---
 
@@ -54,10 +54,10 @@ npm package that renders the Claude Code status line in the terminal.
 
 ## Claude CLI
 
-The Claude Code CLI itself. Used by hooks to invoke inner Claude sessions for summarization.
+The Claude Code CLI itself. While not directly used by this environment's scripts, it's the tool that these commands and skills extend.
 
 - **Install:** `npm install -g @anthropic-ai/claude-code`
-- **Used by:** `hooks/update-recent-work.sh` (`claude -p --model haiku`)
+- **Note:** Included here for context; not a runtime dependency of this template
 
 ---
 
@@ -66,7 +66,7 @@ The Claude Code CLI itself. Used by hooks to invoke inner Claude sessions for su
 HTTP client for making API requests. Pre-installed on macOS but listed here as a critical runtime dependency.
 
 - **Install:** `brew install curl` (or use macOS system curl)
-- **Used by:** `helpers/summarize.sh` (calls OpenAI API)
+- **Used by:** `helpers/summarize.sh`, `hooks/update-recent-work.sh` (both call OpenAI API)
 
 ---
 
@@ -84,7 +84,7 @@ GitHub's official CLI for managing issues, pull requests, and repository operati
 Distributed version control system. Used by nearly every command in this project.
 
 - **Install:** `brew install git` (or use Xcode Command Line Tools)
-- **Used by:** `commands/git/commit.md`, `commands/git/changelog.md`, `commands/git/version.md`, `commands/git/issue.md`, `commands/git/pull.md`, `commands/git/push.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/worktree/create.md`, `commands/worktree/cleanup.md`, `commands/worktree/merge.md`, `commands/docs/update.md`, `skills/commit/SKILL.md`
+- **Used by:** `commands/git/commit.md`, `commands/git/changelog.md`, `commands/git/issue.md`, `commands/git/pull.md`, `commands/git/push.md`, `commands/git/version.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/worktree/cleanup.md`, `commands/worktree/create.md`, `commands/worktree/merge.md`, `commands/docs/update.md`, `commands/opsx/apply.md`, `commands/opsx/explore.md`, `skills/commit/SKILL.md`, `skills/docs-writer/SKILL.md`
 
 ---
 
@@ -187,7 +187,7 @@ macOS package manager. Required to install everything else.
 JSON processor for parsing hook event data and session files.
 
 - **Install:** `brew install jq`
-- **Used by:** `hooks/notify.sh`, `hooks/load-recent-work.sh`, `hooks/update-recent-work.sh`, `helpers/summarize.sh`, `claude-statusline/statusline.sh`, `claude-statusline/last-user-input.sh`
+- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/statusline.sh`, `helpers/summarize.sh`, `hooks/load-recent-work.sh`, `hooks/notify.sh`, `hooks/update-recent-work.sh`
 
 ---
 
@@ -212,12 +212,12 @@ JavaScript runtime providing `npm` (package manager) and `npx` (package executor
 
 ## OpenAI API
 
-Used for summarizing notification messages via GPT-4.1-nano. Requires an API key set as an environment variable.
+Used for summarizing notification messages and session history via GPT-4.1-mini/nano. Requires an API key set as an environment variable.
 
 - **Environment variable:** `CLAUDE_CODE_SUMMARIZER_API_KEY`
 - **Endpoint:** `https://api.openai.com/v1/chat/completions`
-- **Model:** `gpt-4.1-nano`
-- **Used by:** `helpers/summarize.sh` (called by `hooks/notify.sh`)
+- **Models:** `gpt-4.1-mini` (RECENT_WORK.md), `gpt-4.1-nano` (notifications)
+- **Used by:** `helpers/summarize.sh` (called by `hooks/notify.sh`), `hooks/update-recent-work.sh`
 
 Falls back to raw message truncation if the API key is missing.
 
@@ -228,7 +228,7 @@ Falls back to raw message truncation if the API key is missing.
 CLI tool for managing structured change workflows (proposals, designs, specs, tasks).
 
 - **Install:** `npm install -g openspec`
-- **Used by:** `commands/opsx/propose.md`, `commands/opsx/apply.md`, `commands/opsx/archive.md`, `commands/opsx/explore.md`, `skills/openspec-propose/SKILL.md`, `skills/openspec-apply-change/SKILL.md`, `skills/openspec-explore/SKILL.md`, `skills/openspec-archive-change/SKILL.md`
+- **Used by:** `commands/opsx/apply.md`, `commands/opsx/archive.md`, `commands/opsx/explore.md`, `commands/opsx/propose.md`, `skills/openspec-apply-change/SKILL.md`, `skills/openspec-archive-change/SKILL.md`, `skills/openspec-explore/SKILL.md`, `skills/openspec-propose/SKILL.md`
 
 ---
 
