@@ -43,16 +43,21 @@ For each installed command (keyed like `git/commit`):
 
 1. Build the catalog file path: `$TMPDIR/dotagents/<path>` (using the `path` field from catalog.json)
 2. Build the local file path: `$HOME/.claude/<path>`
-3. Run: `diff -q "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
-4. If files **differ**, change the marker from "installed" to **"update available"**
+3. Run: `diff "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
+4. If files **differ**, change the marker from "installed" to **"update available"** and store the diff output for later use
 
 ### Skills
 
 For each installed skill (keyed like `commit`):
 
-1. Compare `SKILL.md` files: `diff -q "$TMPDIR/dotagents/<path>/SKILL.md" "$HOME/.claude/<path>/SKILL.md"`
-2. If they differ, change the marker to **"update available"**
-3. Optionally: also check if the catalog version has files the local version doesn't (new additions). If so, also mark as "update available"
+1. Compare `SKILL.md` files: `diff "$TMPDIR/dotagents/<path>/SKILL.md" "$HOME/.claude/<path>/SKILL.md"`
+2. If they differ, change the marker to **"update available"** and store the diff output
+3. Also check if the catalog version has files the local version doesn't (new additions):
+   - Run: `comm -23 <(ls "$TMPDIR/dotagents/<path>") <(ls "$HOME/.claude/<path>")`
+   - If there are new files, also mark as **"update available"** and note the new files
+4. Also check if the local version has files the catalog doesn't (user customizations):
+   - Run: `comm -13 <(ls "$TMPDIR/dotagents/<path>") <(ls "$HOME/.claude/<path>")`
+   - Store this list to warn the user about potential custom files during merge
 
 ### Summary
 
@@ -63,7 +68,10 @@ Installed: <n> items up to date
 Updates available: <n> items
 ```
 
-Store the "update available" items in a list for use in Phase 3 display and Phase 5 install logic.
+Store the following for each "update available" item, for use in Phase 3 and Phase 5:
+- The diff output (content differences)
+- List of new files in catalog version (skills only)
+- List of local-only files that don't exist in catalog (skills only)
 
 ---
 
@@ -113,7 +121,30 @@ BUNDLES
 Then use **AskUserQuestion** to ask:
 > What would you like to install? Enter numbers (e.g. 1,3,5), bundle letters (e.g. A,B), "update" to update all outdated items, or "all".
 
-If the user selects "update", automatically include all items marked "update available" in the selection. Confirm the list before proceeding.
+If the user selects "update", show a diff preview for each item marked "update available" before confirming:
+
+```
+─────────────────────────────────────────
+  Updates Available
+─────────────────────────────────────────
+
+  1. git/commit (command)
+     <show stored diff output>
+     ─── ─── ─── ─── ─── ─── ─── ───
+
+  2. commit (skill)
+     SKILL.md changes:
+     <show stored diff output>
+     New files: <list if any>
+     Local-only files: <list if any>
+     ─── ─── ─── ─── ─── ─── ─── ───
+```
+
+Then use AskUserQuestion to confirm which items to update and how:
+
+> These items have updates. For each, choose: (o)verride local with catalog version, (m)erge (keep local changes, apply new additions), or (s)kip. You can also choose "override all" or "merge all".
+
+Wait for the user's per-item resolution choices before proceeding to Phase 5.
 
 Allow multiple rounds — after each selection, ask "Anything else to add? (or type 'done')". Collect all selections before proceeding.
 
@@ -174,8 +205,11 @@ For each selected command (keyed like `git/commit` in catalog.json):
 4. If the destination file already exists:
    - Compare contents with `diff -q`
    - If **identical**: skip silently
-   - If **different** (this is an update): inform the user briefly ("Updating `~/.claude/commands/git/commit.md`") and overwrite. For updates the user explicitly selected, skip the Overwrite/Skip/Backup prompt — they already chose to update.
-5. Copy the file: `cp "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
+   - If **different** (this is an update): apply the user's resolution choice from Phase 3:
+     - **override**: Overwrite local file with catalog version. Report: "Overrode `~/.claude/commands/git/commit.md` with catalog version"
+     - **merge**: Apply only additions/changes from the catalog that don't conflict with local modifications. Use `diff` to identify non-overlapping hunks and apply them. If there are conflicts, show them and ask the user to resolve. Report: "Merged updates into `~/.claude/commands/git/commit.md`"
+     - **skip**: Do nothing. Report: "Skipped `~/.claude/commands/git/commit.md` (keeping local version)"
+5. For fresh installs (file doesn't exist): copy the file: `cp "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
 
 ### 5c. Install skills
 
@@ -186,8 +220,11 @@ For each selected skill (keyed like `commit` in catalog.json):
 3. If the destination directory already exists:
    - Compare SKILL.md contents with `diff -q`
    - If **identical**: skip silently
-   - If **different** (this is an update): inform the user briefly ("Updating skill `commit`") and overwrite. For updates the user explicitly selected, skip the prompt — they already chose to update.
-4. Copy the entire directory: `cp -r "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
+   - If **different** (this is an update): apply the user's resolution choice from Phase 3:
+     - **override**: Replace entire skill directory with catalog version. **Warning**: this removes any local-only files. Report: "Overrode skill `commit` with catalog version (local customizations removed)"
+     - **merge**: Copy only new and changed files from catalog into local skill directory. Preserve any local-only files. For conflicting files (both sides modified), show the diff and ask the user which version to keep. Report: "Merged updates into skill `commit` (local customizations preserved)"
+     - **skip**: Do nothing. Report: "Skipped skill `commit` (keeping local version)"
+4. For fresh installs (directory doesn't exist): copy the entire directory: `cp -r "$TMPDIR/dotagents/<path>" "$HOME/.claude/<path>"`
 
 ---
 
@@ -220,9 +257,19 @@ SKIPPED (already installed)
   /git:pull       — identical version already present
   ...
 
-UPDATED
+UPDATED (override)
 ─────────────────────────────────────────
-  /git:commit     — updated to latest version
+  /git:commit     — replaced with catalog version
+  ...
+
+UPDATED (merged)
+─────────────────────────────────────────
+  commit (skill)  — merged catalog updates, local changes preserved
+  ...
+
+SKIPPED (kept local version)
+─────────────────────────────────────────
+  /git:pull       — user chose to keep local version
   ...
 
 NOTES
