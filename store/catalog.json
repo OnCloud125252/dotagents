@@ -84,6 +84,15 @@
       "requires_tools": ["git", "gh"],
       "model": null
     },
+    "pr/review": {
+      "name": "Review Pull Request",
+      "description": "Fetch a PR into a temporary worktree, run CI checks, invoke /code-review, and present an interactive summary with inline review posting.",
+      "path": "commands/pr/review.md",
+      "category": "pr",
+      "requires_skills": [],
+      "requires_tools": ["git", "gh"],
+      "model": null
+    },
     "worktree/create": {
       "name": "Create Worktree",
       "description": "Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.",
@@ -318,8 +327,8 @@
     },
     "pr-workflow": {
       "label": "PR Workflow",
-      "description": "GitHub pull request creation and review resolution",
-      "commands": ["pr/create", "pr/resolve"],
+      "description": "GitHub pull request creation, review, and resolution",
+      "commands": ["pr/create", "pr/review", "pr/resolve"],
       "skills": []
     },
     "worktree": {
@@ -342,10 +351,10 @@
     },
     "all-commands": {
       "label": "All Commands",
-      "description": "Every slash command (21 total)",
+      "description": "Every slash command (22 total)",
       "commands": [
         "git/commit", "git/pull", "git/push", "git/changelog", "git/version", "git/issue",
-        "pr/create", "pr/resolve",
+        "pr/create", "pr/review", "pr/resolve",
         "worktree/create", "worktree/merge", "worktree/cleanup",
         "docs/agentsmd", "docs/update",
         "opsx/propose", "opsx/apply", "opsx/explore", "opsx/archive",
@@ -370,7 +379,7 @@
       "description": "Everything - all commands and all skills",
       "commands": [
         "git/commit", "git/pull", "git/push", "git/changelog", "git/version", "git/issue",
-        "pr/create", "pr/resolve",
+        "pr/create", "pr/review", "pr/resolve",
         "worktree/create", "worktree/merge", "worktree/cleanup",
         "docs/agentsmd", "docs/update",
         "opsx/propose", "opsx/apply", "opsx/explore", "opsx/archive",
