@@ -37,7 +37,7 @@ bunx -y ccstatusline@latest
 JavaScript runtime. Provides `bunx` for running npm packages without global install.
 
 - **Install:** `brew install bun`
-- **Used by:** `claude-statusline/statusline.sh`, `commands/git/commit.md` (example script reference)
+- **Used by:** `claude-statusline/statusline.sh`, `commands/git/commit.md`, `commands/pr/review.md`
 
 ---
 
@@ -75,7 +75,7 @@ HTTP client for making API requests. Pre-installed on macOS but listed here as a
 GitHub's official CLI for managing issues, pull requests, and repository operations.
 
 - **Install:** `brew install gh`
-- **Used by:** `commands/git/issue.md`, `commands/pr/create.md`, `commands/pr/resolve.md`
+- **Used by:** `commands/git/issue.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/pr/review.md`
 
 ---
 
@@ -84,7 +84,7 @@ GitHub's official CLI for managing issues, pull requests, and repository operati
 Distributed version control system. Used by nearly every command in this project.
 
 - **Install:** `brew install git` (or use Xcode Command Line Tools)
-- **Used by:** `commands/git/commit.md`, `commands/git/changelog.md`, `commands/git/issue.md`, `commands/git/pull.md`, `commands/git/push.md`, `commands/git/version.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/worktree/cleanup.md`, `commands/worktree/create.md`, `commands/worktree/merge.md`, `commands/docs/update.md`, `commands/opsx/apply.md`, `commands/opsx/explore.md`, `skills/commit/SKILL.md`, `skills/docs-writer/SKILL.md`
+- **Used by:** `commands/git/commit.md`, `commands/git/changelog.md`, `commands/git/issue.md`, `commands/git/pull.md`, `commands/git/push.md`, `commands/git/version.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/pr/review.md`, `commands/worktree/cleanup.md`, `commands/worktree/create.md`, `commands/worktree/merge.md`, `commands/docs/update.md`, `commands/opsx/apply.md`, `commands/opsx/explore.md`, `skills/commit/SKILL.md`, `skills/docs-writer/SKILL.md`
 
 ---
 
@@ -246,7 +246,7 @@ macOS clipboard utility. Pre-installed on all Macs.
 Fast, disk space efficient package manager. Referenced as an alternative to npm in documentation workflows.
 
 - **Install:** `brew install pnpm`
-- **Used by:** `commands/docs/update.md`
+- **Used by:** `commands/docs/update.md`, `commands/pr/review.md`
 
 ---
 
@@ -273,7 +273,7 @@ npm package for discovering and installing agent skills from the open skills eco
 Safe file deletion -- moves to Trash instead of permanent `rm`. Required by project conventions (see `CLAUDE.md`).
 
 - **Install:** `brew install trash`
-- **Used by:** all file deletion operations, `commands/worktree/cleanup.md`
+- **Used by:** all file deletion operations, `commands/worktree/cleanup.md`, `commands/pr/review.md`
 
 | Command | Description |
 |---|---|
