@@ -1,0 +1,123 @@
+commands/worktree/create.md
+  47fe07d25c75d467 91-114,127
+  b469a0a7c9048e0c 5,38,118
+  3cf81e9244f2a1b9 115-117,119-126
+commands/linear/api-doc.md
+  2c43f3c2051158f3 1-13
+commands/pr/create.md
+  b469a0a7c9048e0c 5,31,50,58,108-110,116
+  47fe07d25c75d467 43-49,51-57,59-107,111-115,117-124,129,152,157
+commands/linear/project-update.md
+  533a43b999979e7b 1-163
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "c39f44845f190cafaec77fc3189d07f9a5e7e831",
+  "prompts": {
+    "2c43f3c2051158f3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c3d9fc6-e2dc-429e-894d-42cdecbdf173",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 290,
+      "total_deletions": 151,
+      "accepted_lines": 38,
+      "overriden_lines": 0
+    },
+    "3cf81e9244f2a1b9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b7846963-32e7-4de5-973a-64bc1c4ba207",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 15,
+      "total_deletions": 2,
+      "accepted_lines": 11,
+      "overriden_lines": 0
+    },
+    "47fe07d25c75d467": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7498d81c-cc4d-4502-b3f7-59f725a81e63",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 112,
+      "total_deletions": 8,
+      "accepted_lines": 104,
+      "overriden_lines": 0
+    },
+    "533a43b999979e7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "84758de2-8dc0-428d-b64d-82d034f5eff6",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 163,
+      "total_deletions": 0,
+      "accepted_lines": 163,
+      "overriden_lines": 0
+    },
+    "96e8010d03630bac": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "94ceda6e-80ed-4e29-988f-d7a7d1ff981b",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 48,
+      "total_deletions": 18,
+      "accepted_lines": 48,
+      "overriden_lines": 0
+    },
+    "aaa528a29852d18c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "753d3a48-a7a6-4de3-87c7-c932591c7656",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 10,
+      "total_deletions": 5,
+      "accepted_lines": 10,
+      "overriden_lines": 0
+    },
+    "b469a0a7c9048e0c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "51c7bfda-4791-4d14-9f9b-c63146c3e95d",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 11,
+      "total_deletions": 11,
+      "accepted_lines": 11,
+      "overriden_lines": 0
+    },
+    "cf5c7c015ac0f83d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "de8f8b4c-e3dd-4f69-a328-e86b9679147a",
+        "model": "glm-4.7"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 122,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
