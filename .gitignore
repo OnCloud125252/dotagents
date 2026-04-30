@@ -1,3 +1,6 @@
+.DS_Store
+.skill-lock.json
+
 /node_modules
 /skills/playwright-skill/.temp-*.js
 /tmp
