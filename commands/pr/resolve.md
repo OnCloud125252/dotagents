@@ -53,19 +53,39 @@ gh repo view --json nameWithOwner -q .nameWithOwner
 
 → store as `OWNER/REPO`.
 
-### 1c. Confirm the PR and check out the branch
+### 1c. Confirm the PR and determine the branch
 
 ```bash
 gh pr view <PR_NUMBER> --repo <OWNER>/<REPO> --json state,headRefName -q '.state + " " + .headRefName'
 ```
 
-Check out the PR branch and pull latest:
+Check whether the current branch already matches the PR branch:
+
+```bash
+git rev-parse --abbrev-ref HEAD
+```
+
+**If the current branch matches `<BRANCH>`** — fetch and pull latest in place:
 
 ```bash
 git fetch origin <BRANCH>
-git checkout <BRANCH>
 git pull origin <BRANCH>
 ```
+
+Set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = false`.
+
+**If the current branch does NOT match `<BRANCH>`** — create a worktree under `.claude/worktrees/` instead of checking out:
+
+```bash
+git fetch origin <BRANCH>
+git worktree add .claude/worktrees/<BRANCH> <BRANCH>
+git -C .claude/worktrees/<BRANCH> pull origin <BRANCH>
+cd .claude/worktrees/<BRANCH>
+```
+
+Set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = true`.
+
+All subsequent `git` operations (stage, commit, push, rev-parse) **must** use `git -C "$WORKTREE_PATH"` so they run against the correct working tree. All file reads and edits must be rooted at `$WORKTREE_PATH/<path>` rather than the repository root.
 
 ## Step 2: Fetch Threads
 
@@ -120,7 +140,7 @@ For each matching thread extract:
 
 For each unresolved thread:
 
-1. Read the file at `path` around `line` (with **generous** surrounding context — at least ±30 lines).
+1. Read the file at `$WORKTREE_PATH/<path>` around `line` (with **generous** surrounding context — at least ±30 lines).
 2. Study the `diffHunk` and reviewer's `body` to understand what is requested.
 3. **Verify whether the issue actually needs fixing.** Before classifying, critically evaluate the reviewer's feedback against the actual code:
    - Does the reviewer's concern apply to the current state of the code, or was it based on an outdated diff?
@@ -147,30 +167,30 @@ Present the plan to the user before proceeding. List each thread with:
 
 ## Step 4: Apply Fixes, Commit, Push
 
-1. Edit the files to address all actionable threads.
-2. **Verify** each change by re-reading the modified files.
+1. Edit the files to address all actionable threads. All file paths are relative to `$WORKTREE_PATH`.
+2. **Verify** each change by re-reading the modified files at `$WORKTREE_PATH/<path>`.
 3. Stage specific files (never `git add -A`):
 
    ```bash
-   git add <file1> <file2> ...
+   git -C "$WORKTREE_PATH" add <file1> <file2> ...
    ```
 
 4. Commit with a descriptive message referencing the PR:
 
    ```bash
-   git commit -m "fix: address review feedback from PR #<PR_NUMBER>"
+   git -C "$WORKTREE_PATH" commit -m "fix: address review feedback from PR #<PR_NUMBER>"
    ```
 
 5. Push to the remote:
 
    ```bash
-   git push origin <BRANCH>
+   git -C "$WORKTREE_PATH" push origin <BRANCH>
    ```
 
 6. Record the commit SHA:
 
    ```bash
-   git rev-parse --short HEAD
+   git -C "$WORKTREE_PATH" rev-parse --short HEAD
    ```
 
 ## Step 5: Reply & Resolve Each Thread
@@ -239,10 +259,27 @@ EOF
 )"
 ```
 
+## Step 8: Worktree Cleanup (if applicable)
+
+**Skip this step if `WORKTREE_CREATED = false`.**
+
+If a worktree was created in Step 1c, ask the user whether to remove it:
+
+> "A worktree was created at `.claude/worktrees/<BRANCH>`. Would you like to remove it now that the review has been addressed?"
+
+If the user confirms, remove the worktree:
+
+```bash
+git worktree remove .claude/worktrees/<BRANCH>
+```
+
+If the worktree has uncommitted changes that prevent removal, inform the user and suggest they check it manually.
+
 ## Error Handling
 
 - **API rate limit** → wait 60 seconds, retry once.
-- **Push failure** → run `git pull origin <BRANCH>` (merge), then retry push.
+- **Push failure** → run `git -C "$WORKTREE_PATH" pull origin <BRANCH>` (merge), then retry push.
 - **GraphQL mutation error** → log the error, continue with remaining threads, report all failures at the end.
 - **Permission error** → inform the user they may lack write access or the thread may already be resolved.
 - **Outdated thread** → still attempt to resolve; note in summary if the diff context has changed.
+- **Worktree already exists** → if `.claude/worktrees/<BRANCH>` already exists, use it as-is (do not re-add), `cd` into it, set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = false` so cleanup is not offered automatically.
