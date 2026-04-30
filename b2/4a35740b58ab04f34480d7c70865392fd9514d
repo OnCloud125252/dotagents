@@ -1,0 +1,28 @@
+.gitignore
+  h_fed3d72f60d150 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "b24a35740b58ab04f34480d7c70865392fd9514d",
+  "prompts": {
+    "cf5c7c015ac0f83d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "de8f8b4c-e3dd-4f69-a328-e86b9679147a",
+        "model": "glm-4.7"
+      },
+      "human_author": "OnCloud",
+      "messages": [],
+      "total_additions": 32,
+      "total_deletions": 0,
+      "accepted_lines": 32,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_fed3d72f60d150": {
+      "author": "OnCloud"
+    }
+  }
+}
