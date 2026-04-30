@@ -35,6 +35,7 @@
 - **Avoid running background tasks** like `bun run dev` - use foreground execution instead for better visibility and control
 - **Spawn multiple subagents in parallel** when tasks are independent and can be done concurrently
 - Never output "Generated with Claude Code" or "Co-Authored-By"
+- **Always ask if entitlement is needed** — when implementing a new service or feature, ask the user whether an entitlement check is required before proceeding with the implementation
 
 ## Git Workflow
 
