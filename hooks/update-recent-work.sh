@@ -125,7 +125,7 @@ RULES:
 - Factual changelog-style bullets ONLY: what was done, files changed, current state
 - Most recent work first
 - Merge with existing content; drop entries superseded by newer work
-- Max 40 lines total
+- Max 25 lines total
 
 NEVER include:
 - Opinions, rationale, suggestions, or next steps
@@ -191,7 +191,7 @@ payload=$(jq -n \
       type: "function",
       function: { name: "update_recent_work" }
     },
-    max_tokens: 1200,
+    max_tokens: 700,
     temperature: 0.2
   }')
 

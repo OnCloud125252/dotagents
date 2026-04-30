@@ -11,8 +11,8 @@ CWD=$(echo "$INPUT" | jq -r '.cwd // empty')
 RECENT_WORK_FILE="$CWD/.claude/recent-work/RECENT_WORK.md"
 
 if [ -f "$RECENT_WORK_FILE" ]; then
-  # Line-based cap (~120 lines) to avoid splitting multi-byte UTF-8 characters
-  CONTENT=$(head -n 120 "$RECENT_WORK_FILE" 2>/dev/null)
+  # Line-based cap (~25 lines) to avoid splitting multi-byte UTF-8 characters
+  CONTENT=$(head -n 25 "$RECENT_WORK_FILE" 2>/dev/null)
   if [ -n "$CONTENT" ]; then
     jq -n --arg ctx "Recent project activity (read-only context — what was done, not what to do next):\n\n$CONTENT" \
       '{ "hookSpecificOutput": { "hookEventName": "SessionStart", "additionalContext": $ctx } }'
