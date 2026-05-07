@@ -45,7 +45,7 @@ Analyze git commits since the last tag to determine the appropriate semantic ver
 
 6. **Determine Version Type**:
    - Priority: major > minor > patch
-   - If no conventional commits found that warrant a version bump, inform the user and suggest using `--dry-run` to see analysis
+   - If no conventional commits found that warrant a version bump, default to **patch** (any commit since last tag justifies at least a patch)
 
 7. **Preview Changes**:
    - Show current version → new version
@@ -99,5 +99,5 @@ v1.3.0
 - No `package.json` and no `service-versions.json`: Exit with message "This command must be run in a project directory with package.json or service-versions.json"
 - Invalid service name: List available services and ask the user to pick one
 - No commits since last tag: Exit with "No new commits since last tag"
-- No version-worthy commits: Exit with "No feat/fix/breaking changes found. Version bump not needed."
+- No version-worthy commits: Default to patch bump (any new commit warrants at least a patch)
 - `npm version` fails (fallback mode): Display npm error output
