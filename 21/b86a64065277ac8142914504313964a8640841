@@ -1,0 +1,55 @@
+.gitignore
+  h_964b3dfa0bfd24 13
+commands/pr/resolve.md
+  656a61287c9b7c49 6-8,24,26,32,36,43-50,55
+skills/pbcopy/SKILL.md
+  s_2cbf6438624fdf::t_682b2499a362b6 1-75
+commands/git/version.md
+  b99de70bbf7a1d90 48,102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "21b86a64065277ac8142914504313964a8640841",
+  "prompts": {
+    "656a61287c9b7c49": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3c47c82c-f3b8-4eaf-a7ba-cf4d2f6fb60b",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>",
+      "total_additions": 16,
+      "total_deletions": 5,
+      "accepted_lines": 16,
+      "overriden_lines": 0
+    },
+    "b99de70bbf7a1d90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14fd2862-6093-4d41-966b-d15ed8bdd12a",
+        "model": "glm-4.7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>",
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_964b3dfa0bfd24": {
+      "author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_2cbf6438624fdf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ce04ec43-15c8-4761-ba60-5093c044f96a",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
