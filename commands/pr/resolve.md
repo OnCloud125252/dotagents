@@ -3,8 +3,9 @@ name: Resolve PR Reviews
 description: |
   Fetch unresolved PR review threads, fix the issues, reply with commit SHA,
   resolve threads via GraphQL, and post a summary comment. Use when asked to
-  resolve or address PR review feedback.
-argument-hint: <PR_LINK_OR_NUMBER_OR_COMMENT_LINK>
+  resolve or address PR review feedback. If no argument is given, auto-detects
+  the PR for the current branch.
+argument-hint: "[PR_LINK_OR_NUMBER_OR_COMMENT_LINK]"
 allowed-tools:
   - Bash(gh *)
   - Bash(git *)
@@ -20,28 +21,38 @@ allowed-tools:
 
 Automatically fetch unresolved review threads on a GitHub PR, apply fixes, reply with the commit SHA, resolve threads via GraphQL, and post a summary comment.
 
-Supports two modes:
+Supports three modes:
 
+- **Auto-detect** — pass no argument → detects the PR for the current branch and addresses every unresolved thread.
 - **All comments** — pass a PR number or PR URL → addresses every unresolved thread.
 - **Single comment** — pass a review comment URL → addresses only that one thread.
 
 ## Step 1: Setup — Parse the Argument
 
-The user provides one of the following as the argument:
+The user provides one of the following as the argument (or omits it):
 
 | Input format | Example | Mode |
 |---|---|---|
+| _(none)_ | (no argument) | Auto-detect PR for current branch — all unresolved threads |
 | PR number | `123` | All unresolved threads |
 | PR URL | `https://github.com/owner/repo/pull/123` | All unresolved threads |
 | Comment URL | `https://github.com/owner/repo/pull/123#discussion_r1234567890` | Single thread only |
 
 ### 1a. Parse the argument
 
+- **No argument provided** → auto-detect the PR for the current branch:
+
+  ```bash
+  gh pr view --json number -q '.number'
+  ```
+
+  - On success → set `PR_NUMBER = <output>`, leave `OWNER/REPO` unset (Step 1b will fill them in), `COMMENT_ID = null`, mode = `all`.
+  - On non-zero exit (no PR found for current branch) → inform the user there is no PR for the current branch and ask them to provide a PR number, PR URL, or comment URL. Do not guess.
 - **Plain integer** → `PR_NUMBER = <arg>`, `COMMENT_ID = null`, mode = `all`.
 - **PR URL** (matches `github.com/<owner>/<repo>/pull/<number>`) → extract `OWNER`, `REPO`, `PR_NUMBER` from the URL, `COMMENT_ID = null`, mode = `all`.
 - **Comment URL** (matches `github.com/<owner>/<repo>/pull/<number>#discussion_r<id>`) → extract `OWNER`, `REPO`, `PR_NUMBER`, and `COMMENT_ID = <id>` (the integer after `discussion_r`), mode = `single`.
 
-If the argument does not match any of the above, ask the user for a valid PR number, PR URL, or comment URL.
+If a non-empty argument does not match any of the above, ask the user for a valid PR number, PR URL, or comment URL.
 
 ### 1b. Detect the repository
 

@@ -10,3 +10,4 @@
 # Claude Code
 /.claude/worktrees
 /.claude/recent-work
+.codex-system-skills.marker
