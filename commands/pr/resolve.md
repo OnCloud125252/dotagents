@@ -91,12 +91,11 @@ Set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = false`.
 git fetch origin <BRANCH>
 git worktree add .claude/worktrees/<BRANCH> <BRANCH>
 git -C .claude/worktrees/<BRANCH> pull origin <BRANCH>
-cd .claude/worktrees/<BRANCH>
 ```
 
-Set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = true`.
+Set `WORKTREE_PATH = ".claude/worktrees/<BRANCH>"` and `WORKTREE_CREATED = true`.
 
-All subsequent `git` operations (stage, commit, push, rev-parse) **must** use `git -C "$WORKTREE_PATH"` so they run against the correct working tree. All file reads and edits must be rooted at `$WORKTREE_PATH/<path>` rather than the repository root.
+All subsequent `git` operations (stage, commit, push, rev-parse) **must** use `git -C "$WORKTREE_PATH"` so they run against the correct working tree. All file reads and edits must use paths prefixed with `$WORKTREE_PATH/` (e.g., `$WORKTREE_PATH/src/file.go`).
 
 ## Step 2: Fetch Threads
 
