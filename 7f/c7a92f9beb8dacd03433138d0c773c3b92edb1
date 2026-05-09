@@ -1,0 +1,19 @@
+commands/worktree/create.md
+  s_c26071825c62a1::t_e11031cd214f47 124-129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "7fc7a92f9beb8dacd03433138d0c773c3b92edb1",
+  "prompts": {},
+  "sessions": {
+    "s_c26071825c62a1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3987a144-9c8e-44bc-b0ac-26bf0cc3f8cd",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
