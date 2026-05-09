@@ -1,0 +1,19 @@
+agentsmd-templates/GLOBAL_AGENTS.md
+  s_96ff246dfe1686::t_f0664cb3b65a1c 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "e835e6b27ebebc408bc8c83b06666c0b24787b2a",
+  "prompts": {},
+  "sessions": {
+    "s_96ff246dfe1686": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c9b449d5-92ce-4bd6-821d-15dea725f5b0",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
