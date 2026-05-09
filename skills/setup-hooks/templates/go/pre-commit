@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Zeabur Backend — Pre-Commit Hook
+# Blocks secrets and auto-fixes Go formatting; fixes are re-staged
+# into the current commit (only originally-staged files).
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+set -u
+
+TOTAL_STEPS=2
+
+# Colors
+_CLI_RED='\033[0;31m'
+_CLI_GREEN='\033[0;32m'
+_CLI_YELLOW='\033[0;33m'
+_CLI_CYAN='\033[0;36m'
+_CLI_GRAY='\033[0;90m'
+_CLI_PURPLE='\033[0;35m'
+_CLI_NC='\033[0m'
+
+_CLI_WIDTH="${COLUMNS:-$( (tput cols </dev/tty) 2>/dev/null || tput cols 2>/dev/null || echo 80)}"
+
+_CLI_CHECK="${_CLI_GREEN}[✓]${_CLI_NC}"
+_CLI_CROSS="${_CLI_RED}[✗]${_CLI_NC}"
+_CLI_WARN="${_CLI_YELLOW}[!]${_CLI_NC}"
+_CLI_INFO="${_CLI_CYAN}[i]${_CLI_NC}"
+
+log_info()    { echo -e "$_CLI_INFO $1"; }
+log_success() { echo -e "$_CLI_CHECK $1"; }
+log_warn()    { echo -e "$_CLI_WARN $1"; }
+log_error()   { echo -e "$_CLI_CROSS $1"; }
+
+print_divider() {
+  local color="${1:-$_CLI_PURPLE}" label="${2:-}"
+  local width="$_CLI_WIDTH"
+  if [[ -n "$label" ]]; then
+    local padding=$((width - ${#label} - 6))
+    [[ $padding -lt 0 ]] && padding=0
+    local fill
+    printf -v fill '%*s' "$padding" ''
+    printf '%b━━━━[%s]%s%b\n' "$color" "$label" "${fill// /━}" "$_CLI_NC"
+  else
+    local fill
+    printf -v fill '%*s' "$width" ''
+    printf '%b%s%b\n' "$color" "${fill// /━}" "$_CLI_NC"
+  fi
+}
+
+run_step() {
+  local step_num="$1"
+  local step_name="$2"
+  local step_cmd="$3"
+  local tmp_out
+  tmp_out=$(mktemp "${TMPDIR:-/tmp}/pre-commit.XXXXXX")
+
+  printf "${_CLI_GRAY}[·]${_CLI_NC} ${_CLI_GRAY}[${step_num}/${TOTAL_STEPS}]${_CLI_NC} ${step_name}..."
+
+  if eval "$step_cmd" >"$tmp_out" 2>&1; then
+    printf "\r${_CLI_CHECK} ${_CLI_GRAY}[${step_num}/${TOTAL_STEPS}]${_CLI_NC} ${step_name}\n"
+    rm -f "$tmp_out"
+    return 0
+  else
+    printf "\n\n"
+    cat "$tmp_out"
+    rm -f "$tmp_out"
+    echo ""
+    log_error "${_CLI_GRAY}[${step_num}/${TOTAL_STEPS}]${_CLI_NC} ${step_name} ${_CLI_RED}failed${_CLI_NC}"
+    echo ""
+    log_info "Fix the errors above, then try again."
+    echo ""
+    print_divider "$_CLI_RED"
+    echo ""
+    return 1
+  fi
+}
+
+# ── Snapshot / re-stage helpers ──────────────────────────────────
+# After gofmt -w, re-stage only the files that were already staged so fixes
+# land in the current commit. Unstaged files stay untouched.
+_staged_go_files=""
+
+snapshot_staged_go_files() {
+  _staged_go_files=$(git diff --cached --name-only --diff-filter=ACMR -- '*.go' 2>/dev/null || true)
+}
+
+apply_gofmt_to_staged() {
+  [[ -z "$_staged_go_files" ]] && return 0
+
+  local file
+  while IFS= read -r file; do
+    [[ -z "$file" ]] && continue
+    [[ -f "$file" ]] || continue
+    gofmt -w "$file"
+  done <<< "$_staged_go_files"
+}
+
+stage_gofmt_fixes() {
+  [[ -z "$_staged_go_files" ]] && return 0
+
+  # Re-add only the files that were originally staged (picks up gofmt fixes
+  # without sweeping in unrelated unstaged changes).
+  echo "$_staged_go_files" | xargs -I{} -- git add -- {} || {
+    log_error "Failed to re-stage gofmt fixes"
+    return 1
+  }
+  log_info "gofmt fixes staged into your commit"
+}
+
+# ── Main ──────────────────────────────────────────────────────────
+
+echo ""
+print_divider "$_CLI_PURPLE" "Pre-Commit Checks"
+echo ""
+
+# 1. Secret detection (staged changes only)
+run_step 1 "gitleaks (staged secret scan)" \
+  "gitleaks protect --staged --no-banner" || exit 1
+
+# 2. gofmt auto-fix on staged Go files + re-stage
+snapshot_staged_go_files
+run_step 2 "gofmt auto-fix" "apply_gofmt_to_staged" || exit 1
+stage_gofmt_fixes || exit 1
+
+echo ""
+log_success "All pre-commit checks passed"
+echo ""
+print_divider "$_CLI_PURPLE"
+echo ""

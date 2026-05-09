@@ -1,0 +1,221 @@
+---
+description: Scaffold a stack-appropriate git-hooks pipeline (.githooks/ + scripts/setup-hooks.sh + .claude/settings.json patch) into the current repo. Detects Go / bun+biome / pnpm+biome automatically.
+argument-hint: "[--force] [--stack=go|bun-biome|pnpm-biome]"
+allowed-tools: Bash(git *), Bash(jq *), Bash(cp *), Bash(chmod *), Bash(mkdir *), Bash(test *), Bash(bash -n *), Bash(diff *), Bash(/Users/oncloud/.agents/skills/setup-hooks/detect.sh*), Read, Write, Edit
+---
+
+# /setup-hooks
+
+Scaffold a tailored `.githooks/` + `scripts/setup-hooks.sh` into the current
+repo, then wire up `.claude/settings.json` so Claude Code auto-runs the init on
+the first Bash call.
+
+## Inputs
+
+`$ARGUMENTS` may include:
+
+- `--force` — overwrite existing files without diff prompts
+- `--stack=<name>` — skip detection, use `go`, `bun-biome`, or `pnpm-biome`
+
+If neither flag is set, run interactively (default).
+
+## Workflow
+
+### 0. Verify we're in a git repo
+
+```bash
+REPO=$(git rev-parse --show-toplevel)
+```
+
+If this fails, abort with a clear message: "Not inside a git repository.
+Run `git init` first."
+
+Capture the repo path for all subsequent operations — every `git`/`bash`
+command must operate against `$REPO` (use `git -C "$REPO" …` and absolute
+paths for file operations).
+
+### 1. Detect stack
+
+```bash
+TEMPLATES_DIR=/Users/oncloud/.agents/skills/setup-hooks/templates
+DETECTOR=/Users/oncloud/.agents/skills/setup-hooks/detect.sh
+DETECTION=$("$DETECTOR" "$REPO")
+STACK=$(echo "$DETECTION" | cut -f1)
+REASON=$(echo "$DETECTION" | cut -f2)
+```
+
+Honor `--stack=<name>` from `$ARGUMENTS` if provided (skip auto-detection).
+
+### 2. Confirm with the user
+
+If `STACK == "unknown"` OR no `--force` flag, ask via **AskUserQuestion**:
+
+- Question: `"Detected stack: <STACK> (<REASON>). Proceed with this template?"`
+- Options:
+  - `Use detected: <STACK>` (recommended)
+  - `Use go`
+  - `Use bun-biome`
+  - `Use pnpm-biome`
+  - (Other → user types a custom value, treat as abort if not in {go, bun-biome, pnpm-biome})
+
+Skip this step when `STACK != "unknown"` AND `--force` is set.
+
+If the user picks an unsupported value or aborts, exit with a brief note —
+do NOT make any changes.
+
+### 3. Inspect existing setup
+
+Check each of these and collect a list of "would-overwrite" items:
+
+```bash
+git -C "$REPO" config --local core.hooksPath           # any value other than .githooks?
+test -d "$REPO/.githooks"                              # populated?
+test -f "$REPO/scripts/setup-hooks.sh"                 # already present?
+test -f "$REPO/.claude/settings.json"                  # already has our hook?
+```
+
+Build a diff summary table — for each existing template file, show what
+already exists vs. what we'd write. Use `diff -u` against the template
+copies under `$TEMPLATES_DIR/$STACK/`.
+
+If anything pre-exists AND `--force` is NOT set, ask via **AskUserQuestion**:
+
+- Options:
+  - `Overwrite all` — replace local files with templates
+  - `Keep existing` — only add files that don't exist; never overwrite
+  - `Per-file` — ask individually for each conflict
+  - `Abort` — don't change anything
+
+### 4. Copy templates
+
+For each file in `$TEMPLATES_DIR/$STACK/`:
+
+| Source                                    | Destination                          |
+|-------------------------------------------|--------------------------------------|
+| `pre-commit`                              | `$REPO/.githooks/pre-commit`         |
+| `pre-push`                                | `$REPO/.githooks/pre-push`           |
+| `post-merge` *(go only)*                  | `$REPO/.githooks/post-merge`         |
+| `setup-hooks.sh`                          | `$REPO/scripts/setup-hooks.sh`       |
+
+```bash
+mkdir -p "$REPO/.githooks" "$REPO/scripts"
+cp "$TEMPLATES_DIR/$STACK"/<file> "$REPO/<dest>"
+chmod +x "$REPO/.githooks"/* "$REPO/scripts/setup-hooks.sh"
+```
+
+Honor the user's keep/overwrite/per-file decision from step 3.
+
+### 5. Patch `.claude/settings.json`
+
+The patch shape:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -f .claude/.githooks-initialized || ./scripts/setup-hooks.sh </dev/null >&2"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<STACK_FORMATTER>"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Stack-specific `<STACK_FORMATTER>`:
+
+- `go`:
+  ```
+  jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; case "$f" in *.go) gofmt -w "$f" ;; esac; } 2>/dev/null || true
+  ```
+- `bun-biome`:
+  ```
+  jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; case "$f" in *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs|*.json|*.jsonc) bunx --bun biome format --write "$f" ;; esac; } 2>/dev/null || true
+  ```
+- `pnpm-biome`:
+  ```
+  jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; case "$f" in *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs|*.json|*.jsonc) pnpm exec biome format --write "$f" ;; esac; } 2>/dev/null || true
+  ```
+
+**Merge rules** (when `.claude/settings.json` already exists):
+
+1. Read the file with `Read`. Parse with `jq`.
+2. If `.hooks.PreToolUse[*].matcher == "Bash"` already exists with a `command`
+   that matches `*.githooks-initialized*` → leave it alone.
+3. Otherwise append our new entry to `.hooks.PreToolUse`.
+4. Same logic for `PostToolUse` matching `Write|Edit` with the stack
+   formatter command.
+5. Use `Edit` on the file with surgical replacements; preserve all other
+   keys (env, permissions, model, etc.) verbatim.
+
+Validate the result with `jq . file > /dev/null` before saving the final
+copy.
+
+If the file does NOT exist, just `mkdir -p .claude && Write` the minimal
+config above.
+
+### 6. Run the init script once
+
+```bash
+cd "$REPO" && ./scripts/setup-hooks.sh
+```
+
+Show the script's full output to the user. If it aborts on missing tools,
+**don't try to install them automatically** — quote the install hints from
+the script's output and let the user follow them. The marker file
+`.claude/.githooks-initialized` is only created on full success, so re-running
+is idempotent.
+
+### 7. Print summary
+
+Format:
+
+```
+Stack:        <STACK>
+Detected by:  <REASON>
+
+Files added:
+  • .githooks/pre-commit
+  • .githooks/pre-push
+  • [.githooks/post-merge — go only]
+  • scripts/setup-hooks.sh
+  • .claude/settings.json (patched)
+
+Files preserved (per user choice):
+  • <any items the user chose to keep>
+
+Hooks active: <yes|no — depends on whether setup-hooks.sh succeeded>
+
+Next steps:
+  • git add .githooks/ scripts/setup-hooks.sh .claude/settings.json
+  • git commit -m "chore: scaffold git hooks via /setup-hooks"
+  • If you skipped tool installs, fix them and re-run scripts/setup-hooks.sh
+```
+
+## Notes
+
+- **Never** disable existing hooks via `core.hooksPath = ""` or
+  `git config --unset`. If the user has a custom path set, the
+  `setup-hooks.sh` script handles overriding it with a warning.
+- **Never** clobber `.gitleaks.toml` if present — it's optional and
+  user-managed.
+- The `--force` flag is for non-interactive use (CI / scripted setup);
+  prefer the interactive flow in regular human-driven sessions.
+- This command does NOT create commits. Always leave the repo dirty so
+  the user can review and commit themselves.
