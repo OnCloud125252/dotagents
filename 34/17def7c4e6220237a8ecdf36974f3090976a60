@@ -1,0 +1,39 @@
+skills/setup-hooks/templates/bun-biome/pre-commit
+  s_c26071825c62a1::t_b38a0910300df7 1-131
+skills/setup-hooks/templates/pnpm-biome/pre-push
+  s_c26071825c62a1::t_342a996e5c0b0b 1-187
+skills/setup-hooks/templates/bun-biome/pre-push
+  s_c26071825c62a1::t_dff4c190cececd 1-191
+skills/setup-hooks/templates/bun-biome/setup-hooks.sh
+  s_c26071825c62a1::t_8aefa6dcf81cca 1-147
+skills/setup-hooks/detect.sh
+  s_c26071825c62a1::t_3723c793210fd4 1-78
+skills/setup-hooks/SKILL.md
+  s_c26071825c62a1::t_2d7d0e9b835def 1-118
+skills/setup-hooks/README.md
+  s_c26071825c62a1::t_3474b2529d9ab4 1-79
+commands/setup-hooks.md
+  s_c26071825c62a1::t_739989f36a722d 1-221
+skills/setup-hooks/templates/shared/cli-output.sh
+  s_c26071825c62a1::t_25f75ee956b177 1-43
+skills/setup-hooks/templates/pnpm-biome/pre-commit
+  s_c26071825c62a1::t_6f3957e3a0ee18 1-121
+skills/setup-hooks/templates/pnpm-biome/setup-hooks.sh
+  s_c26071825c62a1::t_ac1c76f8beffad 1-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "3417def7c4e6220237a8ecdf36974f3090976a60",
+  "prompts": {},
+  "sessions": {
+    "s_c26071825c62a1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3987a144-9c8e-44bc-b0ac-26bf0cc3f8cd",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
