@@ -25,7 +25,7 @@ Push the current branch to the remote repository and handle any issues that aris
      3. Only use rebase (`git pull --rebase`) if the user explicitly requests it
      4. NEVER suggest or use `--force` unless the user explicitly requests it
 
-   - **Hook output**: If pre-push hooks produce output or errors, display the output and diagnose the issue. Attempt to fix automatically if possible (e.g., linting errors), then retry the push.
+   - **Hook output**: If pre-push hooks produce output or errors, display the output and diagnose the issue. The hooks may auto-fix and commit changes (e.g., lint fixes, proto regeneration) — if so, inform the user and retry the push to include the new commit.
 
    - **Authentication errors**: Display the error and suggest the user check their credentials or SSH keys.
 
