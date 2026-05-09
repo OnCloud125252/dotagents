@@ -8,6 +8,7 @@
     { "key": "docs", "label": "Docs", "note": null },
     { "key": "opsx", "label": "OPSX", "note": "requires: openspec CLI" },
     { "key": "code", "label": "Code", "note": null },
+    { "key": "linear", "label": "Linear", "note": "requires: Linear MCP server" },
     { "key": "standalone", "label": "Standalone", "note": null }
   ],
   "commands": {
@@ -103,6 +104,15 @@
       "optional_tools": ["mcp:linear"],
       "model": "claude-haiku-4-5"
     },
+    "worktree/sync": {
+      "name": "Sync Worktree",
+      "description": "Sync a worktree branch with main by merging origin/main into it. Use when the worktree branch has fallen behind main.",
+      "path": "commands/worktree/sync.md",
+      "category": "worktree",
+      "requires_skills": [],
+      "requires_tools": ["git"],
+      "model": "claude-haiku-4-5"
+    },
     "worktree/merge": {
       "name": "Merge Worktree",
       "description": "Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.",
@@ -175,6 +185,26 @@
       "requires_tools": ["openspec"],
       "model": null
     },
+    "linear/api-doc": {
+      "name": "Linear API Doc",
+      "description": "Generate a frontend-oriented API guide document on Linear for a given issue. Analyzes git diff and source code to identify API changes.",
+      "path": "commands/linear/api-doc.md",
+      "category": "linear",
+      "requires_skills": ["api-doc"],
+      "requires_tools": [],
+      "optional_tools": ["mcp:linear"],
+      "model": null
+    },
+    "linear/project-update": {
+      "name": "Linear Project Update",
+      "description": "Draft a Traditional Chinese project update for a Linear project by correlating milestones and issues with recent git commits and GitHub PRs.",
+      "path": "commands/linear/project-update.md",
+      "category": "linear",
+      "requires_skills": [],
+      "requires_tools": ["git", "gh"],
+      "optional_tools": ["mcp:linear"],
+      "model": null
+    },
     "code/react-doctor": {
       "name": "React Doctor",
       "description": "Scan React codebase for security, performance, correctness, and architecture issues. Outputs a 0-100 score with actionable diagnostics.",
@@ -210,6 +240,15 @@
       "requires_skills": [],
       "requires_tools": [],
       "model": "claude-sonnet-4-6"
+    },
+    "setup-hooks": {
+      "name": "Setup Git Hooks",
+      "description": "Scaffold a stack-appropriate git-hooks pipeline (.githooks/ + scripts/setup-hooks.sh + .claude/settings.json patch) into the current repo.",
+      "path": "commands/setup-hooks.md",
+      "category": "standalone",
+      "requires_skills": ["setup-hooks"],
+      "requires_tools": ["git", "jq"],
+      "model": null
     }
   },
   "skills": {
@@ -277,6 +316,14 @@
       "requires_tools": ["npx"],
       "has_subdirs": false
     },
+    "i18n": {
+      "name": "i18n",
+      "description": "Guidelines for updating translations or i18n keys. Triggers when working with locale files, translation keys, or internationalization tasks.",
+      "path": "skills/i18n",
+      "trigger": "When working with locale files, translation keys, or internationalization tasks",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
     "openspec-propose": {
       "name": "openspec-propose",
       "description": "Propose a new change with all artifacts generated in one step.",
@@ -309,13 +356,53 @@
       "requires_tools": ["openspec"],
       "has_subdirs": false
     },
-    "i18n": {
-      "name": "i18n",
-      "description": "Guidelines for updating translations or i18n keys. Triggers when working with locale files, translation keys, or internationalization tasks.",
-      "path": "skills/i18n",
-      "trigger": "When working with locale files, translation keys, or internationalization tasks",
+    "api-doc": {
+      "name": "api-doc",
+      "description": "Generate a frontend-oriented API guide document for a given issue or task. Analyzes git diff and source code to identify API changes (GraphQL, REST, gRPC, tRPC, etc.).",
+      "path": "skills/api-doc",
+      "trigger": "When asked to create API docs, write frontend API guides, or document API changes after backend work",
+      "requires_tools": ["git"],
+      "has_subdirs": false
+    },
+    "claude-rules-gen": {
+      "name": "claude-rules-gen",
+      "description": "Generate a CLAUDE.md and path-scoped .claude/rules/ files for a repository.",
+      "path": "skills/claude-rules-gen",
+      "trigger": "When bootstrapping Claude Code project context, creating CLAUDE.md, generating rules, or onboarding a new codebase",
       "requires_tools": [],
       "has_subdirs": false
+    },
+    "make-interfaces-feel-better": {
+      "name": "make-interfaces-feel-better",
+      "description": "Design engineering principles for making interfaces feel polished — animations, hover states, shadows, borders, typography, and micro-interactions.",
+      "path": "skills/make-interfaces-feel-better",
+      "trigger": "When building UI components, reviewing frontend code, or working on visual polish and micro-interactions",
+      "requires_tools": [],
+      "has_subdirs": true
+    },
+    "nextjs": {
+      "name": "nextjs",
+      "description": "Next.js App Router expert guidance — routing, Server Components, Server Actions, data fetching, rendering strategies, and deployment on Vercel.",
+      "path": "skills/nextjs",
+      "trigger": "When building, debugging, or architecting Next.js applications",
+      "requires_tools": [],
+      "has_subdirs": true
+    },
+    "pbcopy": {
+      "name": "pbcopy",
+      "description": "Copy output to the macOS clipboard via pbcopy. Trigger when the user appends or includes /pbcopy anywhere in their prompt.",
+      "path": "skills/pbcopy",
+      "trigger": "When user appends /pbcopy to their prompt",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
+    "setup-hooks": {
+      "name": "setup-hooks",
+      "description": "Scaffold a stack-appropriate git-hooks pipeline (.githooks/ + scripts/setup-hooks.sh) into the current repo. Detects Go, bun+biome, or pnpm+biome stacks automatically.",
+      "path": "skills/setup-hooks",
+      "trigger": "When asked to set up git hooks, scaffold hooks, or after creating a new repo that needs hook conventions",
+      "requires_tools": ["git"],
+      "has_subdirs": true
     }
   },
   "bundles": {
@@ -333,8 +420,8 @@
     },
     "worktree": {
       "label": "Worktree Management",
-      "description": "Git worktree creation, merging, and cleanup",
-      "commands": ["worktree/create", "worktree/merge", "worktree/cleanup"],
+      "description": "Git worktree creation, syncing, merging, and cleanup",
+      "commands": ["worktree/create", "worktree/sync", "worktree/merge", "worktree/cleanup"],
       "skills": []
     },
     "docs": {
@@ -351,27 +438,29 @@
     },
     "all-commands": {
       "label": "All Commands",
-      "description": "Every slash command (22 total)",
+      "description": "Every slash command (26 total)",
       "commands": [
         "git/commit", "git/pull", "git/push", "git/changelog", "git/version", "git/issue",
         "pr/create", "pr/review", "pr/resolve",
-        "worktree/create", "worktree/merge", "worktree/cleanup",
+        "worktree/create", "worktree/sync", "worktree/merge", "worktree/cleanup",
         "docs/agentsmd", "docs/update",
         "opsx/propose", "opsx/apply", "opsx/explore", "opsx/archive",
+        "linear/api-doc", "linear/project-update",
         "code/react-doctor",
-        "search", "auto-resolve", "organize-dir"
+        "search", "auto-resolve", "organize-dir", "setup-hooks"
       ],
       "skills": []
     },
     "all-skills": {
       "label": "All Skills",
-      "description": "Every contextual skill (13 total)",
+      "description": "Every contextual skill (19 total)",
       "commands": [],
       "skills": [
         "commit", "readme", "docs-writer", "cli-output-style",
         "react-best-practices", "grafana-dashboards", "humanizer",
         "find-skills", "i18n",
-        "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"
+        "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change",
+        "api-doc", "claude-rules-gen", "make-interfaces-feel-better", "nextjs", "pbcopy", "setup-hooks"
       ]
     },
     "full-suite": {
@@ -380,17 +469,19 @@
       "commands": [
         "git/commit", "git/pull", "git/push", "git/changelog", "git/version", "git/issue",
         "pr/create", "pr/review", "pr/resolve",
-        "worktree/create", "worktree/merge", "worktree/cleanup",
+        "worktree/create", "worktree/sync", "worktree/merge", "worktree/cleanup",
         "docs/agentsmd", "docs/update",
         "opsx/propose", "opsx/apply", "opsx/explore", "opsx/archive",
+        "linear/api-doc", "linear/project-update",
         "code/react-doctor",
-        "search", "auto-resolve", "organize-dir"
+        "search", "auto-resolve", "organize-dir", "setup-hooks"
       ],
       "skills": [
         "commit", "readme", "docs-writer", "cli-output-style",
         "react-best-practices", "grafana-dashboards", "humanizer",
         "find-skills", "i18n",
-        "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"
+        "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change",
+        "api-doc", "claude-rules-gen", "make-interfaces-feel-better", "nextjs", "pbcopy", "setup-hooks"
       ]
     }
   },
@@ -459,7 +550,7 @@
   "optional_integrations": {
     "mcp:linear": {
       "description": "Linear issue tracking MCP server. Enables fetching issue details for branch naming and PR context.",
-      "used_by": ["pr/create", "worktree/create"],
+      "used_by": ["pr/create", "worktree/create", "linear/api-doc", "linear/project-update"],
       "setup": "Configure the Linear MCP server in your Claude Code MCP settings."
     }
   }

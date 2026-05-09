@@ -4,9 +4,9 @@
 
 ## What's Inside
 
-- **22 slash commands** — git workflows, PR automation, worktree management, docs, and more
-- **13 skills** — contextual agents that activate automatically (React best practices, commit conventions, humanizer, i18n, etc.)
-- **3 hooks** — native macOS notifications and session persistence
+- **26 slash commands** — git workflows, PR automation, worktree management, Linear integration, docs, and more
+- **19 skills** — contextual agents that activate automatically (React best practices, Next.js, commit conventions, humanizer, i18n, etc.)
+- **5 hooks** — native macOS notifications, session persistence, and worktree suggestions
 - **Custom status line** — git state, working directory, and last prompt at a glance
 
 <details>
@@ -22,6 +22,7 @@
 ├── agentsmd-templates/ # Reusable AGENTS.md snippets
 ├── gemini-commands/    # Auto-converted Gemini CLI equivalents
 ├── helpers/            # Shared utility scripts
+├── templates/          # Reusable file templates (e.g. .linear.md)
 └── dependency.md       # External tool requirements
 ```
 
