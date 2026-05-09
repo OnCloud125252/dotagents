@@ -22,8 +22,8 @@ Parse `$ARGUMENTS` to extract:
 1. **Gather Context** (run these in parallel):
    - `git status` — check for uncommitted changes
    - `git rev-parse --abbrev-ref HEAD` — get current branch name
-   - `git log --oneline main..HEAD` — list all commits on this branch
-   - `git diff main...HEAD --stat` — summarize changed files
+   - `git log --oneline <base>..HEAD` — list all commits on this branch (where `<base>` is from `--base`, default `main`)
+   - `git diff <base>...HEAD --stat` — summarize changed files
    - `git branch -vv | grep '^\*'` — check remote tracking
 
 2. **Detect Linear Issue** (from the branch name):
@@ -122,8 +122,8 @@ Parse `$ARGUMENTS` to extract:
    **MCP unavailable**: If any MCP call in the sync flow fails due to the server being unreachable, display a warning ("Linear MCP unavailable — sync skipped"), skip the entire sync flow, and proceed to PR creation.
 
 6. **Analyze Changes**:
-   - Review ALL commits on the branch (`git log main..HEAD`), not just the latest
-   - Review the full diff (`git diff main...HEAD`) to understand scope
+   - Review ALL commits on the branch (`git log <base>..HEAD`), not just the latest
+   - Review the full diff (`git diff <base>...HEAD`) to understand scope
    - Determine change type: feature, fix, refactor, docs, chore, etc.
 
 7. **Generate PR Content**:

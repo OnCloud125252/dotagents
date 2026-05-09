@@ -27,7 +27,7 @@ Pull the latest changes from the remote repository and handle any issues that ar
         - **Abort the merge** (`git merge --abort`)
      4. After resolution, run `git add` on resolved files and complete the merge with `git commit`
 
-   - **Hook output**: If pre-merge or post-merge hooks produce output or errors, display the output and diagnose the issue. Attempt to fix automatically if possible, otherwise report to the user.
+   - **Hook output**: If pre-merge or post-merge hooks produce output or errors, display the full output to the user with suggested manual steps if needed. Post-merge hooks are designed for manual follow-up — do not attempt automatic fixes.
 
    - **Diverged branches**: If the local and remote have diverged, default to merge. Only rebase if the user explicitly requests it.
 

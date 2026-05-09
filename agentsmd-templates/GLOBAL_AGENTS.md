@@ -21,7 +21,7 @@
 ## Best Practices
 
 - **Always use the LSP** (Language Server Protocol) for code intelligence — leverage go-to-definition, find-references, diagnostics, and symbol lookups instead of relying solely on text search
-- When running scripts or commands that depend on the current git worktree, always verify the working directory first. Use `pwd` or check `.git` to confirm you're in the correct location, especially when working with feature branches or worktrees.
+- **Verify the worktree _and_ the checked-out branch** before any task that depends on git state. Run `pwd && git branch --show-current` as the first action — do **not** rely on the session-start git-status snapshot or on the worktree path implying a branch (a worktree at `.claude/worktrees/feat-xxx/` may actually be on `main` or a stale ref). If the branch isn't what the task expects, stop and confirm with the user before editing files. Re-check whenever you resume a long session or notice the snapshot diverging from reality.
 - **Prefer deterministic code over AI generation** — if a value (dates, IDs, checksums, etc.) can be computed programmatically, do that instead of letting an AI model generate or guess it
 
 ## Development Workflow
