@@ -1,0 +1,33 @@
+README.md
+  s_1e2ca244a2b135::t_b6ab524a54f870 25
+  s_1e2ca244a2b135::t_df87407da4eb11 7-9
+store/catalog.json
+  s_1e2ca244a2b135::t_4f578d768a6178 11,107-115,188-207,243-251,319-326,359-395,398-405,423-424,441,445,448,450,456,462-463,472,475,477,483-484,553
+dependency.md
+  s_24abe3d2f01bf1::t_69a8e138f23f2a 12,60,63,76-84,90,230,232,234,269,271,273-274
+  s_1e2ca244a2b135::t_ff5554bc4b807e 29-31,91-101,110-121,224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "f7354de5cfd3602c1161cd0b166e53d542fb70e5",
+  "prompts": {},
+  "sessions": {
+    "s_1e2ca244a2b135": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5a5fff9d-ccf7-4320-86a7-7b317977783b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    },
+    "s_24abe3d2f01bf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "629497a7-238c-4280-b2ee-9f484b8abf30",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
