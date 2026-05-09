@@ -2,7 +2,7 @@
 name: Create Worktree
 description: Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.
 argument-hint: <branch-name | Linear issue ID | Linear issue URL>
-allowed-tools: Bash(git *), Bash(mkdir *), Bash(date *), Bash(basename *), Write, Read, mcp__Linear*__get_issue, mcp__Linear*__save_issue
+allowed-tools: Bash(git *), Bash(mkdir *), Bash(date *), Bash(basename *), Bash(cp *), Bash(direnv *), Bash(command *), Write, Read, mcp__Linear*__get_issue, mcp__Linear*__save_issue
 model: claude-haiku-4-5
 ---
 
@@ -88,11 +88,45 @@ git worktree list
 cd <worktree-path> && git branch --show-current && pwd
 ```
 
-### 6. Hydrate `.linear.md` (Linear issues only)
+### 6. Copy Local Environment Files
+
+Copy gitignored local configuration files from the **main repo root** (not from `pwd` — resolve via `git worktree list | head -1 | awk '{print $1}'`) into the new worktree. This prevents developers from having to manually re-create their local environment in every worktree.
+
+```bash
+MAIN_REPO=$(git worktree list | head -1 | awk '{print $1}')
+WORKTREE_PATH="<worktree-path>"
+```
+
+**Files to copy (if they exist in the main repo):**
+
+| Source | Destination | Notes |
+|---|---|---|
+| `.vscode/settings.json` | `.vscode/settings.json` | Create `.vscode/` dir if needed |
+| `.claude/settings.local.json` | `.claude/settings.local.json` | Claude Code local overrides |
+| `.env` | `.env` | Environment variables |
+
+For each file, check if it exists in `$MAIN_REPO`. If it does and does NOT exist in the worktree, copy it. Do not overwrite existing files.
+
+**direnv:** If `.envrc` exists in the worktree, run `direnv allow` so the environment activates automatically. If `direnv` is not installed, skip silently.
+
+```bash
+if [ -f "$WORKTREE_PATH/.envrc" ] && command -v direnv &>/dev/null; then
+  cd "$WORKTREE_PATH" && direnv allow
+fi
+```
+
+Report which files were copied and whether direnv was allowed, as a brief note in the summary.
+
+### 7. Hydrate `.linear.md` (Linear issues only)
 
 **Only if the input was a Linear issue (ID or URL) and step 1 succeeded:**
 
-Using the issue data already fetched in step 1, write a `.linear.md` file to the worktree root. Read the template from `.claude/templates/linear.md` in the repo (relative to the main worktree or the new worktree). Replace the template placeholders:
+Using the issue data already fetched in step 1, write a `.linear.md` file to the worktree root. Resolve the template path with this precedence (first hit wins):
+
+1. `<repo>/.claude/templates/linear.md` — project-local override
+2. `~/.agents/templates/linear.md` — global default (always present)
+
+Replace the template placeholders:
 
 | Placeholder | Value |
 |---|---|
@@ -111,7 +145,7 @@ Write the rendered file to `<worktree-path>/.linear.md` using the Write tool.
 
 **If MCP failed in step 1** (issue fetch error), skip this step silently — log a warning that `.linear.md` was not created and the user can re-run sync later. Do not block worktree creation.
 
-### 7. Mark Linear Issue In Progress
+### 8. Mark Linear Issue In Progress
 
 **Only if the input was a Linear issue (ID or URL):**
 
@@ -124,7 +158,7 @@ state: "In Progress"
 
 If the status update fails, log a warning but do not block — the worktree is already created.
 
-### 8. Report Summary
+### 9. Report Summary
 
 **If from Linear issue, display:**
 
