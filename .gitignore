@@ -11,3 +11,7 @@
 /.claude/worktrees
 /.claude/recent-work
 .codex-system-skills.marker
+
+# Private infra rules (kept local, purged from public history)
+/rules/zeabur.md
+/rules/lazco.md
