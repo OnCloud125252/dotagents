@@ -1,0 +1,20 @@
+hooks/notify.sh
+  s_eda70592d81bf6::t_ba840f6ee6938a 105,125,140
+  s_eda70592d81bf6::t_711881cc290da9 17-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "5c6a9f7138903aa57b89b55a9525f126815d0b7f",
+  "prompts": {},
+  "sessions": {
+    "s_eda70592d81bf6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2e16f9cf-e513-4065-b54c-e197ef2b86d8",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
