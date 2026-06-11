@@ -1,0 +1,98 @@
+rules/zeabur.md
+  h_964b3dfa0bfd24 1-3,5-11,16,30-59
+  s_43841869579f35::t_b05575ee15b37b 4
+  s_7893a419a9cd44::t_437d7bba948c7c 17-29
+  s_43841869579f35::t_eedbce239eb5fc 12-15
+rules/lazco.md
+  s_7893a419a9cd44::t_dccc36abae5e38 8-17
+  s_1fd0cac60682b5::t_fa544258da6c4f 18-24
+  s_7893a419a9cd44::t_fd7f43126bcc39 25-51
+rules/linear-mcp.md
+  s_7893a419a9cd44::t_437d7bba948c7c 1-5
+rules/linear-md-sync.md
+  s_7893a419a9cd44::t_437d7bba948c7c 1-71
+rules/docker.md
+  s_7893a419a9cd44::t_437d7bba948c7c 1-27
+rules/ssh-python.md
+  s_7893a419a9cd44::t_437d7bba948c7c 1-3
+rules/go-worktree.md
+  s_7893a419a9cd44::t_437d7bba948c7c 1-11
+agentsmd-templates/GLOBAL_AGENTS.md
+  s_26772ae07b0821::t_c4f1d0f6ea5b21 3-5,61-68,70,72
+  s_b45cfceb14d203::t_17ae7b0695254b 73
+  s_12ed6f9066f647::t_e31d02ba3de8df 18
+  s_7893a419a9cd44::t_31623b3f2216ed 69
+  s_e3d54bc5a6334a::t_a616f2b201989b 47
+  s_7893a419a9cd44::t_9dfce2a3debcbd 71
+rules/zshrc-customrc.md
+  s_7893a419a9cd44::t_437d7bba948c7c 1-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "41dd96936208712167ac9e183c5323cbd0467495",
+  "prompts": {},
+  "humans": {
+    "h_964b3dfa0bfd24": {
+      "author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_12ed6f9066f647": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "12572f8d-0302-4065-a374-80e88a1500c5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    },
+    "s_1fd0cac60682b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "730dfacd-2af3-40b6-85e6-2cfb98241eae",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    },
+    "s_26772ae07b0821": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5c657415-5d93-49ed-8b49-fc0bdc5acb2c",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    },
+    "s_43841869579f35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "299ca377-ce26-4df1-81d0-3655bc878859",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    },
+    "s_7893a419a9cd44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c44dfffa-edd1-4737-9895-74ff4e74bd39",
+        "model": "claude-fable-5"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    },
+    "s_b45cfceb14d203": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "941d693e-ce09-4025-9d34-62ee5a1bb29f",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    },
+    "s_e3d54bc5a6334a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4a723f11-f11c-4358-9148-ca8a13be08b3",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
