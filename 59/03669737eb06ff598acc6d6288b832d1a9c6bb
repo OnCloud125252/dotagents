@@ -1,0 +1,19 @@
+CLAUDE.md
+  s_7893a419a9cd44::t_49f9107f874c8e 1-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "5903669737eb06ff598acc6d6288b832d1a9c6bb",
+  "prompts": {},
+  "sessions": {
+    "s_7893a419a9cd44": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c44dfffa-edd1-4737-9895-74ff4e74bd39",
+        "model": "claude-fable-5"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
