@@ -14,6 +14,30 @@ filter_message() {
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# Build the shell command to focus the terminal that started this Claude
+# session. Identifies the terminal via env vars inherited from the parent
+# shell and embeds the captured IDs literally, since the notification daemon
+# invokes the command long after this hook exits — by then $KITTY_WINDOW_ID
+# et al. are gone. Prints an empty string when the terminal is unrecognized;
+# callers must then omit --execute.
+build_focus_command() {
+  if [ -n "$KITTY_WINDOW_ID" ] && [ -n "$KITTY_PID" ]; then
+    # Try the remote-control socket first (precise window focus); fall back
+    # to raising the kitty app if the socket isn't reachable (config missing,
+    # or kitty restarted since this session started).
+    printf 'kitten @ --to unix:/tmp/kitty-%s focus-window --match id:%s 2>/dev/null || open -b net.kovidgoyal.kitty' \
+      "$KITTY_PID" "$KITTY_WINDOW_ID"
+  elif [ -n "$WEZTERM_PANE" ]; then
+    printf 'open -b com.github.wez.wezterm'
+  fi
+}
+
+focus_cmd="$(build_focus_command)"
+focus_args=()
+if [ -n "$focus_cmd" ]; then
+  focus_args=(--execute "$focus_cmd")
+fi
+
 # Extract last user input from the session JSONL file.
 get_last_user_input() {
   local session_id="$1"
@@ -78,7 +102,7 @@ case "$event" in
       --subtitle "$subtitle" \
       --sound Hero \
       --appId claude-code \
-      --execute "open -b com.github.wez.wezterm" \
+      "${focus_args[@]}" \
       --threadId "$claude_session_id" \
       "$message"
     ;;
@@ -98,7 +122,7 @@ case "$event" in
         --subtitle "Waiting for Input" \
         --sound Tink \
         --appId claude-code \
-        --execute "open -b com.github.wez.wezterm" \
+        "${focus_args[@]}" \
         --threadId "$claude_session_id" \
         "Session is idle — check terminal for pending prompts"
     else
@@ -113,7 +137,7 @@ case "$event" in
         --subtitle "$subtitle" \
         --sound Glass \
         --appId claude-code \
-        --execute "open -b com.github.wez.wezterm" \
+        "${focus_args[@]}" \
         --threadId "$claude_session_id" \
         "$message"
     fi
