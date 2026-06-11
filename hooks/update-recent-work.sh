@@ -24,6 +24,11 @@ RECENT_WORK_FILE="$RECENT_WORK_DIR/RECENT_WORK.md"
 LOCK_DIR="$RECENT_WORK_DIR/.lock"
 COOLDOWN_FILE="$RECENT_WORK_DIR/.cooldown"
 LOG_FILE="$RECENT_WORK_DIR/.log"
+# Linear offline→online sync: the worktree's offline mirror, and the append-only
+# queue this hook feeds (drained by Claude via the linear-md-sync rule). The queue
+# lives under .claude/recent-work/ so it inherits the same gitignore + mkdir as RECENT_WORK.md.
+LINEAR_MD_FILE="$CWD/.linear.md"
+LINEAR_QUEUE_FILE="$RECENT_WORK_DIR/linear-sync-queue.md"
 mkdir -p "$RECENT_WORK_DIR"
 DATE_NOW=$(date "+%Y-%m-%d %H:%M")
 
@@ -134,7 +139,21 @@ NEVER include:
 - Raw conversation text — do NOT echo back the <session_transcript> or <current_file> input
 - Code fences wrapping the entire output
 
-Output ONLY the updated markdown content for RECENT_WORK.md. Nothing else."
+Put the updated RECENT_WORK.md markdown in the \`content\` field. If no <linear_issue> block appears in the input, set \`linear\` to {significant:false, status_change:null, progress_note:null}."
+
+# The Linear-significance rubric is ~200 tokens. Append it ONLY when this worktree
+# is linked to a Linear issue — in other repos the schema descriptions plus the base
+# prompt's one-line fallback already make the model null out \`linear\`, so the rubric
+# would be pure waste on every unrelated Stop event.
+if [ -f "$LINEAR_MD_FILE" ]; then
+  SYSTEM_PROMPT="${SYSTEM_PROMPT}
+
+LINEAR ISSUE SYNC (the \`linear\` field):
+- This worktree is linked to a Linear issue, given in the input as a <linear_issue> block (frontmatter + acceptance criteria).
+- Set linear.significant=true ONLY for milestone-level progress on that issue: a large or completed code change, a resolved design decision, a status transition, a newly-found blocker, or work that completes or clearly advances an acceptance criterion. Routine intermediate edits, exploration, reading, and small fixes are NOT significant.
+- linear.status_change: a Linear status name (e.g. \"In Review\", \"Done\") ONLY if the work clearly implies a transition away from the status shown in <linear_issue>; otherwise null.
+- linear.progress_note: when significant, ONE concise sentence (<=160 chars) describing the milestone, suitable to post as a Linear comment; otherwise null."
+fi
 
 USER_CONTENT="Update RECENT_WORK.md from this session."
 
@@ -144,6 +163,29 @@ if [ -n "$EXISTING_CONTENT" ]; then
 <current_file>
 ${EXISTING_CONTENT}
 </current_file>"
+fi
+
+# Include only the DECISION-RELEVANT parts of the linked Linear issue: the
+# frontmatter (current status) + the Acceptance Criteria checklist (what progress
+# would advance). Deliberately skips the verbose Original Description — it's static
+# background that doesn't help judge THIS turn's significance and costs ~4x the
+# tokens. awk is line-based (no multi-byte UTF-8 splitting); head -n 40 is a safety cap.
+LINEAR_CONTEXT=""
+if [ -f "$LINEAR_MD_FILE" ]; then
+  LINEAR_CONTEXT=$(awk '
+    NR==1 && $0=="---" { fm=1; print; next }
+    fm==1 { print; if ($0=="---") fm=0; next }
+    /^## Acceptance Criteria/ { ac=1; print; next }
+    ac==1 && /^## / { ac=0 }
+    ac==1 { print }
+  ' "$LINEAR_MD_FILE" 2>/dev/null | head -n 40)
+fi
+if [ -n "$LINEAR_CONTEXT" ]; then
+  USER_CONTENT="${USER_CONTENT}
+
+<linear_issue>
+${LINEAR_CONTEXT}
+</linear_issue>"
 fi
 
 USER_CONTENT="${USER_CONTENT}
@@ -179,9 +221,29 @@ payload=$(jq -n \
               content: {
                 type: "string",
                 description: "Full updated RECENT_WORK.md markdown. Must not contain raw session transcript or dates."
+              },
+              linear: {
+                type: "object",
+                description: "Linear issue sync decision. Acts only when a <linear_issue> block is present in the input.",
+                properties: {
+                  significant: {
+                    type: "boolean",
+                    description: "true ONLY for milestone-level progress on the linked Linear issue (large/complete change, resolved decision, status transition, new blocker, acceptance criterion advanced). false otherwise, and false when no <linear_issue> block is present."
+                  },
+                  status_change: {
+                    type: ["string", "null"],
+                    description: "New Linear status name if the work implies a transition from the current status; otherwise null."
+                  },
+                  progress_note: {
+                    type: ["string", "null"],
+                    description: "One concise sentence (<=160 chars) to post as a Linear comment when significant; otherwise null."
+                  }
+                },
+                required: ["significant", "status_change", "progress_note"],
+                additionalProperties: false
               }
             },
-            required: ["should_update", "content"],
+            required: ["should_update", "content", "linear"],
             additionalProperties: false
           }
         }
@@ -215,26 +277,53 @@ if [ -z "$result" ]; then
   exit 0
 fi
 
-# Check if update is needed
+# ---------- RECENT_WORK.md (only if the model flagged meaningful work) ----------
 should_update=$(echo "$result" | jq -r '.should_update // false' 2>/dev/null)
-[ "$should_update" != "true" ] && exit 0
-
-content=$(echo "$result" | jq -r '.content // empty' 2>/dev/null)
-if [ -z "$content" ]; then
-  log "ERROR: Empty content despite should_update=true"
-  exit 0
+if [ "$should_update" = "true" ]; then
+  content=$(echo "$result" | jq -r '.content // empty' 2>/dev/null)
+  if [ -z "$content" ]; then
+    log "ERROR: Empty content despite should_update=true"
+  else
+    # Strip any AI-generated date lines (belt-and-suspenders)
+    content=$(echo "$content" | grep -v -E '^(Last updated:|Updated:)' || echo "$content")
+    # Write with programmatic date header
+    {
+      echo "<!-- updated: $DATE_NOW -->"
+      echo "$content"
+    } > "$RECENT_WORK_FILE"
+    log "OK: Updated RECENT_WORK.md ($(echo "$content" | wc -l | tr -d ' ') lines)"
+  fi
 fi
 
-# ---------- Strip any AI-generated date lines (belt-and-suspenders) ----------
-content=$(echo "$content" | grep -v -E '^(Last updated:|Updated:)' || echo "$content")
+# ---------- Linear online-sync queue (only if this worktree is linked to an issue) ----------
+# Append-only: Claude is the sole writer of .linear.md; this hook never mutates it.
+# The linear-md-sync rule drains this queue to Linear via MCP, then deletes it.
+if [ -f "$LINEAR_MD_FILE" ]; then
+  linear_significant=$(echo "$result" | jq -r '.linear.significant // false' 2>/dev/null)
+  if [ "$linear_significant" = "true" ]; then
+    linear_note=$(echo "$result" | jq -r '.linear.progress_note // empty' 2>/dev/null)
+    linear_status=$(echo "$result" | jq -r '.linear.status_change // empty' 2>/dev/null)
+    if [ -n "$linear_note" ]; then
+      issue_id=$(grep -m1 '^issue:' "$LINEAR_MD_FILE" 2>/dev/null | sed 's/^issue:[[:space:]]*//' | tr -d '\r')
+      # Write a one-time header when the queue is first created this cycle
+      if [ ! -f "$LINEAR_QUEUE_FILE" ]; then
+        {
+          echo "<!-- Linear online-sync queue for ${issue_id:-unknown}. Each entry = one turn flagged as significant by update-recent-work.sh."
+          echo "     Claude: per the linear-md-sync rule, push these to Linear via MCP, update .linear.md (status + last_synced), then delete this file. -->"
+          echo ""
+        } > "$LINEAR_QUEUE_FILE"
+      fi
+      {
+        echo "## ${DATE_NOW} — status: ${linear_status:-(unchanged)}"
+        echo "${linear_note}"
+        echo ""
+      } >> "$LINEAR_QUEUE_FILE"
+      log "OK: Queued Linear sync (${issue_id:-unknown}) status=${linear_status:-unchanged}"
+    fi
+  fi
+fi
 
-# ---------- Write with programmatic date header ----------
-{
-  echo "<!-- updated: $DATE_NOW -->"
-  echo "$content"
-} > "$RECENT_WORK_FILE"
-
+# Throttle this session's rapid Stop events (set once, regardless of which writes happened)
 echo "$(date +%s) $TRANSCRIPT_PATH" > "$COOLDOWN_FILE"
-log "OK: Updated RECENT_WORK.md ($(echo "$content" | wc -l | tr -d ' ') lines)"
 
 exit 0
