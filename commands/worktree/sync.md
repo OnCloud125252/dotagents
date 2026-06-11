@@ -3,7 +3,7 @@ name: Sync Worktree
 description: Sync a worktree branch with main by merging origin/main into it. Use when the worktree branch has fallen behind main.
 argument-hint: "[worktree-name-or-path-or-branch]"
 allowed-tools: Bash(git *), AskUserQuestion
-model: claude-haiku-4-5
+model: claude-sonnet-4-6
 ---
 
 # Sync Worktree with Main
@@ -34,6 +34,7 @@ git worktree list --porcelain
 **If no argument given:** Use the current directory (`pwd`). Verify it appears in the worktree list — if not, report and stop.
 
 **If argument given:** Match against:
+
 1. Full path
 2. Worktree directory name (last path segment)
 3. Branch name (`branch` field in porcelain output)

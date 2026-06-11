@@ -3,7 +3,7 @@ name: Create Pull Request
 description: Push current branch and create a GitHub pull request with smart defaults
 argument-hint: [--base main] [--draft] [--title "title"]
 allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git branch:*), Bash(git push:*), Bash(git rev-parse:*), Bash(gh pr create:*), Bash(gh pr view:*), Bash(pbcopy), Bash(claude *), Bash(date *), Read, Write, AskUserQuestion, mcp__Linear*__get_issue, mcp__Linear*__save_issue, mcp__Linear*__save_comment, mcp__Linear*__list_issue_statuses
-model: claude-haiku-4-5
+model: claude-sonnet-4-6
 ---
 
 Create a GitHub pull request for the current branch.
@@ -60,6 +60,7 @@ Parse `$ARGUMENTS` to extract:
       - `git log --oneline main..HEAD` (commit history)
       - `git diff main...HEAD --stat` (changed files summary)
    3. Invoke sub-Claude:
+
       ```bash
       claude -p --output-format json "You are a project management assistant. Compare the Linear issue metadata against the git history and determine if the issue needs updating.
 
@@ -90,6 +91,7 @@ Parse `$ARGUMENTS` to extract:
       - If nothing needs changing, set all to unchanged/null/false
       - Return ONLY valid JSON, no markdown"
       ```
+
    4. Parse the JSON output. If parsing fails or `status_change` is not in the available statuses list, warn the user ("Linear sync skipped — please update Linear manually"), skip to step 6.
    5. If all fields indicate no change (`changed: false`, `yes: false`, `status_change: null`), log "No drift detected" and skip to step 6.
 
