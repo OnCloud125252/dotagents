@@ -46,6 +46,10 @@ Personal, always-loaded preferences. Context-specific rules live under
 - **Always use merge as the default** for all git operations (e.g., `git pull`, branch integration) — do not rebase unless explicitly requested
 - **Claude documentation updates** — whenever any Claude doc needs updating (`CLAUDE.md`, `.claude.local.md`, `.claude/rules/*`, `.claude/commands/*`, and other Claude config docs), put the change on its own dedicated branch and open a PR; never bundle it into an unrelated feature/fix PR. Name the branch `update-claude-docs/{time}`, where `{time}` comes from `date +%Y-%m-%d.%H-%M-%S` (e.g. `update-claude-docs/2026-05-28.12-40-14`).
 
+## Claude Docs Authoring
+
+- **No examples in Claude docs** — when writing or updating any Claude config doc (`CLAUDE.md`, `.claude.local.md`, `.claude/rules/*`, `.claude/skills/*`, `.claude/commands/*`), record only the schema, rules, and conventions. Express naming patterns as angle-bracket placeholder templates; never embed real names, IDs, paths, or sample values as examples.
+
 ## File Operations
 
 - **ALWAYS use `trash` instead of `rm`** for file deletion
