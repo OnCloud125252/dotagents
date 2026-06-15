@@ -2,9 +2,6 @@
 # update-recent-work.sh — Stop hook
 # Reads recent conversation history, sends to OpenAI gpt-4.1-nano to summarize,
 # and conditionally updates .claude/RECENT_WORK.md (with file locking).
-# Also queues milestone-level progress notes for the linked trackers — a Linear
-# issue (.linear.md) and/or the branch's open GitHub PR — drained by Claude via
-# the linear-md-sync / github-pr-sync rules.
 # Supports concurrent sessions: per-session cooldown + read-under-lock.
 # Requires: CLAUDE_CODE_SUMMARIZER_API_KEY env var
 
@@ -27,13 +24,11 @@ RECENT_WORK_FILE="$RECENT_WORK_DIR/RECENT_WORK.md"
 LOCK_DIR="$RECENT_WORK_DIR/.lock"
 COOLDOWN_FILE="$RECENT_WORK_DIR/.cooldown"
 LOG_FILE="$RECENT_WORK_DIR/.log"
-# Offline→online sync queues this hook feeds (drained by Claude via the
-# linear-md-sync / github-pr-sync rules). They live under .claude/recent-work/ so
-# they inherit the same gitignore + mkdir as RECENT_WORK.md. .linear.md is the
-# worktree's offline Linear mirror.
+# Linear offline→online sync: the worktree's offline mirror, and the append-only
+# queue this hook feeds (drained by Claude via the linear-md-sync rule). The queue
+# lives under .claude/recent-work/ so it inherits the same gitignore + mkdir as RECENT_WORK.md.
 LINEAR_MD_FILE="$CWD/.linear.md"
 LINEAR_QUEUE_FILE="$RECENT_WORK_DIR/linear-sync-queue.md"
-GITHUB_QUEUE_FILE="$RECENT_WORK_DIR/github-sync-queue.md"
 mkdir -p "$RECENT_WORK_DIR"
 DATE_NOW=$(date "+%Y-%m-%d %H:%M")
 
@@ -128,26 +123,6 @@ if [ -f "$RECENT_WORK_FILE" ]; then
   EXISTING_CONTENT=$(head -n 80 "$RECENT_WORK_FILE" 2>/dev/null)
 fi
 
-# ---------- Detect linked trackers ----------
-# A linked tracker is what makes a progress note worth requesting: a Linear issue
-# (.linear.md mirror) and/or an open GitHub PR for the current branch. The gh call
-# costs one API round-trip, so it runs here — after cooldown + lock have already
-# gated out trivial / rapid-fire Stop events — never on every stop.
-HAS_LINEAR=""
-[ -f "$LINEAR_MD_FILE" ] && HAS_LINEAR=1
-
-HAS_PR=""
-PR_NUMBER=""
-PR_URL=""
-if command -v gh >/dev/null 2>&1 && git -C "$CWD" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  pr_json=$(cd "$CWD" && gh pr view --json number,state,url 2>/dev/null)
-  if [ "$(echo "$pr_json" | jq -r '.state // empty' 2>/dev/null)" = "OPEN" ]; then
-    PR_NUMBER=$(echo "$pr_json" | jq -r '.number')
-    PR_URL=$(echo "$pr_json" | jq -r '.url')
-    HAS_PR=1
-  fi
-fi
-
 # ---------- Build prompt ----------
 SYSTEM_PROMPT="You summarize coding sessions into RECENT_WORK.md — a factual changelog that gives future sessions context about recent project activity.
 
@@ -164,30 +139,20 @@ NEVER include:
 - Raw conversation text — do NOT echo back the <session_transcript> or <current_file> input
 - Code fences wrapping the entire output
 
-Put the updated RECENT_WORK.md markdown in the \`content\` field."
+Put the updated RECENT_WORK.md markdown in the \`content\` field. If no <linear_issue> block appears in the input, set \`linear\` to {significant:false, status_change:null, progress_note:null}."
 
-# The progress-significance rubric (~200 tokens) only matters when this worktree is
-# linked to a tracker — a Linear issue and/or an open GitHub PR. With no tracker, the
-# schema defaults plus this one line keep the model from spending tokens judging
-# significance for a destination that doesn't exist.
-if [ -n "$HAS_LINEAR" ] || [ -n "$HAS_PR" ]; then
+# The Linear-significance rubric is ~200 tokens. Append it ONLY when this worktree
+# is linked to a Linear issue — in other repos the schema descriptions plus the base
+# prompt's one-line fallback already make the model null out \`linear\`, so the rubric
+# would be pure waste on every unrelated Stop event.
+if [ -f "$LINEAR_MD_FILE" ]; then
   SYSTEM_PROMPT="${SYSTEM_PROMPT}
 
-PROGRESS SYNC (the \`progress\` field) — this worktree is linked to a tracker, so judge whether THIS turn is worth posting to it:
-- Set progress.significant=true ONLY for milestone-level progress: a large or completed code change, a resolved design decision, a status transition, a newly-found blocker, or work that completes or clearly advances an acceptance criterion. Routine intermediate edits, exploration, reading, and small fixes are NOT significant.
-- progress.note: when significant, ONE concise sentence (<=160 chars) describing the milestone, suitable to post as a PR or issue comment; otherwise null."
-  if [ -n "$HAS_LINEAR" ]; then
-    SYSTEM_PROMPT="${SYSTEM_PROMPT}
-- The linked Linear issue is given as a <linear_issue> block (frontmatter + acceptance criteria).
-- progress.linear_status_change: a Linear status name (e.g. \"In Review\", \"Done\") ONLY if the work clearly implies a transition away from the status shown in <linear_issue>; otherwise null."
-  else
-    SYSTEM_PROMPT="${SYSTEM_PROMPT}
-- progress.linear_status_change: always null (no Linear issue is linked)."
-  fi
-else
-  SYSTEM_PROMPT="${SYSTEM_PROMPT}
-
-No tracker is linked to this worktree: set \`progress\` to {significant:false, note:null, linear_status_change:null}."
+LINEAR ISSUE SYNC (the \`linear\` field):
+- This worktree is linked to a Linear issue, given in the input as a <linear_issue> block (frontmatter + acceptance criteria).
+- Set linear.significant=true ONLY for milestone-level progress on that issue: a large or completed code change, a resolved design decision, a status transition, a newly-found blocker, or work that completes or clearly advances an acceptance criterion. Routine intermediate edits, exploration, reading, and small fixes are NOT significant.
+- linear.status_change: a Linear status name (e.g. \"In Review\", \"Done\") ONLY if the work clearly implies a transition away from the status shown in <linear_issue>; otherwise null.
+- linear.progress_note: when significant, ONE concise sentence (<=160 chars) describing the milestone, suitable to post as a Linear comment; otherwise null."
 fi
 
 USER_CONTENT="Update RECENT_WORK.md from this session."
@@ -206,7 +171,7 @@ fi
 # background that doesn't help judge THIS turn's significance and costs ~4x the
 # tokens. awk is line-based (no multi-byte UTF-8 splitting); head -n 40 is a safety cap.
 LINEAR_CONTEXT=""
-if [ -n "$HAS_LINEAR" ]; then
+if [ -f "$LINEAR_MD_FILE" ]; then
   LINEAR_CONTEXT=$(awk '
     NR==1 && $0=="---" { fm=1; print; next }
     fm==1 { print; if ($0=="---") fm=0; next }
@@ -257,28 +222,28 @@ payload=$(jq -n \
                 type: "string",
                 description: "Full updated RECENT_WORK.md markdown. Must not contain raw session transcript or dates."
               },
-              progress: {
+              linear: {
                 type: "object",
-                description: "Tracker progress decision. Acts only when a tracker (Linear issue and/or open GitHub PR) is linked to this worktree.",
+                description: "Linear issue sync decision. Acts only when a <linear_issue> block is present in the input.",
                 properties: {
                   significant: {
                     type: "boolean",
-                    description: "true ONLY for milestone-level progress (large/complete change, resolved decision, status transition, new blocker, acceptance criterion advanced). false otherwise, and false when no tracker is linked."
+                    description: "true ONLY for milestone-level progress on the linked Linear issue (large/complete change, resolved decision, status transition, new blocker, acceptance criterion advanced). false otherwise, and false when no <linear_issue> block is present."
                   },
-                  note: {
+                  status_change: {
                     type: ["string", "null"],
-                    description: "One concise sentence (<=160 chars) to post as a PR or Linear comment when significant; otherwise null."
+                    description: "New Linear status name if the work implies a transition from the current status; otherwise null."
                   },
-                  linear_status_change: {
+                  progress_note: {
                     type: ["string", "null"],
-                    description: "New Linear status name if the work implies a transition from the current status; otherwise null. Always null when no Linear issue is linked."
+                    description: "One concise sentence (<=160 chars) to post as a Linear comment when significant; otherwise null."
                   }
                 },
-                required: ["significant", "note", "linear_status_change"],
+                required: ["significant", "status_change", "progress_note"],
                 additionalProperties: false
               }
             },
-            required: ["should_update", "content", "progress"],
+            required: ["should_update", "content", "linear"],
             additionalProperties: false
           }
         }
@@ -330,49 +295,31 @@ if [ "$should_update" = "true" ]; then
   fi
 fi
 
-# ---------- Tracker progress (shared significance gate, two destinations) ----------
-# The model judges significance once (.progress); the same note fans out to whichever
-# trackers are linked. Both queues are append-only — Claude is the sole writer of
-# .linear.md, and this hook never edits a PR directly. The linear-md-sync /
-# github-pr-sync rules drain the queues, then delete them.
-progress_significant=$(echo "$result" | jq -r '.progress.significant // false' 2>/dev/null)
-progress_note=$(echo "$result" | jq -r '.progress.note // empty' 2>/dev/null)
-
-if [ "$progress_significant" = "true" ] && [ -n "$progress_note" ]; then
-  # ----- Linear queue (only if this worktree is linked to an issue) -----
-  if [ -n "$HAS_LINEAR" ]; then
-    linear_status=$(echo "$result" | jq -r '.progress.linear_status_change // empty' 2>/dev/null)
-    issue_id=$(grep -m1 '^issue:' "$LINEAR_MD_FILE" 2>/dev/null | sed 's/^issue:[[:space:]]*//' | tr -d '\r')
-    if [ ! -f "$LINEAR_QUEUE_FILE" ]; then
+# ---------- Linear online-sync queue (only if this worktree is linked to an issue) ----------
+# Append-only: Claude is the sole writer of .linear.md; this hook never mutates it.
+# The linear-md-sync rule drains this queue to Linear via MCP, then deletes it.
+if [ -f "$LINEAR_MD_FILE" ]; then
+  linear_significant=$(echo "$result" | jq -r '.linear.significant // false' 2>/dev/null)
+  if [ "$linear_significant" = "true" ]; then
+    linear_note=$(echo "$result" | jq -r '.linear.progress_note // empty' 2>/dev/null)
+    linear_status=$(echo "$result" | jq -r '.linear.status_change // empty' 2>/dev/null)
+    if [ -n "$linear_note" ]; then
+      issue_id=$(grep -m1 '^issue:' "$LINEAR_MD_FILE" 2>/dev/null | sed 's/^issue:[[:space:]]*//' | tr -d '\r')
+      # Write a one-time header when the queue is first created this cycle
+      if [ ! -f "$LINEAR_QUEUE_FILE" ]; then
+        {
+          echo "<!-- Linear online-sync queue for ${issue_id:-unknown}. Each entry = one turn flagged as significant by update-recent-work.sh."
+          echo "     Claude: per the linear-md-sync rule, push these to Linear via MCP, update .linear.md (status + last_synced), then delete this file. -->"
+          echo ""
+        } > "$LINEAR_QUEUE_FILE"
+      fi
       {
-        echo "<!-- Linear online-sync queue for ${issue_id:-unknown}. Each entry = one turn flagged as significant by update-recent-work.sh."
-        echo "     Claude: per the linear-md-sync rule, push these to Linear via MCP, update .linear.md (status + last_synced), then delete this file. -->"
+        echo "## ${DATE_NOW} — status: ${linear_status:-(unchanged)}"
+        echo "${linear_note}"
         echo ""
-      } > "$LINEAR_QUEUE_FILE"
+      } >> "$LINEAR_QUEUE_FILE"
+      log "OK: Queued Linear sync (${issue_id:-unknown}) status=${linear_status:-unchanged}"
     fi
-    {
-      echo "## ${DATE_NOW} — status: ${linear_status:-(unchanged)}"
-      echo "${progress_note}"
-      echo ""
-    } >> "$LINEAR_QUEUE_FILE"
-    log "OK: Queued Linear sync (${issue_id:-unknown}) status=${linear_status:-unchanged}"
-  fi
-
-  # ----- GitHub PR queue (only if the current branch has an open PR) -----
-  if [ -n "$HAS_PR" ]; then
-    if [ ! -f "$GITHUB_QUEUE_FILE" ]; then
-      {
-        echo "<!-- GitHub PR online-sync queue for PR #${PR_NUMBER} (${PR_URL}). Each entry = one turn flagged as significant by update-recent-work.sh."
-        echo "     Claude: per the github-pr-sync rule, merge these into ONE \`gh pr comment\`, then delete this file. -->"
-        echo ""
-      } > "$GITHUB_QUEUE_FILE"
-    fi
-    {
-      echo "## ${DATE_NOW} — PR #${PR_NUMBER}"
-      echo "${progress_note}"
-      echo ""
-    } >> "$GITHUB_QUEUE_FILE"
-    log "OK: Queued GitHub PR sync (#${PR_NUMBER})"
   fi
 fi
 
