@@ -1,0 +1,34 @@
+agentsmd-templates/GLOBAL_AGENTS.md
+  s_28af19070a3c52::t_b0c360566fb18e 49-52
+rules/gh-cli.md
+  s_aaf4ee2570fc68::t_5b55754a97a844 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "cfc1e6ba0120e2734d8f6d63a470c9633f389521",
+  "prompts": {},
+  "humans": {
+    "h_964b3dfa0bfd24": {
+      "author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_28af19070a3c52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7d09537c-c91c-4cd4-89e7-973b916ef593",
+        "model": "claude-fable-5"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    },
+    "s_aaf4ee2570fc68": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ca54682b-f2e9-453d-a141-8524961ff776",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
