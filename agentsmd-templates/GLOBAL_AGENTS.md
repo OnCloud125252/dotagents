@@ -82,3 +82,4 @@ Personal, always-loaded preferences. Context-specific rules live under
 | `~/.claude/rules/example-org.md` | `~/Projects/ExampleOrg/**`, `~/.kube/example-org-config.yml` |
 | `~/.claude/rules/example-org.md` | `~/Projects/ExampleOrg/**` |
 | `~/.claude/rules/zshrc-customrc.md` | `**/.zshrc`, `**/.bashrc`, `**/.zprofile`, `**/.bash_profile`, `**/.zshenv` |
+| `~/.claude/rules/ccstatusline.md` | `**/claude-statusline/*.sh`, `**/ccstatusline/settings.json` |
