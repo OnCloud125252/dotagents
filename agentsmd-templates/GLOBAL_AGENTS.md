@@ -82,3 +82,4 @@ Personal, always-loaded preferences. Context-specific rules live under
 | `~/.claude/rules/zeabur.md` | `~/Projects/Zeabur/**`, `~/.kube/zeabur-config.yml` |
 | `~/.claude/rules/lazco.md` | `~/Projects/Lazco/**` |
 | `~/.claude/rules/zshrc-customrc.md` | `**/.zshrc`, `**/.bashrc`, `**/.zprofile`, `**/.bash_profile`, `**/.zshenv` |
+| `~/.claude/rules/ccstatusline.md` | `**/claude-statusline/*.sh`, `**/ccstatusline/settings.json` |
