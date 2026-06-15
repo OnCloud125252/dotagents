@@ -10,6 +10,7 @@ Source repo for Claude Code customizations (commands, skills, hooks, rules, stor
 ## Layout
 
 - `commands/` — slash commands, directory = namespace (`git/commit.md` → `/git:commit`)
+- `claude-statusline/` — ccstatusline `custom-command` scripts; **live** (referenced by absolute path in `~/.config/ccstatusline/settings.json`), so edits apply on next render with no install step. Gotchas: `rules/ccstatusline.md`
 - `skills/` — agent skills; `SKILL.md` frontmatter carries a `generatedBy` skill-creator version
 - `rules/` — path-scoped rules; YAML frontmatter `paths:` globs control activation, no frontmatter = always loaded. Keep the "Path-scoped rules" table in `agentsmd-templates/GLOBAL_AGENTS.md` in sync when adding or re-scoping a rule
 - `store/catalog.json` — machine-readable catalog consumed by the `store-prompt.md` installer
