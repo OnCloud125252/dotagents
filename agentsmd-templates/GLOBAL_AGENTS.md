@@ -50,6 +50,12 @@ Personal, always-loaded preferences. Context-specific rules live under
 
 - **No examples in Claude docs** — when writing or updating any Claude config doc (`CLAUDE.md`, `.claude.local.md`, `.claude/rules/*`, `.claude/skills/*`, `.claude/commands/*`), record only the schema, rules, and conventions. Express naming patterns as angle-bracket placeholder templates; never embed real names, IDs, paths, or sample values as examples.
 
+## Tracking & Progress Sync
+
+- **Post milestone progress to the linked tracker.** When work reaches a milestone — a large or completed change, a resolved design decision, a status transition, a newly-found blocker, or an advanced acceptance criterion — record it on the work's tracker: a GitHub PR comment and/or the linked Linear issue. Routine intermediate edits, exploration, reading, and small fixes are not milestones; do not post them.
+- The `update-recent-work.sh` Stop hook judges significance and queues notes automatically; you **drain** the queues per the `github-pr-sync` and `linear-md-sync` rules — you do not re-judge significance per edit.
+- **When milestone progress exists but no tracker is linked** (no open PR, no linked issue), **ask the user** whether to create one before posting. Never auto-create a PR or issue, and never silently drop the progress.
+
 ## File Operations
 
 - **ALWAYS use `trash` instead of `rm`** for file deletion
@@ -71,6 +77,7 @@ Personal, always-loaded preferences. Context-specific rules live under
 | `~/.claude/rules/gh-cli.md` | always |
 | `~/.claude/rules/linear-mcp.md` | always |
 | `~/.claude/rules/linear-md-sync.md` | `**/.linear.md`, `**/.claude/recent-work/linear-sync-queue.md` |
+| `~/.claude/rules/github-pr-sync.md` | `**/.claude/recent-work/github-sync-queue.md` |
 | `~/.claude/rules/ssh-python.md` | always |
 | `~/.claude/rules/zeabur.md` | `~/Projects/Zeabur/**`, `~/.kube/zeabur-config.yml` |
 | `~/.claude/rules/lazco.md` | `~/Projects/Lazco/**` |
