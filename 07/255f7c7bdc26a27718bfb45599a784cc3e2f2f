@@ -1,0 +1,23 @@
+CLAUDE.md
+  s_fe07e57d0f03ec::t_799a4cf680f2ab 13
+rules/ccstatusline.md
+  s_fe07e57d0f03ec::t_e25415daa56cf7 1-21
+agentsmd-templates/GLOBAL_AGENTS.md
+  s_fe07e57d0f03ec::t_8dedb489b7c045 85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "07255f7c7bdc26a27718bfb45599a784cc3e2f2f",
+  "prompts": {},
+  "sessions": {
+    "s_fe07e57d0f03ec": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2e63afaf-f90c-4d4b-ae6f-114789a5db27",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "OnCloud <anonymousaaaa41414141@gmail.com>"
+    }
+  }
+}
