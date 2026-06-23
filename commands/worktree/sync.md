@@ -17,7 +17,7 @@ Merge the latest `origin/main` into a worktree branch to bring it up-to-date. Th
 | Input | Action |
 |---|---|
 | No argument | Use current directory as the worktree |
-| Directory name (e.g., `sei-381-blacklist-management`) | Match against known worktrees |
+| Directory name (e.g., `<issue-id>-<keywords>`) | Match against known worktrees |
 | Full path | Use directly |
 | Branch name | Find worktree associated with that branch |
 

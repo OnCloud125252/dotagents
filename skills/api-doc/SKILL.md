@@ -15,7 +15,7 @@ Generate a frontend-oriented API guide document and publish it to the project's 
 
 ## Arguments
 
-An issue ID, URL, or description of what to document (e.g., `MKT-2150`, `ENG-1234`, a Linear/GitHub URL, or "sponsor CRUD API").
+An issue ID, URL, or description of what to document (e.g., `<ISSUE-ID>`, a Linear/GitHub URL, or a short description like "sponsor CRUD API").
 If not provided, ask the user for it.
 
 ## Workflow
@@ -26,8 +26,8 @@ If not provided, ask the user for it.
 
 | Input | Example | Action |
 |---|---|---|
-| Issue identifier | `MKT-2150`, `ENG-1234`, `#123` | Fetch from issue tracker |
-| Full URL | `https://linear.app/.../MKT-2150/...` | Extract identifier, fetch |
+| Issue identifier | `<ISSUE-ID>`, `#<N>` | Fetch from issue tracker |
+| Full URL | `https://linear.app/.../<ISSUE-ID>/...` | Extract identifier, fetch |
 | Free-form description | `sponsor CRUD API` | Use as context for what to document |
 | Empty | | Ask the user |
 

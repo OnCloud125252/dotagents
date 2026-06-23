@@ -5,11 +5,11 @@ instead.
 
 ## Goal
 
-Take the `.githooks/` + `scripts/setup-hooks.sh` pattern that shipped to
-`Zeabur/backend` (Linear PLA-1360) and make it reusable across any repo,
-not just Go projects.
+Take the `.githooks/` + `scripts/setup-hooks.sh` pattern proven out in an
+internal Go backend repo and make it reusable across any repo, not just Go
+projects.
 
-The original PLA-1360 work proved out:
+The original work proved out:
 
 - `core.hooksPath = .githooks` (committed scripts) instead of `.git/hooks`
   (gitignored) so hooks travel with the repo and aren't lost on clone

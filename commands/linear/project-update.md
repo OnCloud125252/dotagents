@@ -70,17 +70,17 @@ If the project's target date is >2 weeks away, widen the window accordingly. If 
 Build an internal mapping before writing prose:
 
 - Group commits by theme (auth, billing, collector, dashboard, PVE, admin, perf, etc.) — inspect prefixes like `feat(domain):`, `fix(domain):`, `perf:`.
-- Match commits and PRs to Linear issues via branch names (`oncloud/laz-8-...`), PR titles (`refactor(LAZ-12):`), and commit messages referencing `LAZ-N`.
+- Match commits and PRs to Linear issues via branch names (`<prefix>/<issue-id>-...`), PR titles (`refactor(<ISSUE-ID>):`), and commit messages referencing `<ISSUE-ID>`.
 - Classify each Linear issue by state: `Done` / `In Progress` / `Backlog` / `Todo`. Use state to slot it into one of the four body sections.
 
 ## Step 5: Compose the Draft
 
 ### Style rules — non-negotiable
 
-1. **Language:** Traditional Chinese (zh-TW). Technical identifiers (`LAZ-XX`, `owner/repo#N`, commit hashes, endpoint paths, config keys) stay in their original form.
+1. **Language:** Traditional Chinese (zh-TW). Technical identifiers (`<ISSUE-ID>`, `owner/repo#N`, commit hashes, endpoint paths, config keys) stay in their original form.
 2. **TL;DR is `# H1`** and is followed by a single `---` divider on its own line. Nothing else uses H1.
-3. **PRs are always `owner/repo#N`** in backticks (e.g., `` `Lazco-Corporation/api#12` ``) — never bare `PR #12`. Use the `OWNER/REPO` captured in Step 3.
-4. **Linear issue IDs need whitespace on both sides** when adjacent to CJK characters. Correct: `解決 LAZ-17 的問題`. Wrong: `解決LAZ-17的問題`. Full-width punctuation (`（`, `，`, `。`, `、`) counts as a boundary on its own, so `（LAZ-18）` is fine without extra padding.
+3. **PRs are always `owner/repo#N`** in backticks (e.g., `` `<owner>/<repo>#<N>` ``) — never bare `PR #<N>`. Use the `OWNER/REPO` captured in Step 3.
+4. **Linear issue IDs need whitespace on both sides** when adjacent to CJK characters. Correct: `解決 <ISSUE-ID> 的問題`. Wrong: `解決<ISSUE-ID>的問題`. Full-width punctuation (`（`, `，`, `。`, `、`) counts as a boundary on its own, so `（<ISSUE-ID>）` is fine without extra padding.
 5. **Commit hashes** go in backticks (e.g., `` `82340a3` ``).
 6. **Health and date are metadata** — shown separately to the user, *never* included in the clipboard body.
 

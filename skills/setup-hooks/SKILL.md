@@ -7,8 +7,8 @@ description: |
   auto-run the init script on Claude Code's first Bash call.
 
   Use when the user asks to "set up git hooks", "/setup-hooks", "scaffold hooks", or
-  after creating a new repo that should follow the same hook conventions as
-  Zeabur/backend (gitleaks + format/lint auto-fix on commit, full lint + build on push).
+  after creating a new repo that should follow the same hook conventions
+  (gitleaks + format/lint auto-fix on commit, full lint + build on push).
 
   Re-run safe: detects existing .githooks/ and core.hooksPath, shows a diff, and asks
   the user before overwriting.
@@ -16,8 +16,8 @@ description: |
 
 # setup-hooks
 
-This skill drops a tailored set of git hooks into any repo. The pipeline mirrors the
-`Zeabur/backend` PLA-1360 design — staged-only secret scanning + auto-format on
+This skill drops a tailored set of git hooks into any repo. The pipeline mirrors a
+proven internal design — staged-only secret scanning + auto-format on
 commit, full lint + build on push — but adapts the actual commands to whichever
 toolchain the repo uses.
 
@@ -83,7 +83,7 @@ follows this flow:
 7. **Print summary** — list files added/skipped, what to commit, and which
    tools the user needs.
 
-## Philosophy (from PLA-1360)
+## Philosophy
 
 - **No skip-on-missing**: required tools must be installed; the script aborts.
 - **Non-destructive merge**: never clobber an existing `.claude/settings.json` —
