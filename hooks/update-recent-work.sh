@@ -25,7 +25,7 @@ LOCK_DIR="$RECENT_WORK_DIR/.lock"
 COOLDOWN_FILE="$RECENT_WORK_DIR/.cooldown"
 LOG_FILE="$RECENT_WORK_DIR/.log"
 # Linear progress sync: the issue ID is derived from the branch name (e.g.
-# oncloud/pic-123-social -> PIC-123) — there is no .linear.md mirror. This hook feeds an
+# <prefix>/<issue-id>-<slug> -> <ISSUE-ID>) — there is no .linear.md mirror. This hook feeds an
 # append-only queue, drained by Claude via the linear-sync rule. The queue lives under
 # .claude/recent-work/ so it inherits the same gitignore + mkdir as RECENT_WORK.md.
 LINEAR_ISSUE_ID=$(git -C "$CWD" branch --show-current 2>/dev/null | sed 's#.*/##' | grep -oiE '^[a-z]{2,5}-[0-9]+' | tr '[:lower:]' '[:upper:]')

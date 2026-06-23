@@ -27,8 +27,8 @@ Parse `$ARGUMENTS` to extract:
    - `git branch -vv | grep '^\*'` — check remote tracking
 
 2. **Detect Linear Issue** (from the branch name):
-   - Check if the branch name contains a Linear issue ID — a segment matching 2-5 letters, a hyphen, then digits (e.g., `sei-381`, `PLA-1004`). Match case-insensitively.
-   - If found, uppercase it (e.g., `sei-381` → `SEI-381`) and call `mcp__Linear*__get_issue` to fetch the issue's `title`, `identifier`, `url`, and current `status`.
+   - Check if the branch name contains a Linear issue ID — a segment matching 2-5 letters, a hyphen, then digits. Match case-insensitively.
+   - If found, uppercase it (e.g., `<issue-id>` → `<ISSUE-ID>`) and call `mcp__Linear*__get_issue` to fetch the issue's `title`, `identifier`, `url`, and current `status`.
    - If no issue ID is found in the branch name, or the fetch fails, skip this step and proceed without Linear context.
 
 3. **Safety Checks**:
@@ -59,7 +59,7 @@ Parse `$ARGUMENTS` to extract:
    - **Title**: Short (under 70 chars), prefixed with type.
      - If `--title` provided, use that instead (skip all generation below)
      - If a Linear issue was fetched: `<type>(<ISSUE-ID>): <Linear issue title>`
-       - Example: `feat(SEI-381): Implement blacklist management`
+       - Example: `feat(<ISSUE-ID>): <issue title>`
        - The type prefix (`feat`, `fix`, etc.) is still determined from commit analysis
        - Shorten the Linear issue title if needed to stay under 70 chars
      - If no Linear issue: `<type>: <summary from commits>` (existing behavior)

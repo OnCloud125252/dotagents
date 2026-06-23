@@ -20,7 +20,7 @@ You do **not** re-judge significance per edit — your job is to **drain the que
 
 There is no `.linear.md` mirror to read — the issue ID comes from the branch name.
 Run `git branch --show-current`, take the first `<letters>-<digits>` segment, and
-uppercase it (e.g. `pic-123-social-import` → `PIC-123`). The queue's header comment
+uppercase it (e.g. `<issue-id>-<slug>` → `<ISSUE-ID>`). The queue's header comment
 also records the ID the hook resolved; prefer that if present, otherwise derive it from
 the branch.
 

@@ -18,13 +18,13 @@ The argument can be one of:
 
 | Input Format | Example | Action |
 |---|---|---|
-| Linear URL | `https://linear.app/zeabur/issue/SEI-381/...` | Extract issue ID (`SEI-381`), fetch from Linear |
-| Linear issue ID | `SEI-381` | Fetch from Linear |
+| Linear URL | `https://linear.app/<workspace>/issue/<ISSUE-ID>/...` | Extract issue ID (`<ISSUE-ID>`), fetch from Linear |
+| Linear issue ID | `<ISSUE-ID>` | Fetch from Linear |
 | Branch name | `feat/my-feature` | Use directly |
 
 ### Detecting Linear issue IDs
 
-A Linear issue ID matches the pattern: 2-5 uppercase letters, a hyphen, then digits (e.g., `SEI-381`, `PLA-1004`).
+A Linear issue ID matches the pattern: 2-5 uppercase letters, a hyphen, then digits.
 
 Check both the raw argument and any ID extracted from a URL.
 
@@ -51,13 +51,13 @@ Use it directly. No Linear lookup needed.
 
 Create a short directory name from the branch:
 
-- If branch contains an issue ID (e.g., `sei-381`), use: `<issue-id>-<first-few-keywords>`
+- If branch contains an issue ID, use: `<issue-id>-<first-few-keywords>`
 - Otherwise, use the last path segment of the branch name, truncated to ~40 chars
 
 Examples:
 
-- `oncloud/sei-381-implement-blacklist-management-in-admin-panel` → `sei-381-blacklist-management`
-- `feat/add-user-search` → `add-user-search`
+- `<prefix>/<issue-id>-<full-description>` → `<issue-id>-<short-keywords>`
+- `<type>/<feature-name>` → `<feature-name>`
 
 ### 3. Determine Worktree Base Directory
 
@@ -124,7 +124,7 @@ Report which files were copied and whether direnv was allowed, as a brief note i
 Use `mcp__Linear*__save_issue` to update the issue status:
 
 ```
-id: <issue-id>       (e.g., "SEI-381")
+id: <issue-id>       (the uppercased Linear issue ID)
 state: "In Progress"
 ```
 
