@@ -15,7 +15,7 @@ Remove a git worktree and its local branch when done with a feature.
 | Input | Action |
 |---|---|
 | No argument | List all worktrees, ask which to remove |
-| Directory name (e.g., `sei-381-blacklist-management`) | Match against worktree directories |
+| Directory name (e.g., `<issue-id>-<keywords>`) | Match against worktree directories |
 | Full path | Use directly |
 | Branch name | Find worktree associated with that branch |
 
