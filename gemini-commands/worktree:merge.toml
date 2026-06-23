@@ -55,7 +55,7 @@ git worktree list
 
 **If source argument given:** Match against:
 
-1. Worktree directory name (e.g., `eng-1234-blacklist-management`)
+1. Worktree directory name (e.g., `<issue-id>-<keywords>`)
 2. Full or partial path
 3. Branch name (e.g., `feat/my-feature`)
 
