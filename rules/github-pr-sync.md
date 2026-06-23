@@ -50,5 +50,5 @@ notes will be discarded, then delete the temp file.
   queued note looks wrong (e.g. claims completion while CI is red), pause and ask the
   user first.
 - A worktree can be linked to **both** a Linear issue and a PR; the hook queues the
-  same progress note to each. Drain `linear-sync-queue.md` (linear-md-sync rule) and
+  same progress note to each. Drain `linear-sync-queue.md` (linear-sync rule) and
   `github-sync-queue.md` independently.

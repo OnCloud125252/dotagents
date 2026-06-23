@@ -22,7 +22,7 @@
 ├── agentsmd-templates/ # Reusable AGENTS.md snippets
 ├── gemini-commands/    # Auto-converted Gemini CLI equivalents
 ├── helpers/            # Shared utility scripts
-├── templates/          # Reusable file templates (e.g. .linear.md)
+├── templates/          # Reusable file templates
 └── dependency.md       # External tool requirements
 ```
 

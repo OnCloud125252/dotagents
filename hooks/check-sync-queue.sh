@@ -13,7 +13,7 @@ LINEAR_QUEUE="$QUEUE_DIR/linear-sync-queue.md"
 GITHUB_QUEUE="$QUEUE_DIR/github-sync-queue.md"
 
 pending=""
-[ -s "$LINEAR_QUEUE" ] && pending="${pending} the Linear sync queue (drain per the linear-md-sync rule);"
+[ -s "$LINEAR_QUEUE" ] && pending="${pending} the Linear sync queue (drain per the linear-sync rule);"
 [ -s "$GITHUB_QUEUE" ] && pending="${pending} the GitHub PR sync queue (drain per the github-pr-sync rule);"
 
 [ -z "$pending" ] && exit 0
