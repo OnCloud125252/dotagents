@@ -2,7 +2,7 @@
 name: Create Worktree
 description: Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.
 argument-hint: <branch-name | Linear issue ID | Linear issue URL>
-allowed-tools: Bash(git *), Bash(mkdir *), Bash(date *), Bash(basename *), Bash(cp *), Bash(direnv *), Bash(command *), Write, Read, mcp__Linear*__get_issue, mcp__Linear*__save_issue
+allowed-tools: Bash(git *), Bash(mkdir *), Bash(date *), Bash(basename *), Bash(cp *), Bash(direnv *), Bash(command *), Read, mcp__Linear*__get_issue, mcp__Linear*__save_issue
 model: claude-haiku-4-5
 ---
 
@@ -117,35 +117,7 @@ fi
 
 Report which files were copied and whether direnv was allowed, as a brief note in the summary.
 
-### 7. Hydrate `.linear.md` (Linear issues only)
-
-**Only if the input was a Linear issue (ID or URL) and step 1 succeeded:**
-
-Using the issue data already fetched in step 1, write a `.linear.md` file to the worktree root. Resolve the template path with this precedence (first hit wins):
-
-1. `<repo>/.claude/templates/linear.md` — project-local override
-2. `~/.agents/templates/linear.md` — global default (always present)
-
-Replace the template placeholders:
-
-| Placeholder | Value |
-|---|---|
-| `{{ISSUE_ID}}` | The Linear issue identifier (e.g., `PLA-1360`) |
-| `{{ISSUE_URL}}` | The issue's URL (e.g., `https://linear.app/zeabur/issue/PLA-1360`) |
-| `{{ISSUE_TITLE}}` | The issue's title |
-| `{{ISSUE_STATUS}}` | The issue's current status name (e.g., `In Progress`) |
-| `{{WORKTREE_NAME}}` | The worktree directory name (e.g., `pla-1360-integrate-hooks`) |
-| `{{LAST_SYNCED_UTC}}` | Current UTC time in ISO-8601 format (e.g., `2026-04-28T22:11:00Z`) |
-| `{{ISSUE_DESCRIPTION}}` | The issue's description (markdown) |
-| `{{ACCEPTANCE_CRITERIA}}` | Extract from description if available, otherwise `(none specified)` |
-
-Write the rendered file to `<worktree-path>/.linear.md` using the Write tool.
-
-**If the template file is not found**, construct the `.linear.md` inline using the same frontmatter keys and markdown sections.
-
-**If MCP failed in step 1** (issue fetch error), skip this step silently — log a warning that `.linear.md` was not created and the user can re-run sync later. Do not block worktree creation.
-
-### 8. Mark Linear Issue In Progress
+### 7. Mark Linear Issue In Progress
 
 **Only if the input was a Linear issue (ID or URL):**
 
@@ -158,7 +130,7 @@ state: "In Progress"
 
 If the status update fails, log a warning but do not block — the worktree is already created.
 
-### 9. Report Summary
+### 8. Report Summary
 
 **If from Linear issue, display:**
 

@@ -24,10 +24,11 @@ RECENT_WORK_FILE="$RECENT_WORK_DIR/RECENT_WORK.md"
 LOCK_DIR="$RECENT_WORK_DIR/.lock"
 COOLDOWN_FILE="$RECENT_WORK_DIR/.cooldown"
 LOG_FILE="$RECENT_WORK_DIR/.log"
-# Linear offline→online sync: the worktree's offline mirror, and the append-only
-# queue this hook feeds (drained by Claude via the linear-md-sync rule). The queue
-# lives under .claude/recent-work/ so it inherits the same gitignore + mkdir as RECENT_WORK.md.
-LINEAR_MD_FILE="$CWD/.linear.md"
+# Linear progress sync: the issue ID is derived from the branch name (e.g.
+# oncloud/pic-123-social -> PIC-123) — there is no .linear.md mirror. This hook feeds an
+# append-only queue, drained by Claude via the linear-sync rule. The queue lives under
+# .claude/recent-work/ so it inherits the same gitignore + mkdir as RECENT_WORK.md.
+LINEAR_ISSUE_ID=$(git -C "$CWD" branch --show-current 2>/dev/null | sed 's#.*/##' | grep -oiE '^[a-z]{2,5}-[0-9]+' | tr '[:lower:]' '[:upper:]')
 LINEAR_QUEUE_FILE="$RECENT_WORK_DIR/linear-sync-queue.md"
 mkdir -p "$RECENT_WORK_DIR"
 DATE_NOW=$(date "+%Y-%m-%d %H:%M")
@@ -128,6 +129,7 @@ SYSTEM_PROMPT="You summarize coding sessions into RECENT_WORK.md — a factual c
 
 RULES:
 - Factual changelog-style bullets ONLY: what was done, files changed, current state
+- Record only WHAT was done, never a verdict or judgment about it. Rewrite any conclusion/opinion as the neutral action that produced it (e.g. \"Concluded the cache is slow\" -> \"Profiled cache performance\"; \"Determined X does not help\" -> \"Evaluated X\")
 - Most recent work first
 - Merge with existing content; drop entries superseded by newer work
 - Max 25 lines total
@@ -139,19 +141,18 @@ NEVER include:
 - Raw conversation text — do NOT echo back the <session_transcript> or <current_file> input
 - Code fences wrapping the entire output
 
-Put the updated RECENT_WORK.md markdown in the \`content\` field. If no <linear_issue> block appears in the input, set \`linear\` to {significant:false, status_change:null, progress_note:null}."
+Put the updated RECENT_WORK.md markdown in the \`content\` field. If this branch is not linked to a Linear issue, set \`linear\` to {significant:false, progress_note:null}."
 
-# The Linear-significance rubric is ~200 tokens. Append it ONLY when this worktree
-# is linked to a Linear issue — in other repos the schema descriptions plus the base
+# The Linear-significance rubric is ~150 tokens. Append it ONLY when the branch is
+# linked to a Linear issue — in other repos the schema descriptions plus the base
 # prompt's one-line fallback already make the model null out \`linear\`, so the rubric
 # would be pure waste on every unrelated Stop event.
-if [ -f "$LINEAR_MD_FILE" ]; then
+if [ -n "$LINEAR_ISSUE_ID" ]; then
   SYSTEM_PROMPT="${SYSTEM_PROMPT}
 
 LINEAR ISSUE SYNC (the \`linear\` field):
-- This worktree is linked to a Linear issue, given in the input as a <linear_issue> block (frontmatter + acceptance criteria).
-- Set linear.significant=true ONLY for milestone-level progress on that issue: a large or completed code change, a resolved design decision, a status transition, a newly-found blocker, or work that completes or clearly advances an acceptance criterion. Routine intermediate edits, exploration, reading, and small fixes are NOT significant.
-- linear.status_change: a Linear status name (e.g. \"In Review\", \"Done\") ONLY if the work clearly implies a transition away from the status shown in <linear_issue>; otherwise null.
+- This branch is linked to Linear issue ${LINEAR_ISSUE_ID}.
+- Set linear.significant=true ONLY for milestone-level progress on that issue: a large or completed code change, a resolved design decision, a newly-found blocker, or work that completes or clearly advances an acceptance criterion. Routine intermediate edits, exploration, reading, and small fixes are NOT significant.
 - linear.progress_note: when significant, ONE concise sentence (<=160 chars) describing the milestone, suitable to post as a Linear comment; otherwise null."
 fi
 
@@ -163,29 +164,6 @@ if [ -n "$EXISTING_CONTENT" ]; then
 <current_file>
 ${EXISTING_CONTENT}
 </current_file>"
-fi
-
-# Include only the DECISION-RELEVANT parts of the linked Linear issue: the
-# frontmatter (current status) + the Acceptance Criteria checklist (what progress
-# would advance). Deliberately skips the verbose Original Description — it's static
-# background that doesn't help judge THIS turn's significance and costs ~4x the
-# tokens. awk is line-based (no multi-byte UTF-8 splitting); head -n 40 is a safety cap.
-LINEAR_CONTEXT=""
-if [ -f "$LINEAR_MD_FILE" ]; then
-  LINEAR_CONTEXT=$(awk '
-    NR==1 && $0=="---" { fm=1; print; next }
-    fm==1 { print; if ($0=="---") fm=0; next }
-    /^## Acceptance Criteria/ { ac=1; print; next }
-    ac==1 && /^## / { ac=0 }
-    ac==1 { print }
-  ' "$LINEAR_MD_FILE" 2>/dev/null | head -n 40)
-fi
-if [ -n "$LINEAR_CONTEXT" ]; then
-  USER_CONTENT="${USER_CONTENT}
-
-<linear_issue>
-${LINEAR_CONTEXT}
-</linear_issue>"
 fi
 
 USER_CONTENT="${USER_CONTENT}
@@ -224,22 +202,18 @@ payload=$(jq -n \
               },
               linear: {
                 type: "object",
-                description: "Linear issue sync decision. Acts only when a <linear_issue> block is present in the input.",
+                description: "Linear issue sync decision. Acts only when the branch is linked to a Linear issue.",
                 properties: {
                   significant: {
                     type: "boolean",
-                    description: "true ONLY for milestone-level progress on the linked Linear issue (large/complete change, resolved decision, status transition, new blocker, acceptance criterion advanced). false otherwise, and false when no <linear_issue> block is present."
-                  },
-                  status_change: {
-                    type: ["string", "null"],
-                    description: "New Linear status name if the work implies a transition from the current status; otherwise null."
+                    description: "true ONLY for milestone-level progress on the linked Linear issue (large/complete change, resolved decision, new blocker, acceptance criterion advanced). false otherwise, and false when the branch is not linked to an issue."
                   },
                   progress_note: {
                     type: ["string", "null"],
                     description: "One concise sentence (<=160 chars) to post as a Linear comment when significant; otherwise null."
                   }
                 },
-                required: ["significant", "status_change", "progress_note"],
+                required: ["significant", "progress_note"],
                 additionalProperties: false
               }
             },
@@ -284,8 +258,10 @@ if [ "$should_update" = "true" ]; then
   if [ -z "$content" ]; then
     log "ERROR: Empty content despite should_update=true"
   else
-    # Strip any AI-generated date lines (belt-and-suspenders)
-    content=$(echo "$content" | grep -v -E '^(Last updated:|Updated:)' || echo "$content")
+    # Strip AI-generated date lines + blatant verdict/opinion bullets (the rubric forbids
+    # them, but the model occasionally leaks a "Concluded/Recommended/Suggested ..." line
+    # on analysis-heavy turns). Belt-and-suspenders behind the prompt.
+    content=$(echo "$content" | grep -viE '^(Last updated:|Updated:)|^[[:space:]]*[-*][[:space:]]+(concluded|recommended|suggested|i recommend|we should|you should)\b' || echo "$content")
     # Write with programmatic date header
     {
       echo "<!-- updated: $DATE_NOW -->"
@@ -295,30 +271,27 @@ if [ "$should_update" = "true" ]; then
   fi
 fi
 
-# ---------- Linear online-sync queue (only if this worktree is linked to an issue) ----------
-# Append-only: Claude is the sole writer of .linear.md; this hook never mutates it.
-# The linear-md-sync rule drains this queue to Linear via MCP, then deletes it.
-if [ -f "$LINEAR_MD_FILE" ]; then
+# ---------- Linear online-sync queue (only if the branch is linked to an issue) ----------
+# Append-only: the linear-sync rule drains this queue to Linear via MCP, then deletes it.
+if [ -n "$LINEAR_ISSUE_ID" ]; then
   linear_significant=$(echo "$result" | jq -r '.linear.significant // false' 2>/dev/null)
   if [ "$linear_significant" = "true" ]; then
     linear_note=$(echo "$result" | jq -r '.linear.progress_note // empty' 2>/dev/null)
-    linear_status=$(echo "$result" | jq -r '.linear.status_change // empty' 2>/dev/null)
     if [ -n "$linear_note" ]; then
-      issue_id=$(grep -m1 '^issue:' "$LINEAR_MD_FILE" 2>/dev/null | sed 's/^issue:[[:space:]]*//' | tr -d '\r')
       # Write a one-time header when the queue is first created this cycle
       if [ ! -f "$LINEAR_QUEUE_FILE" ]; then
         {
-          echo "<!-- Linear online-sync queue for ${issue_id:-unknown}. Each entry = one turn flagged as significant by update-recent-work.sh."
-          echo "     Claude: per the linear-md-sync rule, push these to Linear via MCP, update .linear.md (status + last_synced), then delete this file. -->"
+          echo "<!-- Linear online-sync queue for ${LINEAR_ISSUE_ID}. Each entry = one turn flagged as significant by update-recent-work.sh."
+          echo "     Claude: per the linear-sync rule, post these to the issue as one merged comment via MCP, then delete this file. -->"
           echo ""
         } > "$LINEAR_QUEUE_FILE"
       fi
       {
-        echo "## ${DATE_NOW} — status: ${linear_status:-(unchanged)}"
+        echo "## ${DATE_NOW}"
         echo "${linear_note}"
         echo ""
       } >> "$LINEAR_QUEUE_FILE"
-      log "OK: Queued Linear sync (${issue_id:-unknown}) status=${linear_status:-unchanged}"
+      log "OK: Queued Linear sync (${LINEAR_ISSUE_ID})"
     fi
   fi
 fi
