@@ -27,6 +27,7 @@ Personal, always-loaded preferences. Context-specific rules live under
 - **Always use the LSP** (Language Server Protocol) for code intelligence — leverage go-to-definition, find-references, diagnostics, and symbol lookups instead of relying solely on text search
 - **Verify the worktree _and_ the checked-out branch** before any task that depends on git state. Run `pwd && git branch --show-current` as the first action — do **not** rely on the session-start git-status snapshot or on the worktree path implying a branch (a worktree at `.claude/worktrees/feat-xxx/` may actually be on `main` or a stale ref). If the branch isn't what the task expects, stop and confirm with the user before editing files. Re-check whenever you resume a long session or notice the snapshot diverging from reality.
 - **Prefer deterministic code over AI generation** — if a value (dates, IDs, checksums, etc.) can be computed programmatically, do that instead of letting an AI model generate or guess it
+- **The Bash tool shell is `zsh`**, which does **not** word-split unquoted parameter expansions (unlike bash) — `cmd $flags` with a multi-token `$flags` is passed as a single argument and silently fails. Inline multi-token flags literally, or build them as a `zsh` array and expand with `"${arr[@]}"`
 
 ## Development Workflow
 
