@@ -1,3 +1,8 @@
+---
+paths:
+- "**/*.swift"
+---
+
 # iOS Development
 
 - **Verify builds with xcbeautify** for cleaner output
