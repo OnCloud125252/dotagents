@@ -1,6 +1,6 @@
 ---
 paths:
-- "**/*.swift"
+  - "**/*.swift"
 ---
 
 # iOS Development
