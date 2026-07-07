@@ -20,14 +20,14 @@
 - **Imports:** Avoid barrel imports.
 - **Comments:** Only explain "why", never "what" or "how". Code should explain itself.
 - **Deterministic > AI:** Compute values programmatically (dates, IDs, etc.) instead of AI generation.
-- **Tools:** Use LSP (go-to-definition, find-references, diagnostics) instead of just text search.
 - **Validation:** Run linting and type checking before completion. After multiple file edits, re-read files to verify changes.
 
 ## Development Workflow
 
 - **Git State:** Run `pwd && git branch --show-current` first. Don't rely on initial snapshots. Stop and ask if branch is unexpected.
-- **Worktrees:** Prefer `.claude/worktrees` for branches to keep the main repo clean.
+- **Worktrees (default):** Do all code changes in a `.claude/worktrees` worktree by default to keep the main repo clean. Create the worktree automatically without asking; treat it as the standard workflow, not a per-task decision. Skip only when the user explicitly opts out, the directory is not a git repo, or the task genuinely cannot run in a worktree (e.g., an operation that must act on the primary checkout). When in doubt, use a worktree.
 - **Git Operations:** Default to merge (`git pull`); no rebase unless requested.
+- **Autonomy:** For low-complexity, low-risk work, decide and act on your own; this includes opening PRs and merging, up to and including the default branch (`main`/`master`). Get my approval first for high-complexity work, or for anything genuinely risky or hard to reverse (destructive/irreversible operations, secrets/credentials, production-affecting changes). When you can't tell which tier a task is, treat it as high and ask.
 - **Preparation:** Ask clarifying questions for ambiguous requirements. Always read existing code. Always create a todo list before starting.
 - **Execution:** Prefer modifying existing files over creating new ones. Spawn parallel subagents for independent tasks.
 - **Entitlements:** Ask the user if an entitlement check is required when adding new features/services.
@@ -36,7 +36,7 @@
 ## Tracking & Progress Sync
 
 - **Milestones:** Post progress on large changes, blockers, or decisions to the linked PR/Linear issue. Skip routine minor edits.
-- **No tracker?** Ask the user before posting milestone progress. Never auto-create PRs/issues or drop progress silently.
+- **No tracker?** Ask the user before posting milestone progress; never drop it silently. Don't spin up a PR/issue solely to host progress notes (creating a PR for actual work follows **Autonomy** above).
 
 ## Agent Docs Authoring
 
