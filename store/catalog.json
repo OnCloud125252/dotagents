@@ -403,6 +403,14 @@
       "trigger": "When asked to set up git hooks, scaffold hooks, or after creating a new repo that needs hook conventions",
       "requires_tools": ["git"],
       "has_subdirs": true
+    },
+    "discord-notify": {
+      "name": "discord-notify",
+      "description": "Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. User-invocable only (/discord-notify): the first message creates a new forum post, later checkpoints append to that same post. Pairs with goal mode, loop mode, or any long job.",
+      "path": "skills/discord-notify",
+      "trigger": "When the user explicitly invokes /discord-notify to be notified on Discord about a long-running task",
+      "requires_tools": [],
+      "has_subdirs": true
     }
   },
   "bundles": {
@@ -453,14 +461,15 @@
     },
     "all-skills": {
       "label": "All Skills",
-      "description": "Every contextual skill (19 total)",
+      "description": "Every contextual skill (20 total)",
       "commands": [],
       "skills": [
         "commit", "readme", "docs-writer", "cli-output-style",
         "react-best-practices", "grafana-dashboards", "humanizer",
         "find-skills", "i18n",
         "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change",
-        "api-doc", "claude-rules-gen", "make-interfaces-feel-better", "nextjs", "pbcopy", "setup-hooks"
+        "api-doc", "claude-rules-gen", "make-interfaces-feel-better", "nextjs", "pbcopy", "setup-hooks",
+        "discord-notify"
       ]
     },
     "full-suite": {
@@ -481,7 +490,8 @@
         "react-best-practices", "grafana-dashboards", "humanizer",
         "find-skills", "i18n",
         "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change",
-        "api-doc", "claude-rules-gen", "make-interfaces-feel-better", "nextjs", "pbcopy", "setup-hooks"
+        "api-doc", "claude-rules-gen", "make-interfaces-feel-better", "nextjs", "pbcopy", "setup-hooks",
+        "discord-notify"
       ]
     }
   },
