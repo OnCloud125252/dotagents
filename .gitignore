@@ -17,3 +17,6 @@
 /rules/lazco.md
 /rules/picktrip.md
 /handoffs
+
+# discord-notify skill: local webhook secret + post/thread state (never tracked)
+/discord-notify
