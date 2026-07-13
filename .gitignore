@@ -17,3 +17,6 @@
 /rules/example-org.md
 /rules/example-org.md
 /handoffs
+
+# discord-notify skill: local webhook secret + post/thread state (never tracked)
+/discord-notify
