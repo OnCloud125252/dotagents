@@ -5,7 +5,7 @@
 ## What's Inside
 
 - **26 slash commands** — git workflows, PR automation, worktree management, Linear integration, docs, and more
-- **19 skills** — contextual agents that activate automatically (React best practices, Next.js, commit conventions, humanizer, i18n, etc.)
+- **20 skills** — contextual agents that activate automatically (React best practices, Next.js, commit conventions, humanizer, i18n, etc.)
 - **5 hooks** — native macOS notifications, session persistence, and worktree suggestions
 - **Custom status line** — git state, working directory, and last prompt at a glance
 
