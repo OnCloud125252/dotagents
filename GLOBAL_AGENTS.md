@@ -1,5 +1,7 @@
 # AGENTS.md
 
+@RTK.md
+
 ## General Guidelines
 
 - **Use plain dash "-"**; never use em dash ("—").
