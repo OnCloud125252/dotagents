@@ -10,6 +10,7 @@ The resolution is one line: **isolate but do not parallelize.** One subagent per
 ## Division of labour
 
 **The orchestrator (main agent) does only:**
+
 - Startup checks (harness `selftest`, one live `check`, confirm the environment is clean, confirm any global flags are in the expected state).
 - Compute the shared **date literals** once (today, tomorrow, +30, +45, the window-start timestamp) and freeze them.
 - The dispatch loop: hand scenario N to a fresh subagent, wait for its structured verdict, then hand out scenario N+1. No overlap.
@@ -17,6 +18,7 @@ The resolution is one line: **isolate but do not parallelize.** One subagent per
 - FAIL discipline (below) and the final report.
 
 **Each subagent does exactly one scenario:**
+
 - Reads the runbook rules, the relevant scenario section, and CONTRACTS.md first.
 - Runs the scenario create -> verify -> cleanup using only the kit.
 - Leaves raw output in `runs/`; returns only a compact verdict.
@@ -25,6 +27,7 @@ The resolution is one line: **isolate but do not parallelize.** One subagent per
 ## The subagent prompt contract
 
 Every dispatch must hand the subagent everything it needs to run blind, because it shares none of the orchestrator's memory. Include:
+
 - **Read-first pointers**: the runbook rules section, its one scenario, CONTRACTS.md.
 - **The date literals, as values** - not "recompute +45 days". A subagent runs in a separate shell; a value it recomputes at 23:59 disagrees with one computed at 00:01. Passing the frozen literal makes every scenario's dates provably identical regardless of wall-clock. Determinism over convenience.
 - **Working directory and the exact kit commands** it may call.

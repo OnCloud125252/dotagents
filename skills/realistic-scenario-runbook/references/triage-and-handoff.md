@@ -39,6 +39,7 @@ The report's FAILs are symptoms; the fixer should work by **root region**, not t
 ## The peer handoff
 
 Hand the grouped work to a fixer agent (typically a stronger model) over the peer channel. The handoff message carries:
+
 - A pointer to the report and the `runs/` evidence dir (paths, not contents).
 - The **manifest**: every finding with its action (CREATE / COMMENT / NOT-FOUND / DUP) and the resulting ticket id + url.
 - A **priority order**, P0 first - lead with anything that blocks a whole funnel (a flow that cannot proceed past step one, a defect that suppresses an entire class of results) and anything touching money or data loss.
@@ -50,6 +51,7 @@ Before sending: confirm the target peer is actually reachable and working in the
 ## Authority note
 
 These are distinct grants, and they do not transfer:
+
 - **Ticketing authority** (this phase writes to the tracker) does **not** grant the fixer authority to commit, push, or merge.
 - The fixer needs its own confirmation before it starts changing and shipping code. The handoff **queues** the work; it does not authorize the merge.
 - Grants are session-bound. A handoff across sessions must restate the authority model, not assume the successor inherited it.
