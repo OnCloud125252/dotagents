@@ -1,6 +1,7 @@
 ---
 name: realistic-scenario-runbook
 description: Author and run a realistic, multi-scenario end-to-end test runbook that simulates a real user driving a product through its live API, then triage the results into tracker tickets and hand the fixes to another agent. Trigger when the user asks to build a scenario suite / regression runbook that verifies a batch of "done" fixes or probes an epic's sub-issues against a real environment - each scenario doing create -> verify -> cleanup, graded into tiers, run by a fleet of isolated subagents, and rolled up into a report. This is the multi-scenario, tiered, subagent-orchestrated sibling of a single-flow smoke test; reach for smoke-test instead when the user only wants one flow exercised once.
+disable-model-invocation: true
 ---
 
 # realistic-scenario-runbook
