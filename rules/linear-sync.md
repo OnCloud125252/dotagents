@@ -46,7 +46,7 @@ session ends:
 ## Status transitions are not this rule's job
 
 Status (`In Progress` / `In Review` / `Done`) is set at lifecycle moments by the skills
-that own them — `worktree:create` marks `In Progress` when work starts, `pr:create`
+that own them — `worktree-create` marks `In Progress` when work starts, `pr-create`
 marks `In Review` when the PR opens — and/or by Linear's native GitHub integration
 (branch/PR lifecycle). Do **not** guess status transitions from arbitrary turns here;
 this rule posts progress **comments** only.

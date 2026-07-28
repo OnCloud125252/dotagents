@@ -40,7 +40,7 @@ session ends:
 
 If the queue has entries but there is no open PR (it was merged/closed, or the branch
 never had one), do **not** silently drop the notes and do **not** auto-create a PR.
-Ask the user whether to open one (`/pr:create`); if they decline, tell them the queued
+Ask the user whether to open one (`/pr-create`); if they decline, tell them the queued
 notes will be discarded, then delete the temp file.
 
 ## Notes

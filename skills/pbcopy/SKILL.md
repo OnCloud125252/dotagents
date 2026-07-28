@@ -1,6 +1,8 @@
 ---
 name: pbcopy
 description: Copy output to the macOS clipboard via `pbcopy`. Trigger when the user appends or includes `/pbcopy` anywhere in their prompt — it is a suffix flag on a normal request, not a standalone command. Supports optional override flags `/pbcopy full` (copy entire response verbatim) and `/pbcopy raw` (copy only the literal output of commands/tools you ran). With no flag, pick the substantive artifact (logs, JSON, code, generated text, or the whole answer when the answer IS the artifact) and skip conversational framing.
+argument-hint: [instruction for the agent to select content]
+disable-model-invocation: true
 ---
 
 # pbcopy

@@ -1,0 +1,104 @@
+---
+name: git-version
+allowed-tools: Bash(git:*), Read, Edit, AskUserQuestion
+description: Analyze git changes and create a new version using npm version based on conventional commits
+argument-hint: "[service-name] [--dry-run]"
+model: claude-sonnet-4-6
+disable-model-invocation: true
+---
+
+Analyze git commits since the last tag to determine the appropriate semantic version bump, then update the version.
+
+### Arguments
+
+- `$1`: Optional service name (e.g., `api`, `collector`, `billing-worker`) — only when `service-versions.json` exists
+- `--dry-run`: Analyze and report what version would be created without actually creating it
+
+### Process
+
+1. **Detect Version Source**: Check if `service-versions.json` exists in the current directory.
+   - **If it exists** → per-service versioning mode. Read the file and list available services.
+     - If `$1` is a valid service name, use that service.
+     - If `$1` is not provided or invalid, ask the user which service(s) to bump using `AskUserQuestion`.
+   - **If it does not exist** → fallback to `package.json` mode (legacy behavior, see step 2).
+
+2. **Fallback — Verify Environment**: If no `service-versions.json`, check that `package.json` exists. If not, inform the user this command must be run in a Node.js project root.
+
+3. **Get Current Version**:
+   - Per-service mode: Read the version for the selected service from `service-versions.json`.
+   - Fallback mode: Read `package.json` and extract the current version.
+   - Also get the latest git tag (if any) using `git describe --tags --abbrev=0 2>/dev/null || echo ""`.
+
+4. **Collect Commits**: Get commits since the last tag using:
+
+   ```bash
+   git log --no-merges --pretty=format:"%s" ${last_tag}..HEAD 2>/dev/null || git log --no-merges --pretty=format:"%s" -20
+   ```
+
+5. **Analyze Commit Messages**: For each commit subject, check for conventional commit prefixes:
+   - **Breaking Changes**: Look for `BREAKING CHANGE:` in body OR `!` after type (e.g., `feat!:` or `feat(scope)!:`)
+     - If found → **major** version bump (x.y.z → x+1.0.0)
+   - **Features**: Look for `feat:` or `feat(` prefixes
+     - If found → **minor** version bump (x.y.z → x.y+1.0)
+   - **Fixes**: Look for `fix:` or `fix(` prefixes
+     - If found → **patch** version bump (x.y.z → x.y.z+1)
+   - **Other types** (docs, style, refactor, test, chore, perf, ci, build): Do not trigger a version bump
+
+6. **Determine Version Type**:
+   - Priority: major > minor > patch
+   - If no conventional commits found that warrant a version bump, default to **patch** (any commit since last tag justifies at least a patch)
+
+7. **Preview Changes**:
+   - Show current version → new version
+   - Show which service is being bumped (per-service mode)
+   - List commits that triggered the bump (grouped by type)
+   - Show the command that would be executed
+
+8. **Execute or Report**:
+   - If `--dry-run` flag was passed: Display analysis and exit without making changes
+   - Otherwise: Ask for confirmation, then:
+     - **Per-service mode**: Use the `Edit` tool to update the version in `service-versions.json` for the selected service. Then create a git commit with message `<service-name>: <new-version>` and tag `<service-name>/v<new-version>`.
+     - **Fallback mode**: Run `npm version <major|minor|patch>` (which updates `package.json` and creates a git tag).
+   - Show the new version and tag created.
+
+### Output Format — Per-Service Mode
+
+```
+Service: api
+Current version: 1.2.3
+New version: 1.3.0
+Version type: minor
+
+Commits analyzed: 5
+Breaking changes: 0
+Features: 2
+Fixes: 1
+
+Updating service-versions.json → api: 1.3.0
+Tag: api/v1.3.0
+```
+
+### Output Format — Fallback Mode
+
+```
+Current version: 1.2.3
+New version: 1.3.0
+Version type: minor
+
+Commits analyzed: 5
+Breaking changes: 0
+Features: 2
+Fixes: 1
+
+Running: npm version minor
+
+v1.3.0
+```
+
+### Error Handling
+
+- No `package.json` and no `service-versions.json`: Exit with message "This command must be run in a project directory with package.json or service-versions.json"
+- Invalid service name: List available services and ask the user to pick one
+- No commits since last tag: Exit with "No new commits since last tag"
+- No version-worthy commits: Default to patch bump (any new commit warrants at least a patch)
+- `npm version` fails (fallback mode): Display npm error output

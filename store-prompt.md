@@ -156,9 +156,9 @@ After the user confirms their selections:
 
 ### 4a. Internal cross-dependencies
 
-For each selected command, check the `requires_skills` field in catalog.json. If the required skill is NOT already in the user's selections, **automatically add it** and inform the user:
+For each selected item (command or skill), check the `requires_skills` field in catalog.json. If a required skill is NOT already in the user's selections, **automatically add it** and inform the user:
 
-> Auto-added skill: `commit` (required by `git:commit` command)
+> Auto-added skill: `commit` (required by `git-commit`)
 
 ### 4b. External tool dependencies
 
@@ -178,7 +178,7 @@ Only run install commands if the user confirms.
 
 If any selected item has `optional_tools` (e.g., `mcp:linear`), mention it as informational:
 
-> Optional: `pr:create` and `worktree:create` can use the Linear MCP server for issue-based branch naming. This requires configuring the Linear MCP server in Claude Code settings.
+> Optional: `pr-create` and `worktree-create` can use the Linear MCP server for issue-based branch naming. This requires configuring the Linear MCP server in Claude Code settings.
 
 Do NOT block installation on optional tools.
 
@@ -239,10 +239,10 @@ After installation, show a summary grouped by what was installed:
 
 COMMANDS INSTALLED
 ─────────────────────────────────────────
-  /git:commit     — Create commits for recent changes
+  /git-commit     — Create commits for recent changes
   ...
 
-  Usage: Type the slash command in Claude Code (e.g. /git:commit)
+  Usage: Type the slash command in Claude Code (e.g. /git-commit)
 
 SKILLS INSTALLED
 ─────────────────────────────────────────
@@ -254,12 +254,12 @@ SKILLS INSTALLED
 
 SKIPPED (already installed)
 ─────────────────────────────────────────
-  /git:pull       — identical version already present
+  /git-pull       — identical version already present
   ...
 
 UPDATED (override)
 ─────────────────────────────────────────
-  /git:commit     — replaced with catalog version
+  /git-commit     — replaced with catalog version
   ...
 
 UPDATED (merged)
@@ -269,7 +269,7 @@ UPDATED (merged)
 
 SKIPPED (kept local version)
 ─────────────────────────────────────────
-  /git:pull       — user chose to keep local version
+  /git-pull       — user chose to keep local version
   ...
 
 NOTES
