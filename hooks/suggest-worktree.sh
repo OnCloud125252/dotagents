@@ -37,7 +37,7 @@ done < <(git -C "$CWD" worktree list 2>/dev/null | grep -v "bare" | tail -n +2)
 if [ -n "$STALE_LIST" ]; then
   STALE_MSG="
 
-Also mention to the user: the following worktrees appear stale (remote branch deleted, no unique commits ahead of origin/main). Suggest running \`/worktree:cleanup\`:
+Also mention to the user: the following worktrees appear stale (remote branch deleted, no unique commits ahead of origin/main). Suggest running \`/worktree-cleanup\`:
 
 ${STALE_LIST}"
 fi
@@ -46,13 +46,13 @@ fi
 if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
   MSG='IMPORTANT — BLOCKING REQUIREMENT: The user is on the main branch and not in a worktree. Before responding to ANY user request that involves code changes, you MUST first inform the user and suggest using the worktree workflow:
 
-"You'\''re currently on the main branch. I recommend creating a worktree for isolation before making changes:  /worktree:create <Linear-issue-or-branch>"
+"You'\''re currently on the main branch. I recommend creating a worktree for isolation before making changes:  /worktree-create <Linear-issue-or-branch>"
 
 Do NOT start making changes directly on the main branch. After the user responds (whether they agree or decline), proceed with their original request.'
 else
   MSG="IMPORTANT — BLOCKING REQUIREMENT: The user is on branch \"$BRANCH\" but not in a worktree. Before responding to ANY user request that involves code changes, you MUST first inform the user and suggest moving to a worktree:
 
-\"You're on branch \`$BRANCH\` but not in a worktree. Worktrees provide isolation and auto-configure git hooks. Want me to run  /worktree:create $BRANCH  to set one up?\"
+\"You're on branch \`$BRANCH\` but not in a worktree. Worktrees provide isolation and auto-configure git hooks. Want me to run  /worktree-create $BRANCH  to set one up?\"
 
 After the user responds (whether they agree or decline), proceed with their original request."
 fi

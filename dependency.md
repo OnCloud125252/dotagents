@@ -40,7 +40,7 @@ brew install gitleaks golangci-lint
 JavaScript runtime. Provides `bunx` for running npm packages without global install.
 
 - **Install:** `brew install bun`
-- **Used by:** `claude-statusline/statusline.sh`, `commands/git/commit.md`, `commands/pr/review.md`
+- **Used by:** `claude-statusline/statusline.sh`, `skills/git-commit/SKILL.md`, `skills/pr-review/SKILL.md`
 
 ---
 
@@ -60,7 +60,7 @@ npm package that renders the Claude Code status line in the terminal.
 The Claude Code CLI itself. Also invoked as a subprocess (`claude -p`) for sub-agent tasks within certain commands.
 
 - **Install:** `npm install -g @anthropic-ai/claude-code`
-- **Used by:** `commands/pr/create.md` (invokes `claude -p --output-format json` for Linear sync drift detection)
+- **Used by:** `skills/pr-create/SKILL.md` (invokes `claude -p --output-format json` for Linear sync drift detection)
 
 ---
 
@@ -78,7 +78,7 @@ HTTP client for making API requests. Pre-installed on macOS but listed here as a
 Directory-specific environment variables. Automatically activates `.envrc` when entering a new worktree.
 
 - **Install:** `brew install direnv`
-- **Used by:** `commands/worktree/create.md` (optional — silently skipped if not installed)
+- **Used by:** `skills/worktree-create/SKILL.md` (optional — silently skipped if not installed)
 
 ---
 
@@ -87,7 +87,7 @@ Directory-specific environment variables. Automatically activates `.envrc` when 
 GitHub's official CLI for managing issues, pull requests, and repository operations.
 
 - **Install:** `brew install gh`
-- **Used by:** `commands/git/issue.md`, `commands/linear/project-update.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/pr/review.md`
+- **Used by:** `skills/git-issue/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`
 
 ---
 
@@ -107,7 +107,7 @@ Secret scanning tool. Detects accidentally committed credentials and API keys.
 Distributed version control system. Used by nearly every command in this project.
 
 - **Install:** `brew install git` (or use Xcode Command Line Tools)
-- **Used by:** `commands/git/commit.md`, `commands/git/changelog.md`, `commands/git/issue.md`, `commands/git/pull.md`, `commands/git/push.md`, `commands/git/version.md`, `commands/linear/project-update.md`, `commands/pr/create.md`, `commands/pr/resolve.md`, `commands/pr/review.md`, `commands/setup-hooks.md`, `commands/worktree/cleanup.md`, `commands/worktree/create.md`, `commands/worktree/merge.md`, `commands/worktree/sync.md`, `commands/docs/update.md`, `commands/opsx/apply.md`, `commands/opsx/explore.md`, `hooks/suggest-worktree.sh`, `skills/commit/SKILL.md`, `skills/docs-writer/SKILL.md`, `skills/setup-hooks/detect.sh`
+- **Used by:** `skills/git-commit/SKILL.md`, `skills/git-changelog/SKILL.md`, `skills/git-issue/SKILL.md`, `skills/git-pull/SKILL.md`, `skills/git-push/SKILL.md`, `skills/git-version/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/setup-hooks/SKILL.md`, `skills/worktree-cleanup/SKILL.md`, `skills/worktree-create/SKILL.md`, `skills/worktree-merge/SKILL.md`, `skills/worktree-sync/SKILL.md`, `skills/docs-update/SKILL.md`, `hooks/suggest-worktree.sh`, `skills/commit/SKILL.md`, `skills/docs-writer/SKILL.md`, `skills/setup-hooks/detect.sh`
 
 ---
 
@@ -221,7 +221,7 @@ macOS package manager. Required to install everything else.
 JSON processor for parsing hook event data and session files.
 
 - **Install:** `brew install jq`
-- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/statusline.sh`, `commands/setup-hooks.md`, `helpers/summarize.sh`, `hooks/check-linear-md.sh`, `hooks/load-recent-work.sh`, `hooks/notify.sh`, `hooks/suggest-worktree.sh`, `hooks/update-recent-work.sh`, `skills/setup-hooks/detect.sh`
+- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/statusline.sh`, `skills/setup-hooks/SKILL.md`, `helpers/summarize.sh`, `hooks/check-linear-md.sh`, `hooks/load-recent-work.sh`, `hooks/notify.sh`, `hooks/suggest-worktree.sh`, `hooks/update-recent-work.sh`, `skills/setup-hooks/detect.sh`
 
 ---
 
@@ -231,7 +231,7 @@ MCP server providing access to Linear issue tracking. Enables commands to fetch 
 
 - **Tool prefix:** `mcp__Linear_Lazco__*` / `mcp__Linear_Zeabur__*`
 - **Configured in:** Claude Code MCP settings
-- **Used by:** `commands/linear/api-doc.md`, `commands/linear/project-update.md`, `commands/pr/create.md`, `commands/worktree/create.md`
+- **Used by:** `skills/linear-api-doc/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/worktree-create/SKILL.md`
 
 ---
 
@@ -240,7 +240,7 @@ MCP server providing access to Linear issue tracking. Enables commands to fetch 
 JavaScript runtime providing `npm` (package manager) and `npx` (package executor). Required for several commands and npx-based tools.
 
 - **Install:** `brew install node`
-- **Used by:** `commands/git/version.md` (`npm version`), `commands/code/react-doctor.md` (`npx -y react-doctor@latest`), `skills/find-skills/SKILL.md` (`npx skills`)
+- **Used by:** `skills/git-version/SKILL.md` (`npm version`), `skills/code-react-doctor/SKILL.md` (`npx -y react-doctor@latest`), `skills/find-skills/SKILL.md` (`npx skills`)
 
 ---
 
@@ -262,7 +262,7 @@ Falls back to raw message truncation if the API key is missing.
 CLI tool for managing structured change workflows (proposals, designs, specs, tasks).
 
 - **Install:** `npm install -g openspec`
-- **Used by:** `commands/opsx/apply.md`, `commands/opsx/archive.md`, `commands/opsx/explore.md`, `commands/opsx/propose.md`, `skills/openspec-apply-change/SKILL.md`, `skills/openspec-archive-change/SKILL.md`, `skills/openspec-explore/SKILL.md`, `skills/openspec-propose/SKILL.md`
+- **Used by:** `skills/openspec-apply-change/SKILL.md`, `skills/openspec-archive-change/SKILL.md`, `skills/openspec-explore/SKILL.md`, `skills/openspec-propose/SKILL.md`
 
 ---
 
@@ -271,7 +271,7 @@ CLI tool for managing structured change workflows (proposals, designs, specs, ta
 macOS clipboard utilities. Pre-installed on all Macs. `pbcopy` writes to the clipboard; `pbpaste` reads from it.
 
 - **Install:** built-in (macOS system utilities)
-- **Used by:** `commands/git/changelog.md`, `commands/git/issue.md`, `commands/linear/project-update.md`, `commands/pr/create.md`
+- **Used by:** `skills/git-changelog/SKILL.md`, `skills/git-issue/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`
 
 ---
 
@@ -280,7 +280,7 @@ macOS clipboard utilities. Pre-installed on all Macs. `pbcopy` writes to the cli
 Fast, disk space efficient package manager. Referenced as an alternative to npm in documentation workflows.
 
 - **Install:** `brew install pnpm`
-- **Used by:** `commands/docs/update.md`, `commands/pr/review.md`
+- **Used by:** `skills/docs-update/SKILL.md`, `skills/pr-review/SKILL.md`
 
 ---
 
@@ -289,7 +289,7 @@ Fast, disk space efficient package manager. Referenced as an alternative to npm 
 npm package that scans React codebases for security, performance, correctness, and architecture issues. Auto-installs via npx.
 
 - **Invoked as:** `npx -y react-doctor@latest . --verbose --diff`
-- **Used by:** `commands/code/react-doctor.md`
+- **Used by:** `skills/code-react-doctor/SKILL.md`
 
 ---
 
@@ -307,7 +307,7 @@ npm package for discovering and installing agent skills from the open skills eco
 Safe file deletion -- moves to Trash instead of permanent `rm`. Required by project conventions (see `CLAUDE.md`).
 
 - **Install:** `brew install trash`
-- **Used by:** all file deletion operations, `commands/worktree/cleanup.md`, `commands/pr/review.md`
+- **Used by:** all file deletion operations, `skills/worktree-cleanup/SKILL.md`, `skills/pr-review/SKILL.md`
 
 | Command | Description |
 |---|---|

@@ -1,0 +1,59 @@
+---
+name: docs-agentsmd
+description: Create, update, or refactor AGENTS.md with progressive disclosure principles
+model: claude-sonnet-4-6
+disable-model-invocation: true
+---
+
+Create or update the AGENTS.md file based on the pull request changes, following progressive disclosure principles.
+
+Instructions:
+
+- First, check if AGENTS.md already exists in the repository root
+
+## If AGENTS.md does NOT exist
+
+- Quickly scan key files (package.json, README.md, directory structure) to understand the project - be efficient, don't read everything
+- Create an initial AGENTS.md file with essential information for AI agents (build commands, testing instructions, code style, key architectural decisions)
+
+## If AGENTS.md exists
+
+- Review the pull request changes to understand what code was modified
+- Determine if the AGENTS.md needs updates based on the PR changes
+- If no updates are needed, leave a comment explaining why
+- If updates are needed, refactor following progressive disclosure principles:
+
+### Step 1 - Find contradictions
+
+Identify any instructions that conflict with each other. For each contradiction, ask me which version I want to keep.
+
+### Step 2 - Identify the essentials
+
+Extract only what belongs in the root AGENTS.md:
+
+- One-sentence project description
+- Package manager (if not npm)
+- Non-standard build/typecheck commands
+- Anything truly relevant to every single task
+
+### Step 3 - Group the rest
+
+Organize remaining instructions into logical categories (e.g., TypeScript conventions, testing patterns, API design, Git workflow). For each group, create a separate markdown file.
+
+### Step 4 - Create the file structure
+
+Output:
+
+- A minimal root AGENTS.md with markdown links to the separate files
+- Each separate file with its relevant instructions
+- A suggested docs/ folder structure
+
+### Step 5 - Flag for deletion
+
+Identify any instructions that are:
+
+- Redundant (the agent already knows this)
+- Too vague to be actionable
+- Overly obvious (like "write clean code")
+
+Focus on information that helps AI coding agents work effectively with this codebase.

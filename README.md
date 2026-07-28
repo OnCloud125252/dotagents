@@ -1,11 +1,10 @@
 # .claude Template
 
-**A batteries-included starter kit for extending Claude Code with custom commands, skills, hooks, and status line integrations.**
+**A batteries-included starter kit for extending Claude Code with custom skills, hooks, and status line integrations.**
 
 ## What's Inside
 
-- **26 slash commands** — git workflows, PR automation, worktree management, Linear integration, docs, and more
-- **20 skills** — contextual agents that activate automatically (React best practices, Next.js, commit conventions, humanizer, i18n, etc.)
+- **44 skills** — slash-invoked workflows (git, PR, worktree, Linear, docs, OpenSpec) plus contextual agents that activate automatically (React best practices, Next.js, Cloudflare, writing style, and more)
 - **5 hooks** — native macOS notifications, session persistence, and worktree suggestions
 - **Custom status line** — git state, working directory, and last prompt at a glance
 
@@ -14,8 +13,7 @@
 
 ```
 .
-├── commands/           # Slash commands (/git:commit, /pr:create, etc.)
-├── skills/             # Contextual agent skills
+├── skills/             # Agent skills (auto-activating + slash-invoked)
 ├── hooks/              # Event-driven shell scripts
 ├── claude-statusline/  # Terminal status line scripts
 ├── store/              # Machine-readable catalog for selective install
@@ -43,7 +41,6 @@ Copy the contents of [`store-prompt.md`](./store-prompt.md) into a Claude Code c
 ```bash
 git clone https://github.com/OnCloud125252/dotagents.git ~/.agents
 brew install jq trash ripgrep bun
-ln -s ~/.agents/commands ~/.claude/commands
 ln -s ~/.agents/skills ~/.claude/skills
 ```
 

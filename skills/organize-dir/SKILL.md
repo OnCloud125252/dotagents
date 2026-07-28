@@ -1,0 +1,59 @@
+---
+name: organize-dir
+allowed-tools: Bash(ls:*), Bash(find:*), Bash(mkdir:*), Bash(mv:*), Bash(stat:*), Bash(date:*), Bash(pwd:*), Bash(wc:*), Read, Glob, AskUserQuestion
+description: Organize a directory by moving subdirectories older than a specified time into an archive folder. Accepts optional time threshold and archive directory name.
+argument-hint: "[--dry] [--time <duration>] [--archive <dir>] [target-dir]"
+model: claude-sonnet-4-6
+disable-model-invocation: true
+---
+
+Organize the specified directory by archiving old subdirectories.
+
+## Arguments
+
+Parse the following from `$ARGUMENTS`:
+
+- **`--dry`**: Dry run mode. Only show what would be organized without moving any directories or asking for confirmation. When this flag is present, stop after Step 2 (Preview) and do NOT execute Step 3.
+- **`--time <duration>`**: Subdirectories older than this will be moved. Default: `6m` (6 months). Accepts formats like `1y` (1 year), `6m` (6 months), `3m` (3 months), `30d` (30 days), `2w` (2 weeks).
+- **`--archive <dir>`**: Name of the archive subdirectory. Default: `_archive`.
+- **`<target-dir>`**: The directory to organize. Default: current working directory.
+
+## Workflow
+
+### Step 1: Verify & Analyze
+
+1. Confirm the target directory exists using `pwd` or the provided path.
+2. List all top-level subdirectories (non-recursively) in the target directory.
+3. For each subdirectory, determine its last modified date.
+4. Calculate which subdirectories are older than the specified time threshold relative to today's date.
+5. **Exclude** the archive directory itself and hidden directories (those starting with `.`) from being archived.
+6. **Exclude** regular files — only move **directories**.
+
+### Step 2: Preview
+
+1. Display a clear summary table showing:
+   - Subdirectories that WILL be moved (with their last modified dates and sizes)
+   - Subdirectories that will STAY (with their last modified dates)
+   - The archive directory path
+   - The time threshold used
+2. Show the total count: `X directories to archive, Y directories to keep`
+3. If `--dry` flag is set: print `(Dry run — no directories will be moved)` and **STOP here**. Do NOT ask for confirmation and do NOT proceed to Step 3.
+4. Otherwise, **ALWAYS ask the user for confirmation before moving any directories.** Use the AskUserQuestion tool to confirm. Do NOT proceed without explicit approval.
+
+### Step 3: Execute (skipped in dry mode)
+
+1. Create the archive directory if it doesn't exist: `mkdir -p <archive-dir>`
+2. Move each identified subdirectory into the archive directory using `mv`.
+3. If a subdirectory with the same name already exists in the archive directory, append a timestamp suffix (e.g., `my-project_20260322`) to avoid overwriting.
+4. Report results: how many directories were moved, total size archived.
+
+## Important Rules
+
+- **NEVER delete anything.** This skill only MOVES directories.
+- **NEVER move regular files**, only directories.
+- **NEVER move hidden directories** (starting with `.`).
+- **NEVER move directories without user confirmation** (unless `--dry` is set).
+- **Only organize top-level subdirectories** — do not recurse into them to reorganize their contents.
+- If no subdirectories match the criteria, inform the user and exit gracefully.
+- Use `stat` to reliably get directory modification times.
+- Handle directory names with spaces correctly by quoting paths.
