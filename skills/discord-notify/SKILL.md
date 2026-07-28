@@ -1,6 +1,7 @@
 ---
 name: discord-notify
 description: Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. Trigger ONLY when the user explicitly invokes `/discord-notify`, or explicitly asks to be notified on Discord while pointing at this skill (e.g. "結束時通知我" / "有重要進度時通知我"); never auto-fire it. The first message creates a new forum post; later checkpoints append to that same post. Pairs with goal mode, loop mode, or any job long enough that the user steps away.
+disable-model-invocation: true
 ---
 
 # discord-notify
