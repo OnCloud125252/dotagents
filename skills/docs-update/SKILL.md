@@ -1,7 +1,6 @@
 ---
 name: docs-update
 description: Guided workflow for updating documentation based on code changes. Analyzes diffs, identifies affected docs, and applies updates with confirmation.
-allowed-tools: Bash(git *), Bash(pnpm *), Read, Edit, Write, Glob, Grep
 disable-model-invocation: true
 ---
 

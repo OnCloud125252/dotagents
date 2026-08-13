@@ -1,7 +1,6 @@
 ---
 name: git-changelog
 description: Generate a user-facing changelog of new features and bug fixes since a commit
-model: claude-sonnet-4-6
 argument-hint: "[from_commit] [language]"
 disable-model-invocation: true
 ---

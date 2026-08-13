@@ -5,24 +5,7 @@ description: |
   invoke /code-review, and present an interactive summary with inline review posting.
   Use this for an external PR (by number or URL); for your current working diff,
   run /code-review directly.
-argument-hint: [<PR_number> | <PR_url>]
-allowed-tools:
-  - Bash(git *)
-  - Bash(gh *)
-  - Bash(npm *)
-  - Bash(pnpm *)
-  - Bash(bun *)
-  - Bash(python *)
-  - Bash(go *)
-  - Bash(cargo *)
-  - Bash(make *)
-  - Bash(mkdir *)
-  - Bash(trash *)
-  - Read
-  - Glob
-  - Grep
-  - Skill
-  - Agent
+argument-hint: "[<PR_number> | <PR_url>]"
 disable-model-invocation: true
 ---
 

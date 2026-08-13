@@ -1,9 +1,7 @@
 ---
 name: organize-dir
-allowed-tools: Bash(ls:*), Bash(find:*), Bash(mkdir:*), Bash(mv:*), Bash(stat:*), Bash(date:*), Bash(pwd:*), Bash(wc:*), Read, Glob, AskUserQuestion
 description: Organize a directory by moving subdirectories older than a specified time into an archive folder. Accepts optional time threshold and archive directory name.
 argument-hint: "[--dry] [--time <duration>] [--archive <dir>] [target-dir]"
-model: claude-sonnet-4-6
 disable-model-invocation: true
 ---
 
