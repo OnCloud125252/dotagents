@@ -11,6 +11,7 @@ description: >-
   1.3GB", "make the build smaller", "縮小 image", "image 優化"). Detects the
   runtime/package-manager/bundler and adapts each step; verifies every change by
   building and exercising the app before moving on.
+disable-model-invocation: true
 ---
 
 # image-diet — progressive container-image slimmer for JS projects

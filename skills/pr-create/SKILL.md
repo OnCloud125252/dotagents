@@ -2,8 +2,6 @@
 name: pr-create
 description: Push current branch and create a GitHub pull request with smart defaults
 argument-hint: '[--base main] [--draft] [--title "title"]'
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git log:*), Bash(git branch:*), Bash(git push:*), Bash(git rev-parse:*), Bash(gh pr create:*), Bash(gh pr view:*), Bash(pbcopy), Bash(mv *), Bash(date *), Read, AskUserQuestion, mcp__Linear*__get_issue, mcp__Linear*__save_issue, mcp__Linear*__save_comment, mcp__Linear*__list_issue_statuses
-model: claude-sonnet-4-6
 disable-model-invocation: true
 ---
 

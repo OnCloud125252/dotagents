@@ -2,8 +2,6 @@
 name: worktree-sync
 description: Sync a worktree branch with main by merging origin/main into it. Use when the worktree branch has fallen behind main.
 argument-hint: "[worktree-name-or-path-or-branch]"
-allowed-tools: Bash(git *), AskUserQuestion
-model: claude-sonnet-4-6
 disable-model-invocation: true
 ---
 

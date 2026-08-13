@@ -1,9 +1,7 @@
 ---
 name: git-version
-allowed-tools: Bash(git:*), Read, Edit, AskUserQuestion
 description: Analyze git changes and create a new version using npm version based on conventional commits
 argument-hint: "[service-name] [--dry-run]"
-model: claude-sonnet-4-6
 disable-model-invocation: true
 ---
 
