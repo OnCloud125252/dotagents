@@ -10,6 +10,7 @@
 - **High Standards:** Be obsessed with UI pixel perfection and engineering excellence (lint, tests). Fix obvious issues you spot alongside your work.
 - **File deletion:** ALWAYS use `trash` instead of `rm`.
 - **Language:** Use **Traditional Chinese (zh-TW)** when Chinese is needed.
+- **Prose Style:** Apply STE writing discipline to all prose (documentation, commit messages, PR descriptions, comments) in both English and Traditional Chinese. Use the `ste-writing` skill for full rules; core principles: short common words, active voice, one name per concept, max 20-25 word sentences, no marketing adjectives, numbered lists for steps.
 
 ## Code Style & Best Practices
 
