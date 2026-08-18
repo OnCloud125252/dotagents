@@ -9,7 +9,7 @@ All external tools required by this environment. Install everything with the [qu
 # Install Homebrew if not present: https://brew.sh
 
 # Core CLI tools
-brew install git gh jq curl trash bun node pnpm direnv
+brew install git gh jq curl trash bun node pnpm direnv ripgrep
 
 # Claude CLI
 npm install -g @anthropic-ai/claude-code
@@ -290,6 +290,15 @@ npm package that scans React codebases for security, performance, correctness, a
 
 - **Invoked as:** `npx -y react-doctor@latest . --verbose --diff`
 - **Used by:** `skills/code-react-doctor/SKILL.md`
+
+---
+
+## ripgrep (rg)
+
+Fast recursive code search. Used to prove or reject simplification candidates by finding every call site of a symbol.
+
+- **Install:** `brew install ripgrep`
+- **Used by:** `skills/find-simplifications/SKILL.md`
 
 ---
 

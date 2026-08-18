@@ -362,6 +362,14 @@
       "trigger": "Invoke /pbcopy as a suffix flag to copy output to the macOS clipboard",
       "requires_tools": [],
       "has_subdirs": false
+    },
+    "find-simplifications": {
+      "name": "find-simplifications",
+      "description": "Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary.",
+      "path": "skills/find-simplifications",
+      "trigger": "When asked to find things to simplify, cut dead or duplicated code, or swap hand-rolled code for a dependency",
+      "requires_tools": ["git", "rg"],
+      "has_subdirs": false
     }
   },
   "bundles": {
@@ -397,7 +405,7 @@
     },
     "all-skills": {
       "label": "All Skills",
-      "description": "Every skill (44 total)",
+      "description": "Every skill (45 total)",
       "commands": [],
       "skills": [
         "commit", "readme", "cli-output-style", "react-best-practices", "grafana-dashboards",
@@ -410,7 +418,8 @@
         "docs-agentsmd", "docs-update",
         "linear-api-doc", "linear-project-update",
         "code-react-doctor",
-        "search", "auto-resolve", "organize-dir", "setup-hooks", "handoff", "pbcopy"
+        "search", "auto-resolve", "organize-dir", "setup-hooks", "handoff", "pbcopy",
+        "find-simplifications"
       ]
     }
   },
@@ -474,6 +483,11 @@
       "check": "command -v claude",
       "install": "npm install -g @anthropic-ai/claude-code",
       "description": "Claude Code CLI used by update-recent-work.sh for non-interactive summarization"
+    },
+    "rg": {
+      "check": "command -v rg",
+      "install": "brew install ripgrep",
+      "description": "Fast recursive code search (ripgrep)"
     },
     "docker": {
       "check": "command -v docker",
