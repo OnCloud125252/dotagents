@@ -367,7 +367,7 @@
       "name": "find-simplifications",
       "description": "Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary.",
       "path": "skills/find-simplifications",
-      "trigger": "When asked to find things to simplify, cut dead or duplicated code, or swap hand-rolled code for a dependency",
+      "trigger": "Invoke /find-simplifications to survey a repository for evidence-backed simplification candidates",
       "requires_tools": ["git", "rg"],
       "has_subdirs": false
     }
