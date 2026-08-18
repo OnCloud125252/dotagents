@@ -2,6 +2,7 @@
 name: code-react-doctor
 description: Scan React codebase for security, performance, correctness, and architecture issues. Outputs a 0-100 score with actionable diagnostics.
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # React Doctor

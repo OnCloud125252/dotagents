@@ -2,6 +2,7 @@
 name: cli-output-style
 description: "CLI output style guide for writing shell scripts and commands with consistent colors, symbols, dividers, and formatting. Use this skill whenever writing or modifying shell scripts that produce terminal output — CLI tools, setup scripts, health checks, status dashboards, deployment scripts, or any bash/zsh program that prints colored or structured output to the user. Also triggers when the user asks about terminal formatting, ANSI colors, CLI UX patterns, stripping ANSI color when output is piped or redirected, TTY / isatty / NO_COLOR / CLICOLOR_FORCE detection, or how to make shell output look professional and consistent."
 user-invocable: false
+disable-model-invocation: false
 ---
 
 # CLI Output Style Guide

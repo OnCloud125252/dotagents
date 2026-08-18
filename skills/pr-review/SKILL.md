@@ -7,6 +7,7 @@ description: |
   run /code-review directly.
 argument-hint: "[<PR_number> | <PR_url>]"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # Review Pull Request

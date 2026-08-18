@@ -1,6 +1,8 @@
 ---
 name: readme
 description: Guidelines for writing and editing Plain package READMEs. Use this when creating or updating README files.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # README Guidelines

@@ -6,6 +6,8 @@ description: >
   "create CLAUDE.md", "generate rules", "set up Claude Code for this repo",
   "extract CLAUDE.md into rules", or when onboarding a new codebase for Claude Code.
   Also use when converting a monolithic CLAUDE.md into modular rule files.
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Claude Rules Generator

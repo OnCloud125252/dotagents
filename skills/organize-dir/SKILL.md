@@ -3,6 +3,7 @@ name: organize-dir
 description: Organize a directory by moving subdirectories older than a specified time into an archive folder. Accepts optional time threshold and archive directory name.
 argument-hint: "[--dry] [--time <duration>] [--archive <dir>] [target-dir]"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 Organize the specified directory by archiving old subdirectories.

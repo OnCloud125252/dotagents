@@ -8,6 +8,8 @@ metadata:
   author: openspec
   version: "1.0"
   generatedBy: "1.8.0"
+user-invocable: true
+disable-model-invocation: false
 ---
 
 Archive a completed change in the experimental workflow.

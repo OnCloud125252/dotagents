@@ -3,6 +3,7 @@ name: worktree-cleanup
 description: Remove a git worktree and optionally delete its branch. Lists worktrees if no argument given.
 argument-hint: "[worktree-name-or-path]"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # Cleanup Git Worktree

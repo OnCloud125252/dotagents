@@ -3,6 +3,7 @@ name: setup-hooks
 description: Scaffold a stack-appropriate git-hooks pipeline (.githooks/ + scripts/setup-hooks.sh + .claude/settings.json patch) into the current repo. Detects Go / bun+biome / pnpm+biome automatically.
 argument-hint: "[--force] [--stack=go|bun-biome|pnpm-biome]"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # /setup-hooks

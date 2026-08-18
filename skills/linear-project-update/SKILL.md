@@ -6,6 +6,7 @@ description: |
   GitHub PRs, then copy the markdown body to the clipboard via pbcopy.
 argument-hint: "<linear_project_url | linear_project_slug | linear_project_id>"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # Linear Project Update

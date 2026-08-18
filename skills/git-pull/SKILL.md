@@ -2,6 +2,7 @@
 name: git-pull
 description: Run `git pull` and resolve issues if there's any output from git hook, and ask user how to resolve conflicts
 disable-model-invocation: true
+user-invocable: true
 ---
 
 Pull the latest changes from the remote repository and handle any issues that arise.

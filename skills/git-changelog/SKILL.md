@@ -3,6 +3,7 @@ name: git-changelog
 description: Generate a user-facing changelog of new features and bug fixes since a commit
 argument-hint: "[from_commit] [language]"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 Generate a concise, user-facing changelog with intelligent grouping and natural language descriptions inMarkdown format.
