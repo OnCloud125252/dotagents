@@ -1,8 +1,8 @@
 ---
 name: find-simplifications
-description: 'Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary. Use when the user asks to find things to simplify, cut dead or duplicated code, remove speculative or over-built surfaces, swap hand-rolled code for a dependency, or fold simplification ideas from another branch or PR.'
+description: 'Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary. Covers dead, duplicated, speculative, over-built, added-then-removed, and hand-rolled-where-a-dependency-exists surfaces.'
+disable-model-invocation: true
 user-invocable: true
-disable-model-invocation: false
 ---
 
 # Find Simplifications
