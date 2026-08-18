@@ -2,6 +2,7 @@
 name: git-commit
 description: Create commits for recent changes. Multiple commits are allowed for logical grouping.
 disable-model-invocation: false
+user-invocable: true
 ---
 
 Before doing anything else, run `bun run check:fix-unsafe` (or equivalent) to auto-fix lint and formatting issues. Do NOT stage the resulting changes — leave them unstaged so they can be grouped into the correct logical commits alongside the related source changes.

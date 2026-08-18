@@ -4,6 +4,7 @@ description: >-
   Generates a durable, standalone session handoff document and outputs a resumption prompt for the next agent session.
 argument-hint: "[instruction]"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 1. **Determine Topic & Directory:**

@@ -283,6 +283,8 @@ retrieval:
     - configure caching for this data fetch
     - set up server rendering for my pages
 
+user-invocable: true
+disable-model-invocation: false
 ---
 
 # Next.js Best Practices

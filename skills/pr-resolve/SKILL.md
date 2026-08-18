@@ -7,6 +7,7 @@ description: |
   the PR for the current branch.
 argument-hint: "[PR_LINK_OR_NUMBER_OR_COMMENT_LINK]"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # Resolve PR Review Threads

@@ -3,6 +3,7 @@ name: git-issue
 description: Create a GitHub issue with intelligent label detection and optional template support
 argument-hint: <title> [--body "description"] [--label bug|feature|docs]
 disable-model-invocation: true
+user-invocable: true
 ---
 
 Create a GitHub issue using the `gh` CLI with smart defaults and label detection.

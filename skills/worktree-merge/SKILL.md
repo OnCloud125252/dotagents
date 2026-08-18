@@ -3,6 +3,7 @@ name: worktree-merge
 description: Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.
 argument-hint: "<source> [target] [--squash | --rebase | --merge]"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # Merge Worktree Branch Locally

@@ -3,6 +3,7 @@ name: pr-create
 description: Push current branch and create a GitHub pull request with smart defaults
 argument-hint: '[--base main] [--draft] [--title "title"]'
 disable-model-invocation: true
+user-invocable: true
 ---
 
 Create a GitHub pull request for the current branch.

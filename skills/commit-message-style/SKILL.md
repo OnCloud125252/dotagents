@@ -2,6 +2,7 @@
 name: commit-message-style
 description: Create a well-formatted git commit message based on the changes staged for commit. Follow best practices for commit message style and content.
 user-invocable: false
+disable-model-invocation: false
 ---
 
 # Commit Best Practices Skill

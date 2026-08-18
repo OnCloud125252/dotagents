@@ -2,6 +2,7 @@
 name: brainstorming
 description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation. After design approval, transitions to /openspec-propose to create an OpenSpec change."
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # Brainstorming Ideas Into Designs
