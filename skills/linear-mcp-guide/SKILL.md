@@ -2,6 +2,7 @@
 name: linear-mcp-guide
 description: >-
   Outlines critical constraints, formatting quirks, and data-safety protocols when interacting with the Linear Model Context Protocol (MCP) tool. Invoke these rules whenever reading, creating, or updating Linear issues and documents.
+user-invocable: false
 ---
 
 ## Linear MCP Gotchas
