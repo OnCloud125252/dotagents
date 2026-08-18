@@ -1,6 +1,8 @@
 ---
 name: cli-output-style
-description: "CLI output style guide for writing shell scripts and commands with consistent colors, symbols, dividers, and formatting. Use this skill whenever writing or modifying shell scripts that produce terminal output — CLI tools, setup scripts, health checks, status dashboards, deployment scripts, or any bash/zsh program that prints colored or structured output to the user. Also triggers when the user asks about terminal formatting, ANSI colors, CLI UX patterns, or how to make shell output look professional and consistent."
+description: "CLI output style guide for writing shell scripts and commands with consistent colors, symbols, dividers, and formatting. Use this skill whenever writing or modifying shell scripts that produce terminal output — CLI tools, setup scripts, health checks, status dashboards, deployment scripts, or any bash/zsh program that prints colored or structured output to the user. Also triggers when the user asks about terminal formatting, ANSI colors, CLI UX patterns, stripping ANSI color when output is piped or redirected, TTY / isatty / NO_COLOR / CLICOLOR_FORCE detection, or how to make shell output look professional and consistent."
+user-invocable: false
+disable-model-invocation: false
 ---
 
 # CLI Output Style Guide
@@ -43,6 +45,29 @@ Colors carry consistent meaning — don't mix them up:
 | White | Neutral | Labels, plain text |
 
 Always close color spans with `$_CLI_NC` (reset). Unclosed spans bleed color into subsequent output.
+
+### Disable Color When Not a TTY
+
+Color codes that look great in a terminal become noise when they land in a pipe, a log file, `grep`, or another tool's stdin: you get literal `\033[0;32m` sequences scattered through the text. Detect this once, right after defining the color variables, and **null them out** (set to empty string) so every downstream `echo -e "$_CLI_GREEN..."` keeps working unchanged. This gate MUST run before the Symbol Definitions below, because those derive `_CLI_CHECK` / `_CLI_CROSS` / etc. from the color vars.
+
+```bash
+# Respect NO_COLOR (https://no-color.org/) and CLICOLOR_FORCE; otherwise gate on stdout being a TTY
+if [[ -n "${CLICOLOR_FORCE:-}" ]]; then
+  : # color forced on, even when piped
+elif [[ -n "${NO_COLOR:-}" ]] || [[ ! -t 1 ]]; then
+  _CLI_RED='' _CLI_GREEN='' _CLI_YELLOW='' _CLI_BLUE=''
+  _CLI_PURPLE='' _CLI_CYAN='' _CLI_WHITE='' _CLI_GRAY='' _CLI_NC=''
+fi
+```
+
+> **Why this pattern?**
+> - `[[ ! -t 1 ]]` is true when **stdout (fd 1)** is not a terminal, i.e. the script is piped (`|`) or redirected (`>`, `>>`). That is the moment to suppress color.
+> - `NO_COLOR` is the cross-tool de-facto standard (https://no-color.org/): if the env var is set to **any value, including empty**, the user is explicitly asking for no color. `[[ -n "${NO_COLOR:-}" ]]` is a presence check, not a value check.
+> - `CLICOLOR_FORCE` is the escape hatch: when set, color stays on even through a pipe (useful for `less -R`, pagers, or wrappers that re-render escapes). Check it first so it wins.
+> - **Empty string, not `unset`**: setting the vars to `''` means every `$variable` reference below silently expands to nothing; no `echo -e` line needs to change. The bracket symbols (`[✓]`, `[✗]`, `[!]`, `[i]`) and the `━` divider characters stay visible because they are literal text, not ANSI sequences.
+> - Interaction with the width helper above: `[[ ! -t 1 ]]` keys off fd 1, while `tput cols </dev/tty` keys off the controlling terminal. So when piped, color drops but dividers still size to the user's actual terminal — usually what you want.
+
+If a script writes colored output to **stderr** (fd 2) and should respect its own TTY state, gate that path separately with `[[ -t 2 ]]` rather than reusing the fd 1 check.
 
 ### Symbol Definitions
 
@@ -258,11 +283,13 @@ echo -e "  Mode:   ${_CLI_GRAY}disabled${_CLI_NC}"
 
 ## Checklist: Adding a New Command
 
-1. Define color/symbol variables (or reuse existing ones) — prefix to avoid collision
-2. Create `log_info`, `log_success`, `log_warn`, `log_error` helper functions
-3. Frame output with dividers (open with label, close without) for status-type commands
-4. Use `log_info` for progress steps, `log_success`/`log_error` for outcomes
-5. Use `log_warn` + `log_info` for recoverable issues with guidance
-6. Color inline values semantically — cyan for data, green for success states, grey for disabled
-7. Maintain 2-space indent for key-value pairs, 4-space for list items
-8. Return 1 on errors, 0 on success
+1. Define color variables (or reuse existing ones) — prefix to avoid collision
+2. Gate color with the TTY / `NO_COLOR` / `CLICOLOR_FORCE` check — run it before deriving symbols so they pick up the (possibly nulled) color vars
+3. Define symbol variables (`_CLI_CHECK`, `_CLI_CROSS`, etc.) from the color vars
+4. Create `log_info`, `log_success`, `log_warn`, `log_error` helper functions
+5. Frame output with dividers (open with label, close without) for status-type commands
+6. Use `log_info` for progress steps, `log_success`/`log_error` for outcomes
+7. Use `log_warn` + `log_info` for recoverable issues with guidance
+8. Color inline values semantically — cyan for data, green for success states, grey for disabled
+9. Maintain 2-space indent for key-value pairs, 4-space for list items
+10. Return 1 on errors, 0 on success

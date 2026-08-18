@@ -6,6 +6,7 @@
 - **No auto-generated edits:** Never manually modify `CHANGELOG.md` or auto-generated files.
 - **Markdown:** Put each full sentence on its own line; preserve structure but avoid line wrapping.
 - **Technical decisions:** Prioritize quality, simplicity, robustness, scalability, and maintainability over development cost.
+- Do not preserve backward compatibility. Remove obsolete paths instead of adding compatibility layers, fallbacks, or migrations.
 - **Bug fixing:** Always reproduce the bug in an E2E setting first to ensure the real problem is solved.
 - **High Standards:** Be obsessed with UI pixel perfection and engineering excellence (lint, tests). Fix obvious issues you spot alongside your work.
 - **File deletion:** ALWAYS use `trash` instead of `rm`.

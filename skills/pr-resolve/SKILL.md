@@ -6,16 +6,8 @@ description: |
   resolve or address PR review feedback. If no argument is given, auto-detects
   the PR for the current branch.
 argument-hint: "[PR_LINK_OR_NUMBER_OR_COMMENT_LINK]"
-allowed-tools:
-  - Bash(gh *)
-  - Bash(git *)
-  - Read
-  - Edit
-  - Write
-  - Glob
-  - Grep
-  - Agent
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # Resolve PR Review Threads

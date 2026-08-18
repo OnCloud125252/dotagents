@@ -34,6 +34,7 @@ Design the assertion command (`checks`) so its FAIL lines are **self-explaining*
 ## Validate before you trust
 
 A harness that emits confident PASS/FAIL is worse than none if it is silently wrong. Before the run relies on it:
+
 1. Run `selftest` - it must pass.
 2. Make one **live** call against the real environment (`check` returning success) - proves token, endpoint, and framing parser agree with reality.
 3. Sanity-check one known-good and, if possible, one known-bad input, and confirm the verdict matches expectation.

@@ -2,8 +2,8 @@
 name: setup-hooks
 description: Scaffold a stack-appropriate git-hooks pipeline (.githooks/ + scripts/setup-hooks.sh + .claude/settings.json patch) into the current repo. Detects Go / bun+biome / pnpm+biome automatically.
 argument-hint: "[--force] [--stack=go|bun-biome|pnpm-biome]"
-allowed-tools: Bash(git *), Bash(jq *), Bash(cp *), Bash(chmod *), Bash(mkdir *), Bash(test *), Bash(bash -n *), Bash(diff *), Bash(/Users/oncloud/.agents/skills/setup-hooks/detect.sh*), Read, Write, Edit
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # /setup-hooks

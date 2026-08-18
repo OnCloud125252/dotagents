@@ -1,9 +1,8 @@
 ---
 name: git-pull
-allowed-tools: Bash(git:*), Bash(pwd), AskUserQuestion, Read
 description: Run `git pull` and resolve issues if there's any output from git hook, and ask user how to resolve conflicts
-model: claude-sonnet-4-6
 disable-model-invocation: true
+user-invocable: true
 ---
 
 Pull the latest changes from the remote repository and handle any issues that arise.

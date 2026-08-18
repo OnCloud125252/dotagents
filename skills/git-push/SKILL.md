@@ -1,9 +1,8 @@
 ---
 name: git-push
-allowed-tools: Bash(git:*), Bash(pwd), AskUserQuestion, Read
 description: Run `git push` and resolve issues if there's any output from git hook, and ask user how to resolve conflicts
-model: claude-haiku-4-5
 disable-model-invocation: true
+user-invocable: true
 ---
 
 Push the current branch to the remote repository and handle any issues that arise.

@@ -15,6 +15,7 @@ The single largest source of false verdicts is a runner asserting against a cont
 Produce one file - `kit/CONTRACTS.md` - that is the **sole API truth** for the whole run. The runbook and every subagent point at it. If a fact is not in CONTRACTS.md, the runner must not assume it.
 
 Rules for CONTRACTS.md:
+
 - Every entry is **source-pinned**: quote or reference the file and symbol it came from, so it can be re-verified. Prefer a `path:symbol` anchor over prose.
 - No secrets, no real ids, no sample tokens. Contracts are shapes and rules, not data.
 - State the **deployed revision** it was pinned against, and the date.
