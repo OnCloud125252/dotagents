@@ -6,11 +6,11 @@
 - **No auto-generated edits:** Never manually modify `CHANGELOG.md` or auto-generated files.
 - **Markdown:** Put each full sentence on its own line; preserve structure but avoid line wrapping.
 - **Technical decisions:** Prioritize quality, simplicity, robustness, scalability, and maintainability over development cost.
+- Do not preserve backward compatibility. Remove obsolete paths instead of adding compatibility layers, fallbacks, or migrations.
 - **Bug fixing:** Always reproduce the bug in an E2E setting first to ensure the real problem is solved.
 - **High Standards:** Be obsessed with UI pixel perfection and engineering excellence (lint, tests). Fix obvious issues you spot alongside your work.
 - **File deletion:** ALWAYS use `trash` instead of `rm`.
 - **Language:** Use **Traditional Chinese (zh-TW)** when Chinese is needed.
-- **Prose Style:** Apply STE writing discipline to all prose (documentation, commit messages, PR descriptions, comments) in both English and Traditional Chinese. Use the `ste-writing` skill for full rules; core principles: short common words, active voice, one name per concept, max 20-25 word sentences, no marketing adjectives, numbered lists for steps.
 
 ## Code Style & Best Practices
 
