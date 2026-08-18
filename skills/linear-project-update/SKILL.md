@@ -4,27 +4,9 @@ description: |
   Draft a Traditional Chinese project update for a Linear project by
   correlating its milestones and issues with recent git commits and
   GitHub PRs, then copy the markdown body to the clipboard via pbcopy.
-argument-hint: <linear_project_url | linear_project_slug | linear_project_id>
-allowed-tools:
-  - Bash(git log:*)
-  - Bash(git status:*)
-  - Bash(git rev-parse:*)
-  - Bash(gh pr list:*)
-  - Bash(gh repo view:*)
-  - Bash(pbcopy)
-  - Bash(pbpaste:*)
-  - Bash(wc:*)
-  - Bash(mkdir:*)
-  - Bash(cat:*)
-  - Read
-  - Glob
-  - Grep
-  - mcp__Linear_Lazco__lazco_linear_get_project
-  - mcp__Linear_Lazco__lazco_linear_get_project_milestones
-  - mcp__Linear_Lazco__lazco_linear_search_issues_by_identifier
-  - mcp__Linear_Lazco__lazco_linear_search_issues
-  - mcp__Linear_Lazco__lazco_linear_list_projects
+argument-hint: "<linear_project_url | linear_project_slug | linear_project_id>"
 disable-model-invocation: true
+user-invocable: true
 ---
 
 # Linear Project Update

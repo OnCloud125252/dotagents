@@ -1,10 +1,9 @@
 ---
 name: git-issue
 description: Create a GitHub issue with intelligent label detection and optional template support
-model: claude-sonnet-4-6
 argument-hint: <title> [--body "description"] [--label bug|feature|docs]
-allowed-tools: Bash(gh issue create:*), Bash(gh label list), Bash(gh issue view:*), Bash(pbcopy), Bash(echo:*)
 disable-model-invocation: true
+user-invocable: true
 ---
 
 Create a GitHub issue using the `gh` CLI with smart defaults and label detection.

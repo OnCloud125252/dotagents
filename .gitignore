@@ -11,6 +11,8 @@
 /.claude/worktrees
 /.claude/recent-work
 .codex-system-skills.marker
+/skills/.system
+/claude-peers-mcp
 
 # Private infra rules (kept local, purged from public history)
 /rules/zeabur.md

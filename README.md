@@ -4,7 +4,7 @@
 
 ## What's Inside
 
-- **44 skills** — slash-invoked workflows (git, PR, worktree, Linear, docs, OpenSpec) plus contextual agents that activate automatically (React best practices, Next.js, Cloudflare, writing style, and more)
+- **45 skills** — slash-invoked workflows (git, PR, worktree, Linear, docs, OpenSpec) plus contextual agents that activate automatically (React best practices, Next.js, Cloudflare, writing style, and more)
 - **5 hooks** — native macOS notifications, session persistence, and worktree suggestions
 - **Custom status line** — git state, working directory, and last prompt at a glance
 

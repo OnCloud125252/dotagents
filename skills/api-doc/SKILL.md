@@ -9,6 +9,8 @@ description: >
   asks to "create an API doc", "write frontend API guide", "document the API
   changes", or after completing backend API work that frontend needs to consume.
   Also use when the user says "寫 API 文件", "產生前端文件", or "建立文件".
+user-invocable: true
+disable-model-invocation: false
 ---
 
 Generate a frontend-oriented API guide document and publish it to the project's issue tracker.
