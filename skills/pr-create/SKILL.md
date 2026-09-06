@@ -26,10 +26,12 @@ Parse `$ARGUMENTS` to extract:
    - `git diff <base>...HEAD --stat` — summarize changed files
    - `git branch -vv | grep '^\*'` — check remote tracking
 
-2. **Detect Linear Issue** (from the branch name):
-   - Check if the branch name contains a Linear issue ID — a segment matching 2-5 letters, a hyphen, then digits. Match case-insensitively.
-   - If found, uppercase it (e.g., `<issue-id>` → `<ISSUE-ID>`) and call `mcp__Linear*__get_issue` to fetch the issue's `title`, `identifier`, `url`, and current `status`.
-   - If no issue ID is found in the branch name, or the fetch fails, skip this step and proceed without Linear context.
+2. **Detect Tracker Issue** (from the branch name):
+   - Check if the branch name contains an issue ID — a segment matching 2-5 letters, a hyphen, then digits. Match case-insensitively.
+   - If found, uppercase it (e.g., `<issue-id>` → `<ISSUE-ID>`) and fetch the issue's `title`, `identifier`, `url`, and current `status` from the tracker:
+     - Pick the tracker: check the project's `AGENTS.md` or rules for a preference. Otherwise try the Linear MCP `get_issue` tool first, then the Huly MCP `get_issue` tool (`project` = the letters before the hyphen, `identifier` = the full ID). Use the first one that returns the issue.
+     - Huly issues have no `url` field. Build one from the Huly host and workspace: `https://<huly-host>/workbench/<workspace>/tracker/<ISSUE-ID>`.
+   - If no issue ID is found in the branch name, or no tracker returns the issue, skip this step and proceed without tracker context.
 
 3. **Safety Checks**:
    - If there are uncommitted changes, warn the user and ask whether to proceed
@@ -40,15 +42,15 @@ Parse `$ARGUMENTS` to extract:
    - If branch has no upstream or is ahead of remote, push with `-u origin <branch>`
    - If `--no-push` is set, skip this step
 
-5. **Linear Sync** (only if a Linear issue was detected in step 2):
+5. **Tracker Sync** (only if an issue was detected in step 2):
 
-   The issue ID comes from the branch (step 2) — there is no `.linear.md` mirror to read.
+   **Move the issue to In Review.** Using the `status` from step 2, if the issue is not already in a review or completed state, set it to the review-stage status (e.g. `In Review`):
+   - Linear: `save_issue` (`id` + `state`). Use `list_issue_statuses` for the issue's team if the status name is unknown.
+   - Huly: `update_issue` (`project` + `identifier` + `status`). Use `list_statuses` for the project if the status name is rejected.
 
-   **a. Flush queued progress.** If `.claude/recent-work/linear-sync-queue.md` exists and is non-empty, drain it per the **linear-sync** rule: claim it (`mv` to `linear-sync-queue.flushing.md`), merge its entries into one concise comment, post it to the issue with `mcp__Linear*__save_comment`, then delete the temp file. If the post fails, restore the queue file and warn the user. Skip silently if the queue is absent.
+   If no such status exists or the call fails, warn once and continue.
 
-   **b. Move the issue to In Review.** Using the `status` from step 2 (or `mcp__Linear*__list_issue_statuses` for the issue's team), if the issue is not already in a review or completed state, set it to the team's review-stage status (e.g. `In Review`) via `mcp__Linear*__save_issue` (`id` + `state`). If no such status exists or the call fails, warn once and continue.
-
-   Do **not** edit titles/descriptions or guess other status transitions here — opening the PR is a single, deterministic lifecycle moment. **MCP unavailable:** warn ("Linear MCP unavailable — sync skipped") and proceed. Never block PR creation on Linear sync.
+   Do **not** edit titles/descriptions or guess other status transitions here — opening the PR is a single, deterministic lifecycle moment. **MCP unavailable:** warn ("<tracker> MCP unavailable — sync skipped") and proceed. Never block PR creation on tracker sync.
 
 6. **Analyze Changes**:
    - Review ALL commits on the branch (`git log <base>..HEAD`), not just the latest
@@ -58,15 +60,15 @@ Parse `$ARGUMENTS` to extract:
 7. **Generate PR Content**:
    - **Title**: Short (under 70 chars), prefixed with type.
      - If `--title` provided, use that instead (skip all generation below)
-     - If a Linear issue was fetched: `<type>(<ISSUE-ID>): <Linear issue title>`
+     - If a tracker issue was fetched: `<type>(<ISSUE-ID>): <issue title>`
        - Example: `feat(<ISSUE-ID>): <issue title>`
        - The type prefix (`feat`, `fix`, etc.) is still determined from commit analysis
-       - Shorten the Linear issue title if needed to stay under 70 chars
-     - If no Linear issue: `<type>: <summary from commits>` (existing behavior)
+       - Shorten the issue title if needed to stay under 70 chars
+     - If no tracker issue: `<type>: <summary from commits>` (existing behavior)
    - **Body**: Use this format:
 
    ```
-   ## Linear Issue <!-- Only if a Linear issue was fetched -->
+   ## Linear Issue <!-- Heading is "Linear Issue" or "Huly Issue" by tracker. Only if an issue was fetched -->
    [<ISSUE-ID>](<issue url>) — <issue title>
 
    ## Summary
@@ -76,7 +78,7 @@ Parse `$ARGUMENTS` to extract:
    <Bulleted checklist of how to verify the changes>
    ```
 
-   Omit the `## Linear Issue` section entirely if no Linear issue was detected.
+   Omit the issue section entirely if no tracker issue was detected.
 
 8. **Create PR**:
    - Use `gh pr create` with a HEREDOC for the body
