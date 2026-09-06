@@ -78,15 +78,15 @@ git pull origin <BRANCH>
 
 Set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = false`.
 
-**If the current branch does NOT match `<BRANCH>`** — create a worktree under `.claude/worktrees/` instead of checking out:
+**If the current branch does NOT match `<BRANCH>`** — create a worktree under `.worktrees/` instead of checking out:
 
 ```bash
 git fetch origin <BRANCH>
-git worktree add .claude/worktrees/<BRANCH> <BRANCH>
-git -C .claude/worktrees/<BRANCH> pull origin <BRANCH>
+git worktree add .worktrees/<BRANCH> <BRANCH>
+git -C .worktrees/<BRANCH> pull origin <BRANCH>
 ```
 
-Set `WORKTREE_PATH = ".claude/worktrees/<BRANCH>"` and `WORKTREE_CREATED = true`.
+Set `WORKTREE_PATH = ".worktrees/<BRANCH>"` and `WORKTREE_CREATED = true`.
 
 All subsequent `git` operations (stage, commit, push, rev-parse) **must** use `git -C "$WORKTREE_PATH"` so they run against the correct working tree. All file reads and edits must use paths prefixed with `$WORKTREE_PATH/` (e.g., `$WORKTREE_PATH/src/file.go`).
 
@@ -268,12 +268,12 @@ EOF
 
 If a worktree was created in Step 1c, ask the user whether to remove it:
 
-> "A worktree was created at `.claude/worktrees/<BRANCH>`. Would you like to remove it now that the review has been addressed?"
+> "A worktree was created at `.worktrees/<BRANCH>`. Would you like to remove it now that the review has been addressed?"
 
 If the user confirms, remove the worktree:
 
 ```bash
-git worktree remove .claude/worktrees/<BRANCH>
+git worktree remove .worktrees/<BRANCH>
 ```
 
 If the worktree has uncommitted changes that prevent removal, inform the user and suggest they check it manually.
@@ -285,4 +285,4 @@ If the worktree has uncommitted changes that prevent removal, inform the user an
 - **GraphQL mutation error** → log the error, continue with remaining threads, report all failures at the end.
 - **Permission error** → inform the user they may lack write access or the thread may already be resolved.
 - **Outdated thread** → still attempt to resolve; note in summary if the diff context has changed.
-- **Worktree already exists** → if `.claude/worktrees/<BRANCH>` already exists, use it as-is (do not re-add), `cd` into it, set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = false` so cleanup is not offered automatically.
+- **Worktree already exists** → if `.worktrees/<BRANCH>` already exists, use it as-is (do not re-add), `cd` into it, set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = false` so cleanup is not offered automatically.

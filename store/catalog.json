@@ -219,7 +219,7 @@
       "description": "Push current branch and create a GitHub pull request with smart defaults.",
       "path": "skills/pr-create",
       "trigger": "Invoke /pr-create to push the branch and open a PR with smart defaults",
-      "requires_tools": ["git", "gh", "claude"],
+      "requires_tools": ["git", "gh"],
       "optional_tools": ["mcp:linear"],
       "has_subdirs": false
     },
@@ -478,11 +478,6 @@
       "check": "command -v grrr",
       "install": "brew install nicholaswilde/tap/growlrrr",
       "description": "macOS notification CLI (growlrrr) used by the notify.sh hook"
-    },
-    "claude": {
-      "check": "command -v claude",
-      "install": "npm install -g @anthropic-ai/claude-code",
-      "description": "Claude Code CLI used by update-recent-work.sh for non-interactive summarization"
     },
     "rg": {
       "check": "command -v rg",

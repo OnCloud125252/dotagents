@@ -15,7 +15,7 @@ A few well-proven candidates beat a pile of thin guesses.
 
 ## 1. Read The Repo Context First
 
-1. Read `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and the root `README`.
+1. Read `AGENTS.md`, `CONTRIBUTING.md`, and the root `README`.
 2. Read the architecture and testing docs if the repo has them.
 3. Find the decision records. Common places are `docs/adr/`, `docs/decisions/`, `docs/proposals/`, `.agents/notes/`, and RFC folders.
 4. Read the records that cover the area you plan to touch.
