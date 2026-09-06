@@ -7,7 +7,7 @@ user-invocable: true
 
 Before doing anything else, run `bun run check:fix-unsafe` (or equivalent) to auto-fix lint and formatting issues. Do NOT stage the resulting changes — leave them unstaged so they can be grouped into the correct logical commits alongside the related source changes.
 
-Create commits for all recent changes. You MUST split changes into multiple logical commits when appropriate — each commit should represent a single cohesive change. Invoke the /commit skill using the Skill tool to handle the commit creation
+Create commits for all recent changes. You MUST split changes into multiple logical commits when appropriate — each commit should represent a single cohesive change. Follow the `commit-message-style` skill for the message format of every commit you create.
 
 # Grouping Guidelines
 
