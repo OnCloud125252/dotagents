@@ -5,7 +5,7 @@ description: >
   Analyzes git diff and source code to identify API changes (GraphQL, REST,
   gRPC, tRPC, etc.), then creates a comprehensive document with types, endpoints,
   examples, validation rules, and error handling. Publishes to the project's
-  issue tracker (Linear, GitHub, Notion, etc.) if available. Use when the user
+  issue tracker (Linear, Huly, GitHub, Notion, etc.) if available. Use when the user
   asks to "create an API doc", "write frontend API guide", "document the API
   changes", or after completing backend API work that frontend needs to consume.
   Also use when the user says "寫 API 文件", "產生前端文件", or "建立文件".
@@ -29,11 +29,11 @@ If not provided, ask the user for it.
 | Input | Example | Action |
 |---|---|---|
 | Issue identifier | `<ISSUE-ID>`, `#<N>` | Fetch from issue tracker |
-| Full URL | `https://linear.app/.../<ISSUE-ID>/...` | Extract identifier, fetch |
+| Full URL | `https://linear.app/.../<ISSUE-ID>/...` or `https://<huly-host>/workbench/<workspace>/tracker/<ISSUE-ID>` | Extract identifier, fetch |
 | Free-form description | `sponsor CRUD API` | Use as context for what to document |
 | Empty | | Ask the user |
 
-If an issue tracker MCP is available (Linear, GitHub, etc.), fetch the issue to get title, project, team, and branch name. If multiple MCP servers exist, pick the one matching the issue's prefix.
+If an issue tracker MCP is available (Linear, Huly, GitHub, etc.), fetch the issue to get title, project, team, and branch name. If multiple MCP servers exist, pick the one matching the issue's prefix. For Huly, call `get_issue` with `project` = the letters before the hyphen and `identifier` = the full ID.
 
 ### 2. Detect API Technology
 
@@ -109,6 +109,7 @@ Publish to the issue tracker that's available via MCP:
 | Tracker | Action |
 |---|---|
 | **Linear** | `save_document` attached to the issue, then `save_comment` with link |
+| **Huly** | `create_document` in the project's teamspace, `link_document_to_issue`, then `add_comment` with link |
 | **GitHub** | Create as a PR comment, wiki page, or issue comment |
 | **Notion** | Create a page in the relevant database/workspace |
 | **None available** | Output the document as markdown in the conversation |

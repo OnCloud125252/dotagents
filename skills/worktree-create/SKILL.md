@@ -1,14 +1,14 @@
 ---
 name: worktree-create
-description: Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.
-argument-hint: <branch-name | Linear issue ID | Linear issue URL>
+description: Create a git worktree from a branch name or a tracker issue (Linear or Huly). Fetches issue details from the tracker MCP when given an issue ID/URL.
+argument-hint: <branch-name | issue ID | Linear issue URL | Huly issue URL>
 disable-model-invocation: true
 user-invocable: true
 ---
 
-# Worktree from Branch or Linear Issue
+# Worktree from Branch or Tracker Issue
 
-Create a git worktree with a new branch. Accepts either a direct branch name or a Linear issue identifier.
+Create a git worktree with a new branch. Accepts a direct branch name or an issue identifier from Linear or Huly.
 
 **Announce at start:** "Setting up worktree..."
 
@@ -19,14 +19,22 @@ The argument can be one of:
 | Input Format | Example | Action |
 |---|---|---|
 | Linear URL | `https://linear.app/<workspace>/issue/<ISSUE-ID>/...` | Extract issue ID (`<ISSUE-ID>`), fetch from Linear |
-| Linear issue ID | `<ISSUE-ID>` | Fetch from Linear |
+| Huly URL | `https://<huly-host>/workbench/<workspace>/tracker/<ISSUE-ID>` | Extract issue ID (`<ISSUE-ID>`), fetch from Huly |
+| Issue ID | `<ISSUE-ID>` | Fetch from the matching tracker (see below) |
 | Branch name | `feat/my-feature` | Use directly |
 
-### Detecting Linear issue IDs
+### Detecting issue IDs
 
-A Linear issue ID matches the pattern: 2-5 uppercase letters, a hyphen, then digits.
+A Linear or Huly issue ID matches the pattern: 2-5 uppercase letters, a hyphen, then digits. The letters are the project key (Huly) or team key (Linear).
 
 Check both the raw argument and any ID extracted from a URL.
+
+### Picking the tracker
+
+1. A URL decides the tracker by its host (`linear.app` vs the Huly host).
+2. A bare ID: check the project's `AGENTS.md` or rules for a tracker preference.
+3. Otherwise try the Linear MCP first, then the Huly MCP. Use the first one that returns the issue.
+4. If only one tracker MCP is available, use that one.
 
 ## Steps
 
@@ -35,7 +43,7 @@ Check both the raw argument and any ID extracted from a URL.
 **If the input is a Linear issue (ID or URL):**
 
 ```
-Use mcp__Linear*__get_issue with the issue ID to fetch:
+Use the Linear MCP get_issue tool with the issue ID to fetch:
 - title (for display)
 - gitBranchName (for the branch)
 - status, assignee, labels (for summary)
@@ -43,9 +51,20 @@ Use mcp__Linear*__get_issue with the issue ID to fetch:
 
 Use the `gitBranchName` field from the response as the branch name.
 
+**If the input is a Huly issue (ID or URL):**
+
+```
+Use the Huly MCP get_issue tool with:
+- project: the letters before the hyphen (e.g. <PROJECT-KEY>)
+- identifier: the full issue ID (e.g. <PROJECT-KEY>-<number>)
+to fetch: title, status, assignee, labels
+```
+
+Huly has no branch name field. Build one: `<type>/<issue-id-lowercase>-<slug>` where `<type>` is `feat` or `fix` based on the issue (default `feat`) and `<slug>` is the title in lowercase kebab-case, truncated to ~40 chars.
+
 **If the input is a plain branch name:**
 
-Use it directly. No Linear lookup needed.
+Use it directly. No tracker lookup needed.
 
 ### 2. Derive Worktree Directory Name
 
@@ -63,9 +82,9 @@ Examples:
 
 Priority order:
 
-1. Check CLAUDE.md for a worktree directory preference (e.g., `.claude/worktrees`)
-2. Check if `.claude/worktrees`, `.worktrees`, or `worktrees` exists
-3. Default to `.claude/worktrees`
+1. Check AGENTS.md for a worktree directory preference (e.g., `.worktrees`)
+2. Check if `.worktrees` exists
+3. Default to `.worktrees`
 
 Ensure the directory exists (`mkdir -p`).
 
@@ -102,7 +121,6 @@ WORKTREE_PATH="<worktree-path>"
 | Source | Destination | Notes |
 |---|---|---|
 | `.vscode/settings.json` | `.vscode/settings.json` | Create `.vscode/` dir if needed |
-| `.claude/settings.local.json` | `.claude/settings.local.json` | Claude Code local overrides |
 | `.env` | `.env` | Environment variables |
 
 For each file, check if it exists in `$MAIN_REPO`. If it does and does NOT exist in the worktree, copy it. Do not overwrite existing files.
@@ -117,22 +135,32 @@ fi
 
 Report which files were copied and whether direnv was allowed, as a brief note in the summary.
 
-### 7. Mark Linear Issue In Progress
+### 7. Mark Issue In Progress
 
-**Only if the input was a Linear issue (ID or URL):**
+**Only if the input was a tracker issue (ID or URL):**
 
-Use `mcp__Linear*__save_issue` to update the issue status:
+Linear: use the Linear MCP `save_issue` tool:
 
 ```
-id: <issue-id>       (the uppercased Linear issue ID)
+id: <issue-id>       (the uppercased issue ID)
 state: "In Progress"
 ```
+
+Huly: use the Huly MCP `update_issue` tool:
+
+```
+project: <PROJECT-KEY>
+identifier: <issue-id>
+status: "In Progress"
+```
+
+If the status name is rejected, call the Huly MCP `list_statuses` tool for the project and pick the active-stage status.
 
 If the status update fails, log a warning but do not block — the worktree is already created.
 
 ### 8. Report Summary
 
-**If from Linear issue, display:**
+**If from a tracker issue, display:**
 
 | Detail | Value |
 |---|---|
@@ -150,7 +178,7 @@ If the status update fails, log a warning but do not block — the worktree is a
 
 ## Error Handling
 
-- **Linear issue not found:** Report the error, ask user to provide a branch name instead.
+- **Issue not found in any tracker:** Report the error, ask user to provide a branch name instead.
 - **Branch name conflict:** If `-b` fails because the branch exists, retry without `-b`.
 - **Worktree path already in use:** Append a number suffix (e.g., `-2`).
 
