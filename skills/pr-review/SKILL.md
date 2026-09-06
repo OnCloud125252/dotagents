@@ -185,28 +185,41 @@ Spawn five subagents in parallel. Give each one the summary from 4b and the `AGE
 
 Do not build or type check the project. Step 3 already did that.
 
+Two angles often flag one defect. Merge findings that share a file, a line, and a root cause into one, and keep the clearest reason. Score the merged finding once.
+
 ### 4d. Score every finding
 
-Spawn one subagent per finding from 4c. Give it the finding, the diff, and the `AGENTS.md` paths from 4a. Each agent returns a confidence score from 0 to 100. Give it this rubric verbatim:
+Spawn one subagent per merged finding from 4c. Give it the finding, the diff, and the `AGENTS.md` paths from 4a. Each agent returns two separate scores.
+
+**Confidence (0 to 100): is the finding real?** Give the agent this rubric verbatim:
 
 | Score | Meaning |
 |---|---|
 | 0 | Not confident. A false positive that fails light scrutiny, or a pre-existing issue. |
 | 25 | Somewhat confident. Might be real, might not. The agent could not verify it. If the issue is stylistic, no `AGENTS.md` calls it out. |
-| 50 | Moderately confident. Verified as real, but it may be a nitpick or rare in practice. Not important next to the rest of the PR. |
-| 75 | Highly confident. Double checked and very likely to be hit in practice. The PR's approach is not enough. The issue directly hurts the code, or an `AGENTS.md` names it directly. |
-| 100 | Certain. Double checked and confirmed. It will happen often. The evidence confirms it. |
+| 50 | Moderately confident. Verified as real, but the agent could not confirm every step. |
+| 75 | Highly confident. Double checked and very likely to be hit in practice. |
+| 100 | Certain. Double checked and confirmed. The evidence confirms it. |
 
-When a finding cites an `AGENTS.md` rule, the agent must confirm that file names the issue. If it does not, the score is 25 or lower.
+When a finding cites an `AGENTS.md` rule, the agent must confirm that file names the issue. If it does not, confidence is 25 or lower.
+
+**Severity: how much does it hurt if real?** This is a separate judgment. A certain typo is high confidence and low severity.
+
+| Severity | Meaning |
+|---|---|
+| high | Breaks correctness, loses data, or opens a security hole. The PR's approach is not enough. An `AGENTS.md` names it directly. |
+| low | Real, but a nitpick, rare in practice, or cosmetic next to the rest of the PR. |
 
 ### 4e. Filter
 
-Drop every finding scored under 80. Report "No code review issues found" if nothing survives.
+Drop every finding with confidence under 80. Report "No code review issues found" if nothing survives.
 
-Map the survivors to the Step 6 severity marks:
+Mark the survivors by **severity**, not confidence:
 
-- 90 to 100 -> 🔴
-- 80 to 89 -> 🟡
+- high -> 🔴
+- low -> 🟡
+
+Confidence decides whether a finding is reported at all. Severity decides how loud it is, and in Step 8b whether the review requests changes.
 
 ### What is a false positive
 
@@ -220,7 +233,7 @@ Do not report these in 4c, and score them 0 in 4d:
 - An issue that an `AGENTS.md` names but the code silences on purpose (for example a lint-ignore comment)
 - A functional change that is clearly intentional and part of the PR's purpose
 
-**Important:** Keep the surviving findings with their file, line, score, and reason. Step 6 combines them with the CI results.
+**Important:** Keep the surviving findings with their file, line, confidence, severity, and reason. Step 6 combines them with the CI results.
 
 ## Step 5: Cleanup Worktree
 
@@ -271,10 +284,12 @@ Display format:
 
 Severity indicators:
 
-- 🔴 High confidence / critical issue
-- 🟡 Medium confidence / style or guideline issue
+- 🔴 High severity: breaks correctness, loses data, or opens a security hole
+- 🟡 Low severity: a nitpick, a rare case, or a style or guideline point
 - ✅ Pass / no issue
 - ❌ Fail
+
+Every finding shown here already passed the confidence filter in Step 4e.
 
 If CI found no checks, show "No CI checks discovered" instead of the CI section.
 If code review found no issues, show "No code review issues found" instead of the findings section.
