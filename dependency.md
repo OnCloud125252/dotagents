@@ -22,7 +22,7 @@ grrr apps add --appId claude-code --appIcon ~/.agents/hooks/claude-icon.png
 
 # Environment variables
 # Set CLAUDE_CODE_SUMMARIZER_API_KEY to an OpenAI API key for notification summaries
-# Write a Discord webhook URL to skills/discord-notify/scripts/webhook.url for /discord-notify
+# Write a Discord webhook URL to ~/.agents/discord-notify/webhook.url for /discord-notify
 ```
 
 Docker is needed only by the `image-diet` skill. Install it separately from <https://docs.docker.com/get-docker/>.
@@ -86,10 +86,10 @@ Directory-specific environment variables. Activates `.envrc` when entering a new
 
 External service that receives task notifications in a Discord forum channel.
 
-- **Setup:** create a forum-channel webhook in Discord, then save the URL to `skills/discord-notify/scripts/webhook.url`
+- **Setup:** create a forum-channel webhook in Discord, then save the URL to `~/.agents/discord-notify/webhook.url`
 - **Used by:** `skills/discord-notify/scripts/discord_notify.py`, `skills/discord-notify/SKILL.md`
 
-The webhook URL is a secret. `skills/discord-notify/scripts/.gitignore` keeps it out of git.
+The webhook URL is a secret. The root `.gitignore` excludes `/discord-notify`, which holds both the URL and the post state.
 
 ---
 
