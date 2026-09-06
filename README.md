@@ -1,26 +1,26 @@
-# .claude Template
+# dotagents
 
-**A batteries-included starter kit for extending Claude Code with custom skills, hooks, and status line integrations.**
+**Skills, rules, and a global AGENTS.md for coding agents. Built for [pi](https://pi.dev/), also usable from Gemini CLI.**
 
 ## What's Inside
 
-- **45 skills** — slash-invoked workflows (git, PR, worktree, Linear, docs, OpenSpec) plus contextual agents that activate automatically (React best practices, Next.js, Cloudflare, writing style, and more)
-- **5 hooks** — native macOS notifications, session persistence, and worktree suggestions
-- **Custom status line** — git state, working directory, and last prompt at a glance
+- **40 skills** — user-invoked workflows (git, PR, worktree, Linear, docs) plus contextual skills that activate automatically (React best practices, Next.js, Cloudflare, writing style, and more)
+- **Rules** — path-scoped instructions loaded by the [pi-rules](https://www.npmjs.com/package/@tigorhutasuhut/pi-rules) extension
+- **Global AGENTS.md** — design principles and workflow rules shared by every project
 
 <details>
 <summary>Project structure (Click to expand)</summary>
 
 ```
 .
-├── skills/             # Agent skills (auto-activating + slash-invoked)
-├── hooks/              # Event-driven shell scripts
-├── claude-statusline/  # Terminal status line scripts
-├── store/              # Machine-readable catalog for selective install
-├── agentsmd-templates/ # Reusable AGENTS.md snippets
-├── gemini-commands/    # Auto-converted Gemini CLI equivalents
+├── GLOBAL_AGENTS.md    # Global instructions (symlinked to ~/AGENTS.md)
+├── skills/             # Agent skills (auto-activating + user-invoked)
+├── rules/              # Path-scoped rules
+├── gemini-commands/    # Gemini CLI equivalents, generated from skills/
+├── store/              # Machine-readable catalog
+├── hooks/              # Legacy Claude Code hooks (not used by pi)
+├── claude-statusline/  # Legacy ccstatusline scripts (not used by pi)
 ├── helpers/            # Shared utility scripts
-├── templates/          # Reusable file templates
 └── dependency.md       # External tool requirements
 ```
 
@@ -28,25 +28,13 @@
 
 ## Install
 
-Copy the contents of [`store-prompt.md`](./store-prompt.md) into a Claude Code conversation. It will:
-
-1. Fetch the catalog from this repo
-2. Show you what's available and what you already have installed
-3. Let you pick individual items or bundles
-4. Install only what you chose into `~/.claude/`
-5. Check and resolve dependencies
-
-### Alternative: full clone
-
 ```bash
 git clone https://github.com/OnCloud125252/dotagents.git ~/.agents
 brew install jq trash ripgrep bun
-ln -s ~/.agents/skills ~/.claude/skills
+ln -s ~/.agents/GLOBAL_AGENTS.md ~/AGENTS.md
+pi install npm:@tigorhutasuhut/pi-rules
 ```
 
-## Optional Features
+pi discovers `~/.agents/skills/` on its own. pi-rules reads `~/.agents/rules/` on its own.
 
-| Feature | Setup |
-|---------|-------|
-| **Status line** | `bunx -y ccstatusline@latest` |
-| **Full dependency list** | See [`dependency.md`](./dependency.md) |
+See [`dependency.md`](./dependency.md) for the full tool list.

@@ -37,7 +37,7 @@ When in doubt, prefer the narrower selection — the user can re-run with `full`
 
 ### `/pbcopy full`
 
-Copy **everything** Claude produced in this turn, verbatim — prose, framing, artifacts, all of it. Use when the user is overriding the smart default because it would have narrowed too aggressively.
+Copy **everything** the agent produced in this turn, verbatim — prose, framing, artifacts, all of it. Use when the user is overriding the smart default because it would have narrowed too aggressively.
 
 The full text is whatever the user will see in the terminal as your response, in reading order. Tool-call internals are not part of the response — only the user-visible message text.
 

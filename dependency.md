@@ -11,9 +11,6 @@ All external tools required by this environment. Install everything with the [qu
 # Core CLI tools
 brew install git gh jq curl trash bun node pnpm direnv ripgrep
 
-# Claude CLI
-npm install -g @anthropic-ai/claude-code
-
 # OpenSpec CLI
 npm install -g openspec
 
@@ -55,21 +52,12 @@ npm package that renders the Claude Code status line in the terminal.
 
 ---
 
-## Claude CLI
-
-The Claude Code CLI itself. Also invoked as a subprocess (`claude -p`) for sub-agent tasks within certain commands.
-
-- **Install:** `npm install -g @anthropic-ai/claude-code`
-- **Used by:** `skills/pr-create/SKILL.md` (invokes `claude -p --output-format json` for Linear sync drift detection)
-
----
-
 ## curl
 
 HTTP client for making API requests. Pre-installed on macOS but listed here as a critical runtime dependency.
 
 - **Install:** `brew install curl` (or use macOS system curl)
-- **Used by:** `helpers/summarize.sh`, `hooks/update-recent-work.sh` (both call OpenAI API)
+- **Used by:** `helpers/summarize.sh` (calls OpenAI API)
 
 ---
 
@@ -221,7 +209,7 @@ macOS package manager. Required to install everything else.
 JSON processor for parsing hook event data and session files.
 
 - **Install:** `brew install jq`
-- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/statusline.sh`, `skills/setup-hooks/SKILL.md`, `helpers/summarize.sh`, `hooks/check-linear-md.sh`, `hooks/load-recent-work.sh`, `hooks/notify.sh`, `hooks/suggest-worktree.sh`, `hooks/update-recent-work.sh`, `skills/setup-hooks/detect.sh`
+- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/statusline.sh`, `skills/setup-hooks/SKILL.md`, `helpers/summarize.sh`, `hooks/notify.sh`, `hooks/suggest-worktree.sh`, `skills/setup-hooks/detect.sh`
 
 ---
 
@@ -246,12 +234,12 @@ JavaScript runtime providing `npm` (package manager) and `npx` (package executor
 
 ## OpenAI API
 
-Used for summarizing notification messages and session history via GPT-4.1-mini/nano. Requires an API key set as an environment variable.
+Used for summarizing notification messages via GPT-4.1-nano. Requires an API key set as an environment variable.
 
 - **Environment variable:** `CLAUDE_CODE_SUMMARIZER_API_KEY`
 - **Endpoint:** `https://api.openai.com/v1/chat/completions`
-- **Models:** `gpt-4.1-mini` (RECENT_WORK.md), `gpt-4.1-nano` (notifications)
-- **Used by:** `helpers/summarize.sh` (called by `hooks/notify.sh`), `hooks/update-recent-work.sh`
+- **Models:** `gpt-4.1-nano` (notifications)
+- **Used by:** `helpers/summarize.sh` (called by `hooks/notify.sh`)
 
 Falls back to raw message truncation if the API key is missing.
 

@@ -78,9 +78,9 @@ Extract and store:
 
 Priority order:
 
-1. Check CLAUDE.md for a worktree directory preference (e.g., `.claude/worktrees`)
-2. Check if `.claude/worktrees`, `.worktrees`, or `worktrees` already exists
-3. Default to `.claude/worktrees`
+1. Check AGENTS.md for a worktree directory preference (e.g., `.worktrees`)
+2. Check if `.worktrees` already exists
+3. Default to `.worktrees`
 
 Ensure the directory exists: `mkdir -p <worktree-base>`
 
@@ -203,8 +203,8 @@ Display format:
   D) 🔴 path/to/file.ts:L42 — Potential null dereference
      when `user` is undefined, `.name` access will throw
 
-  E) 🟡 path/to/other.ts:L17 — CLAUDE.md violation
-     Missing error handling (CLAUDE.md: "always handle async errors")
+  E) 🟡 path/to/other.ts:L17 — AGENTS.md violation
+     Missing error handling (AGENTS.md: "always handle async errors")
 
   F) 🔴 path/to/util.ts:L88 — Regression risk
      Reverts fix from PR #91 (off-by-one in pagination)
