@@ -34,7 +34,7 @@ Docker is needed only by the `image-diet` skill. Install it separately from <htt
 JavaScript runtime and package manager. Also installs the `ccstatusline` binary used by the status line.
 
 - **Install:** `brew install bun`
-- **Used by:** `claude-statusline/statusline.sh`, `skills/git-commit/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/setup-hooks/SKILL.md`, `skills/image-diet/SKILL.md`, `skills/image-diet/scripts/detect-project.mjs`
+- **Used by:** `claude-statusline/statusline.sh`, `skills/git-commit/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/image-diet/SKILL.md`, `skills/image-diet/scripts/detect-project.mjs`
 
 ---
 
@@ -107,7 +107,7 @@ Container engine. The image-diet skill builds images and reads their layer sizes
 GitHub's official CLI for issues, pull requests, and repository operations.
 
 - **Install:** `brew install gh`
-- **Used by:** `skills/git-issue/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`
+- **Used by:** `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`
 
 ---
 
@@ -116,7 +116,7 @@ GitHub's official CLI for issues, pull requests, and repository operations.
 Distributed version control system. Used by nearly every skill in this project.
 
 - **Install:** `brew install git` (or use Xcode Command Line Tools)
-- **Used by:** `skills/api-doc/SKILL.md`, `skills/claude-rules-gen/SKILL.md`, `skills/commit-message-style/SKILL.md`, `skills/docs-update/SKILL.md`, `skills/find-simplifications/SKILL.md`, `skills/git-changelog/SKILL.md`, `skills/git-commit/SKILL.md`, `skills/git-issue/SKILL.md`, `skills/git-pull/SKILL.md`, `skills/git-push/SKILL.md`, `skills/git-version/SKILL.md`, `skills/handoff/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/setup-hooks/SKILL.md`, `skills/worktree-cleanup/SKILL.md`, `skills/worktree-create/SKILL.md`, `skills/worktree-merge/SKILL.md`, `skills/worktree-sync/SKILL.md`, `hooks/suggest-worktree.sh`, `.agents/skills/publish/SKILL.md`
+- **Used by:** `skills/api-doc/SKILL.md`, `skills/commit-message-style/SKILL.md`, `skills/find-simplifications/SKILL.md`, `skills/git-commit/SKILL.md`, `skills/git-push/SKILL.md`, `skills/handoff/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/worktree-cleanup/SKILL.md`, `skills/worktree-create/SKILL.md`, `skills/worktree-merge/SKILL.md`, `skills/worktree-sync/SKILL.md`, `hooks/suggest-worktree.sh`, `.agents/skills/publish/SKILL.md`
 
 ---
 
@@ -228,7 +228,7 @@ MCP server providing access to Huly issue tracking. It exposes a proxy, so tools
 JSON processor for parsing hook event data and session files.
 
 - **Install:** `brew install jq`
-- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/peer-id.sh`, `claude-statusline/statusline.sh`, `claude-statusline/thinking-effort.sh`, `helpers/summarize.sh`, `hooks/notify.sh`, `hooks/suggest-worktree.sh`, `skills/setup-hooks/SKILL.md`
+- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/peer-id.sh`, `claude-statusline/statusline.sh`, `claude-statusline/thinking-effort.sh`, `helpers/summarize.sh`, `hooks/notify.sh`, `hooks/suggest-worktree.sh`
 
 ---
 
@@ -250,7 +250,7 @@ MCP server providing access to Linear issue tracking. Skills use it to fetch iss
 
 - **Tool prefix:** `mcp__Linear_<workspace>__*`
 - **Configured in:** agent MCP settings
-- **Used by:** `skills/linear-mcp-guide/SKILL.md`, `skills/api-doc/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/worktree-create/SKILL.md`
+- **Used by:** `skills/linear-mcp-guide/SKILL.md`, `skills/api-doc/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/worktree-create/SKILL.md`
 
 ---
 
@@ -259,7 +259,7 @@ MCP server providing access to Linear issue tracking. Skills use it to fetch iss
 JavaScript runtime providing `npm` (package manager) and `npx` (package executor). Also runs the brainstorming server and the image-diet analysis scripts.
 
 - **Install:** `brew install node`
-- **Used by:** `skills/git-version/SKILL.md` (`npm version`), `skills/code-react-doctor/SKILL.md` (`npx -y react-doctor@latest`), `skills/brainstorming/scripts/start-server.sh`, `skills/brainstorming/scripts/server.cjs`, `skills/image-diet/scripts/bundle-roots.mjs`, `skills/image-diet/scripts/detect-project.mjs`, `skills/image-diet/scripts/prune-runtime-modules.mjs`
+- **Used by:** `skills/code-react-doctor/SKILL.md` (`npx -y react-doctor@latest`), `skills/brainstorming/scripts/start-server.sh`, `skills/brainstorming/scripts/server.cjs`, `skills/image-diet/scripts/bundle-roots.mjs`, `skills/image-diet/scripts/detect-project.mjs`, `skills/image-diet/scripts/prune-runtime-modules.mjs`
 
 ---
 
@@ -281,7 +281,7 @@ Falls back to raw message truncation if the API key is missing.
 macOS clipboard utilities. Pre-installed on all Macs. `pbcopy` writes to the clipboard; `pbpaste` reads from it.
 
 - **Install:** built-in (macOS system utilities)
-- **Used by:** `skills/pbcopy/SKILL.md`, `skills/git-changelog/SKILL.md`, `skills/git-issue/SKILL.md`, `skills/linear-project-update/SKILL.md`
+- **Used by:** `skills/pbcopy/SKILL.md`
 
 ---
 
@@ -290,7 +290,7 @@ macOS clipboard utilities. Pre-installed on all Macs. `pbcopy` writes to the cli
 Fast, disk space efficient package manager. Used to run Biome and project test scripts in pnpm-based repos.
 
 - **Install:** `brew install pnpm`
-- **Used by:** `skills/setup-hooks/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/image-diet/scripts/detect-project.mjs`
+- **Used by:** `skills/pr-review/SKILL.md`, `skills/image-diet/scripts/detect-project.mjs`
 
 ---
 
