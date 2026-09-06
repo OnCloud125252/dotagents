@@ -1,13 +1,12 @@
----
+description = "Create commits for recent changes. Multiple commits are allowed for logical grouping."
+
+prompt = '''---
 name: git-commit
-description: Create commits for recent changes. Multiple commits are allowed for logical grouping.
-disable-model-invocation: false
-user-invocable: true
 ---
 
 Before doing anything else, run `bun run check:fix-unsafe` (or equivalent) to auto-fix lint and formatting issues. Do NOT stage the resulting changes — leave them unstaged so they can be grouped into the correct logical commits alongside the related source changes.
 
-Create commits for all recent changes. You MUST split changes into multiple logical commits when appropriate — each commit should represent a single cohesive change. Follow the `commit-message-style` skill for the message format of every commit you create.
+Create commits for all recent changes. You MUST split changes into multiple logical commits when appropriate — each commit should represent a single cohesive change. Follow the commit-message-style guidelines when writing each commit message
 
 # Grouping Guidelines
 
@@ -17,3 +16,4 @@ Create commits for all recent changes. You MUST split changes into multiple logi
 - Prefer 2-5 commits for a typical set of changes; use 1 if everything is truly cohesive
 - If only one logical group exists, create a single commit — don't force artificial splits
 - No meta-information about how the message was created in the commit message
+'''

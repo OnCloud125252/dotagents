@@ -1,8 +1,7 @@
----
+description = "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation. Ends at a reviewed design doc, then hands off to the project's change-tracking skill when it has one."
+
+prompt = '''---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation. Ends at a reviewed design doc, then hands off to the project's change-tracking skill when it has one."
-disable-model-invocation: true
-user-invocable: true
 ---
 
 # Brainstorming Ideas Into Designs
@@ -164,3 +163,4 @@ A question about a UI topic is not automatically a visual question. "What does p
 
 If they agree to the companion, read the detailed guide before proceeding:
 `skills/brainstorming/visual-companion.md`
+'''

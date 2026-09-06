@@ -1,9 +1,8 @@
----
+description = "Merge a worktree branch into a target branch locally. Does not remove worktrees or branches."
+
+prompt = '''---
 name: worktree-merge
-description: Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.
-argument-hint: "<source> [target] [--squash | --rebase | --merge]"
-disable-model-invocation: true
-user-invocable: true
+argument-hint: <source> [target] [--squash | --rebase | --merge]
 ---
 
 # Merge Worktree Branch Locally
@@ -14,7 +13,7 @@ Merge a worktree's feature branch into a target branch locally, without going th
 
 ## Arguments
 
-Parse `$ARGUMENTS` to extract positional args first, then flags:
+Parse `{{args}}` to extract positional args first, then flags:
 
 - **1st positional** (`<source>`): Worktree name, directory name, path, or branch name (optional — prompts if omitted)
 - **2nd positional** (`[target]`): Target branch to merge into (optional — defaults to the repository's default branch, usually `main`)
@@ -221,3 +220,4 @@ Suggest the user can run `/worktree-cleanup` to remove the worktree and branch i
 - Run tests or install dependencies
 - Modify files in the worktree
 - Change the working directory of the outer session permanently
+'''

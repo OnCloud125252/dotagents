@@ -1,0 +1,19 @@
+description = "Outlines how the Huly Model Context Protocol (MCP) proxy works, its parameter shapes, and data-safety rules when reading, creating, or updating Huly issues, comments, and documents. Invoke these rules whenever a task touches Huly."
+
+prompt = '''---
+name: huly-mcp-guide
+---
+
+## Huly MCP Gotchas
+
+- The Huly server exposes a **proxy**, not direct tools. Call `search_tools` or `list_tool_categories` to find a tool, `get_tool_schema` to read its exact parameters, then `invoke_tool` with `toolName` and `arguments`. Do not guess parameter names; read the schema first.
+- Every issue tool needs **two** identifiers: `project` (the project key, the letters before the hyphen) and `identifier` (the full issue ID such as `<PROJECT-KEY>-<number>`). Passing only the full ID fails.
+- Issue IDs share the Linear shape (`2-5 uppercase letters, hyphen, digits`). Use a URL host, a project rule, or a `get_issue` probe to tell the two trackers apart.
+- Huly issues have **no git branch name field** and **no URL field**. Build the branch name from the title. Build the URL as `https://<huly-host>/workbench/<workspace>/tracker/<ISSUE-ID>`. Get `<huly-host>` from `get_huly_context` (`huly.url.host`) and `<workspace>` from `get_workspace_info` (`url` field).
+- `update_issue` `status` takes the **status name** and validates it against the issue's task type workflow. If the name is rejected, call `list_statuses` with the `project` and pick from the returned names. Each status has a `category` (`UnStarted`, `ToDo`, `Active`, `Won`, `Lost`). Use `Active` for in-progress and `Won` for done.
+- `get_issue` does **not** return comments. Call `list_comments` (`project`, `issueIdentifier`) as well. Comments often carry the latest decisions. Write with `add_comment` (`project`, `issueIdentifier`, `body`).
+- Documents live in a **teamspace**, not on an issue. Create with `create_document` (`teamspace`, `title`, `content`), then attach with `link_document_to_issue` (`project`, `issueIdentifier`, `teamspace`, `document`).
+- `edit_document` with `content` is a **full replacement**. Use `old_text` + `new_text` for a patch.
+- Description and comment `body` accept markdown. Markdown links to a Huly browse URL become native references.
+- Connection errors from `invoke_tool` mean the Huly host is unreachable. Do **not** retry a write until connectivity is back. Report the error and continue without tracker sync.
+'''

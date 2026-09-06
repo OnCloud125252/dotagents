@@ -1,9 +1,8 @@
----
+description = "Create a git worktree from a branch name or a tracker issue (Linear or Huly). Fetches issue details from the tracker MCP when given an issue ID/URL."
+
+prompt = '''---
 name: worktree-create
-description: Create a git worktree from a branch name or a tracker issue (Linear or Huly). Fetches issue details from the tracker MCP when given an issue ID/URL.
 argument-hint: <branch-name | issue ID | Linear issue URL | Huly issue URL>
-disable-model-invocation: true
-user-invocable: true
 ---
 
 # Worktree from Branch or Tracker Issue
@@ -187,3 +186,4 @@ If the status update fails, log a warning but do not block — the worktree is a
 - Run `npm install`, `pnpm install`, or any dependency installation
 - Run tests
 - Change the working directory of the outer session
+'''

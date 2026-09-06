@@ -1,16 +1,15 @@
----
+description = "Push current branch and create a GitHub pull request with smart defaults"
+
+prompt = '''---
 name: pr-create
-description: Push current branch and create a GitHub pull request with smart defaults
-argument-hint: '[--base main] [--draft] [--title "title"]'
-disable-model-invocation: true
-user-invocable: true
+argument-hint: [--base main] [--draft] [--title "title"]
 ---
 
 Create a GitHub pull request for the current branch.
 
 ### Arguments
 
-Parse `$ARGUMENTS` to extract:
+Parse `{{args}}` to extract:
 
 - **--base** or **-b**: Optional. Base branch (default: `main`)
 - **--draft** or **-d**: Optional. Create as draft PR
@@ -94,3 +93,4 @@ Parse `$ARGUMENTS` to extract:
 - Never fabricate or guess commit details — only use actual git history
 - The summary must reflect ALL commits on the branch, not just the most recent one
 - Do not add AI attribution or "Generated with" lines to the PR body
+'''
