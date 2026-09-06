@@ -1,8 +1,7 @@
----
+description = "Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary. Covers dead, duplicated, speculative, over-built, added-then-removed, and hand-rolled-where-a-dependency-exists surfaces."
+
+prompt = '''---
 name: find-simplifications
-description: 'Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary. Covers dead, duplicated, speculative, over-built, added-then-removed, and hand-rolled-where-a-dependency-exists surfaces.'
-disable-model-invocation: true
-user-invocable: true
 ---
 
 # Find Simplifications
@@ -216,3 +215,4 @@ Summarize this in the PR body.
 
 Keep the PR in draft while the survey grows.
 Mark it ready when the candidate set, the review replies, and the checks are settled.
+'''

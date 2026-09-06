@@ -1,13 +1,8 @@
----
+description = "Fetch a PR into a temporary worktree, run CI checks (tests, lint, type-check), review the change from five angles with scored findings, and present an interactive summary with inline review posting. Use this for an external PR, by number or URL."
+
+prompt = '''---
 name: pr-review
-description: |
-  Fetch a PR into a temporary worktree, run CI checks (tests, lint, type-check),
-  review the change from five angles with scored findings, and present an
-  interactive summary with inline review posting. Use this for an external PR,
-  by number or URL.
-argument-hint: "[<PR_number> | <PR_url>]"
-disable-model-invocation: true
-user-invocable: true
+argument-hint: [<PR_number> | <PR_url>]
 ---
 
 # Review Pull Request
@@ -377,3 +372,4 @@ If the API call fails, print the full review content to stdout and suggest the u
 - Modify any files in the main worktree
 - Run `git worktree remove` on anything other than the `pr-review-*` worktree you created
 - Skip the user confirmation step — always ask before posting
+'''

@@ -1,8 +1,7 @@
 description = "Organize a directory by moving subdirectories older than a specified time into an archive folder. Accepts optional time threshold and archive directory name."
 
-prompt = """
----
-name: Organize Directory
+prompt = '''---
+name: organize-dir
 argument-hint: [--dry] [--time <duration>] [--archive <dir>] [target-dir]
 ---
 
@@ -10,7 +9,7 @@ Organize the specified directory by archiving old subdirectories.
 
 ## Arguments
 
-Parse the following from {{args}}:
+Parse the following from `{{args}}`:
 
 - **`--dry`**: Dry run mode. Only show what would be organized without moving any directories or asking for confirmation. When this flag is present, stop after Step 2 (Preview) and do NOT execute Step 3.
 - **`--time <duration>`**: Subdirectories older than this will be moved. Default: `6m` (6 months). Accepts formats like `1y` (1 year), `6m` (6 months), `3m` (3 months), `30d` (30 days), `2w` (2 weeks).
@@ -37,7 +36,7 @@ Parse the following from {{args}}:
    - The time threshold used
 2. Show the total count: `X directories to archive, Y directories to keep`
 3. If `--dry` flag is set: print `(Dry run — no directories will be moved)` and **STOP here**. Do NOT ask for confirmation and do NOT proceed to Step 3.
-4. Otherwise, **ALWAYS ask the user for confirmation before moving any directories.** Do NOT proceed without explicit approval.
+4. Otherwise, **ALWAYS ask the user for confirmation before moving any directories.** Use the AskUserQuestion tool to confirm. Do NOT proceed without explicit approval.
 
 ### Step 3: Execute (skipped in dry mode)
 
@@ -56,4 +55,4 @@ Parse the following from {{args}}:
 - If no subdirectories match the criteria, inform the user and exit gracefully.
 - Use `stat` to reliably get directory modification times.
 - Handle directory names with spaces correctly by quoting paths.
-"""
+'''

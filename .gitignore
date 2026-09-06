@@ -9,7 +9,6 @@
 
 # Claude Code
 /.claude/worktrees
-/.claude/recent-work
 .codex-system-skills.marker
 /skills/.system
 /claude-peers-mcp
@@ -22,3 +21,7 @@
 
 # discord-notify skill: local webhook secret + post/thread state (never tracked)
 /discord-notify
+
+# Pix Agent
+.pi/
+.pi-lens/

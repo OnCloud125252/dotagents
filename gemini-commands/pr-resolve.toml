@@ -1,13 +1,8 @@
----
+description = "Fetch unresolved PR review threads, fix the issues, reply with commit SHA, resolve threads via GraphQL, and post a summary comment. Use when asked to resolve or address PR review feedback. If no argument is given, auto-detects the PR for the current branch."
+
+prompt = '''---
 name: pr-resolve
-description: |
-  Fetch unresolved PR review threads, fix the issues, reply with commit SHA,
-  resolve threads via GraphQL, and post a summary comment. Use when asked to
-  resolve or address PR review feedback. If no argument is given, auto-detects
-  the PR for the current branch.
-argument-hint: "[PR_LINK_OR_NUMBER_OR_COMMENT_LINK]"
-disable-model-invocation: true
-user-invocable: true
+argument-hint: [PR_LINK_OR_NUMBER_OR_COMMENT_LINK]
 ---
 
 # Resolve PR Review Threads
@@ -286,3 +281,4 @@ If the worktree has uncommitted changes that prevent removal, inform the user an
 - **Permission error** → inform the user they may lack write access or the thread may already be resolved.
 - **Outdated thread** → still attempt to resolve; note in summary if the diff context has changed.
 - **Worktree already exists** → if `.worktrees/<BRANCH>` already exists, use it as-is (do not re-add), `cd` into it, set `WORKTREE_PATH = "."` and `WORKTREE_CREATED = false` so cleanup is not offered automatically.
+'''
