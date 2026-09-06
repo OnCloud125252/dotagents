@@ -186,7 +186,7 @@ Two angles often flag one defect. Merge findings that share a file, a line, and 
 
 Spawn one subagent per merged finding from 4c. Give it the finding, the diff, and the `AGENTS.md` paths from 4a. Each agent returns two separate scores.
 
-**Confidence (0 to 100): is the finding real?** Pick the nearest band. Give the agent this rubric verbatim:
+**Confidence (0 to 100): is the finding real?** Give the agent this rubric verbatim:
 
 | Score | Meaning |
 |---|---|
