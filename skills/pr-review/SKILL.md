@@ -2,9 +2,9 @@
 name: pr-review
 description: |
   Fetch a PR into a temporary worktree, run CI checks (tests, lint, type-check),
-  invoke /code-review, and present an interactive summary with inline review posting.
-  Use this for an external PR (by number or URL); for your current working diff,
-  run /code-review directly.
+  review the change from five angles with scored findings, and present an
+  interactive summary with inline review posting. Use this for an external PR,
+  by number or URL.
 argument-hint: "[<PR_number> | <PR_url>]"
 disable-model-invocation: true
 user-invocable: true
@@ -153,17 +153,74 @@ If no checks are discovered, report "No CI checks found in this project" and con
 
 The agent should return a structured list of CI results.
 
-## Step 4: Code Review via `/code-review` Skill
+## Step 4: Code Review
 
-Invoke the `/code-review` skill using the Skill tool:
+Review the change from five independent angles, then score every finding before you keep it. Run this inside `<worktree-path>`, which already holds the PR branch.
 
+### 4a. Collect the guidance files
+
+List the paths of the `AGENTS.md` files that apply: the root one, plus any in the directories the PR touched. Collect paths only, not contents. The review agents read them.
+
+### 4b. Summarize the change
+
+Get the diff and a short summary of what the PR does:
+
+```bash
+gh pr diff <PR_NUMBER> --repo <OWNER>/<REPO>
 ```
-Skill(skill: "code-review", args: "<PR_NUMBER>")
-```
 
-This runs the full code-review pipeline: eligibility check, parallel review agents, confidence scoring, and finding filtering.
+Pass this summary to every agent in 4c so no agent re-derives it.
 
-**Important:** After the skill completes, collect and retain any findings it reports. These will be combined with CI results in Step 6.
+### 4c. Review from five angles
+
+Spawn five subagents in parallel. Give each one the summary from 4b and the `AGENTS.md` paths from 4a. Each returns a list of findings, and for every finding: the file, the line, what is wrong, and why it was flagged.
+
+| Agent | Angle |
+|---|---|
+| 1 | Check the change against the `AGENTS.md` files. Those files guide an agent that writes code, so not every instruction applies to a review. |
+| 2 | Read only the changed lines and scan for obvious bugs. Do not pull in extra context. Look for big bugs, skip nitpicks. |
+| 3 | Read `git blame` and the history of the changed code. Flag bugs that only this history reveals. |
+| 4 | Read earlier PRs that touched these files. Check whether any review comment there also applies here. |
+| 5 | Read the code comments in the changed files. Check that the change obeys the guidance those comments give. |
+
+Do not build or type check the project. Step 3 already did that.
+
+### 4d. Score every finding
+
+Spawn one subagent per finding from 4c. Give it the finding, the diff, and the `AGENTS.md` paths from 4a. Each agent returns a confidence score from 0 to 100. Give it this rubric verbatim:
+
+| Score | Meaning |
+|---|---|
+| 0 | Not confident. A false positive that fails light scrutiny, or a pre-existing issue. |
+| 25 | Somewhat confident. Might be real, might not. The agent could not verify it. If the issue is stylistic, no `AGENTS.md` calls it out. |
+| 50 | Moderately confident. Verified as real, but it may be a nitpick or rare in practice. Not important next to the rest of the PR. |
+| 75 | Highly confident. Double checked and very likely to be hit in practice. The PR's approach is not enough. The issue directly hurts the code, or an `AGENTS.md` names it directly. |
+| 100 | Certain. Double checked and confirmed. It will happen often. The evidence confirms it. |
+
+When a finding cites an `AGENTS.md` rule, the agent must confirm that file names the issue. If it does not, the score is 25 or lower.
+
+### 4e. Filter
+
+Drop every finding scored under 80. Report "No code review issues found" if nothing survives.
+
+Map the survivors to the Step 6 severity marks:
+
+- 90 to 100 -> 🔴
+- 80 to 89 -> 🟡
+
+### What is a false positive
+
+Do not report these in 4c, and score them 0 in 4d:
+
+- A pre-existing issue on a line the PR did not touch
+- Something that looks like a bug but is not
+- A nitpick a senior engineer would not raise
+- Anything a linter, type checker, or compiler catches. Step 3 already runs those
+- General code quality (test coverage, documentation, broad security), unless an `AGENTS.md` requires it
+- An issue that an `AGENTS.md` names but the code silences on purpose (for example a lint-ignore comment)
+- A functional change that is clearly intentional and part of the PR's purpose
+
+**Important:** Keep the surviving findings with their file, line, score, and reason. Step 6 combines them with the CI results.
 
 ## Step 5: Cleanup Worktree
 
@@ -295,7 +352,7 @@ If the API call fails, print the full review content to stdout and suggest the u
 | Worktree path already exists | Append `-2`, `-3` suffix |
 | No CI checks discovered | Report "No CI checks discovered", still run code review |
 | Test/lint exceeds 5-min timeout | Kill the process, mark as TIMEOUT in results |
-| `/code-review` finds no issues | Report "No code review issues found" |
+| Step 4 finds no issues | Report "No code review issues found" |
 | `gh api` review post fails | Print review to stdout, suggest manual posting |
 | Closed/merged PR | Warn, ask user before proceeding |
 
