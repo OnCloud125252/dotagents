@@ -1,8 +1,8 @@
 ---
-name: Update Dependencies
-description: Scan the project for external dependencies and update dependency.md
-allowed-tools: Read, Edit, Write, Glob, Grep, Bash(cat:*), Bash(which:*), Bash(command:*)
-model: claude-sonnet-4-6
+name: update-dependencies
+description: Scan the repo for external tool dependencies and rewrite dependency.md. Invoke /update-dependencies after you add a skill or script that needs a new CLI, package, API, or env var.
+disable-model-invocation: true
+user-invocable: true
 ---
 
 Scan all project source directories for external dependencies and update `dependency.md` to reflect the current state.
@@ -11,11 +11,10 @@ Scan all project source directories for external dependencies and update `depend
 
 Read **every** file in these directories (recursively):
 
-1. `commands/` — slash commands (`.md` files)
-2. `skills/` — skill definitions (`SKILL.md`, `skill.md`, and any scripts)
-3. `hooks/` — hook scripts (`.sh` files)
-4. `helpers/` — helper scripts
-5. `claude-statusline/` — statusline scripts
+1. `skills/` — skill definitions (`SKILL.md`, `skill.md`, and any scripts)
+2. `hooks/` — hook scripts (`.sh` files)
+3. `helpers/` — helper scripts
+4. `claude-statusline/` — statusline scripts
 
 ### What Counts as a Dependency
 
@@ -28,7 +27,7 @@ Categories to detect:
 | **Homebrew packages** | `jq`, `ripgrep`, `trash`, `bun` |
 | **Homebrew taps** | `moltenbits/tap` (growlrrr) |
 | **npm / bunx packages** | `ccstatusline`, `react-doctor`, `skills` |
-| **CLI tools** | `gh` (GitHub CLI), `git`, `grrr`/`growlrrr`, `openspec`, `npm`, `npx`, `pnpm`, `uv`, `tput` |
+| **CLI tools** | `gh` (GitHub CLI), `git`, `grrr`/`growlrrr`, `npm`, `npx`, `pnpm`, `uv`, `tput` |
 | **macOS utilities** | `pbcopy`, `open`, `osascript` |
 | **APIs & services** | OpenAI API, external URLs called via `curl`/`fetch` |
 | **MCP servers** | Any `mcp__*` tool references |
@@ -40,12 +39,12 @@ Categories to detect:
 
 For each file, look for:
 
-- Direct command invocations: `jq`, `gh`, `grrr`, `bunx`, `npx`, `openspec`, etc.
+- Direct command invocations: `jq`, `gh`, `grrr`, `bunx`, `npx`, etc.
 - `which <tool>` or `command -v <tool>` checks
 - `brew install` / `brew tap` references
 - `bunx -y <package>` / `npx <package>` patterns
 - `curl` / `fetch` calls to external APIs
-- `mcp__` prefixed tool names in `allowed-tools` or prompt text
+- `mcp__` prefixed tool names in prompt text
 - `pip install` / `uv pip install` patterns
 - Environment variable reads (`$VAR_NAME`, `${VAR_NAME}`) that are API keys or config
 - `open -b <bundle-id>` or `open -a <app>` patterns
@@ -74,11 +73,11 @@ The file must contain:
 - **Sort** dependency sections alphabetically by name.
 - Keep the Quick Setup block in sync — it must install every dependency listed below it.
 - Do NOT list shell builtins or POSIX coreutilities as dependencies.
-- Do NOT list Claude's built-in tools (Read, Write, Edit, Grep, Glob, Bash, WebSearch, etc.) as dependencies.
+- Do NOT list the agent's built-in tools (read, write, edit, grep, find, bash, web search, etc.) as dependencies.
 
 ### Process
 
-1. Use Glob to discover all files in the scan directories
+1. Discover all files in the scan directories
 2. Read each file and extract dependencies
 3. Read the current `dependency.md`
 4. Diff what's documented vs. what's detected

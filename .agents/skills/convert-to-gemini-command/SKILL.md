@@ -1,16 +1,15 @@
 ---
-name: Convert Skills to Gemini
-description: Convert Claude Code skills (SKILL.md) into Gemini CLI commands (.toml)
-argument-hint: [--dry] [--only name1,name2]
-allowed-tools: Read, Write, Glob, Bash(ls:*), Bash(mkdir:*)
-model: claude-sonnet-4-6
+name: convert-to-gemini-command
+description: Convert every skills/*/SKILL.md into a Gemini CLI command (.toml) in gemini-commands/. Invoke /convert-to-gemini-command [--dry] [--only name1,name2].
+disable-model-invocation: true
+user-invocable: true
 ---
 
-Convert all Claude Code skills from `skills/` into Gemini CLI TOML commands in `gemini-commands/`.
+Convert all skills from `skills/` into Gemini CLI TOML commands in `gemini-commands/`.
 
 ### Arguments
 
-Parse `$ARGUMENTS` to extract:
+Parse the arguments after the skill name to extract:
 
 - **--dry**: Optional. Preview the conversion without writing files
 - **--only**: Optional. Comma-separated list of skill names to convert (e.g., `git-commit,pr-create`). If omitted, convert all skills.
@@ -33,13 +32,12 @@ For each `skills/*/SKILL.md` file (excluding `.system/` and nested subdirectorie
 2. **Map fields to TOML**:
    - `description` -> top-level `description = "..."` in TOML
    - `name` and `argument-hint` -> keep as YAML front matter block inside the `prompt` string
-   - `model` -> **drop** (Claude-specific)
-   - `allowed-tools` -> **drop** (Claude-specific)
-   - `disable-model-invocation` -> **drop** (meaningless in Gemini; every TOML command is user-invoked)
+   - `disable-model-invocation` and `user-invocable` -> **drop** (meaningless in Gemini; every TOML command is user-invoked)
+   - Any other harness-specific field (`model`, `allowed-tools`) -> **drop**
 3. **Transform the body**:
    - Replace all occurrences of `$ARGUMENTS` with `{{args}}`
    - Replace `$1`, `$2`, etc. with `{{args}}` (Gemini does not support positional args)
-   - Remove any references to Claude-specific tools (e.g., "Invoke the /commit skill using the Skill tool") and replace with equivalent Gemini-native instructions
+   - Replace references to other skills (e.g., "Follow the `/git-commit` skill") with equivalent Gemini-native instructions
    - Keep all other Markdown content intact
 4. **Write the TOML file** to `gemini-commands/<skill-name>.toml`
 
@@ -65,7 +63,7 @@ argument-hint: <argument-hint if present>
 
 ### Process
 
-1. **Discover**: Use Glob to find all `skills/*/SKILL.md` files (top level only)
+1. **Discover**: Find all `skills/*/SKILL.md` files (top level only)
 2. **Filter**: If `--only` is set, filter to only those skill names
 3. **Ensure target directory**: Create `gemini-commands/` if it does not exist
 4. **Convert each file**:
