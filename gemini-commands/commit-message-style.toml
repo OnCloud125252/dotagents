@@ -34,7 +34,6 @@ When asked to create commits or work with git commits:
 - Use imperative mood: "Add feature" not "Added feature"
 - First line should be under 72 characters
 - Reference issues/PRs when applicable
-- Include Co-Authored-By for AI-assisted commits
 
 **Scope detection:**
 
