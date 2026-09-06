@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation. After design approval, transitions to /openspec-propose to create an OpenSpec change."
+description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation. Ends at a reviewed design doc, then hands off to the project's change-tracking skill when it has one."
 disable-model-invocation: true
 user-invocable: true
 ---
@@ -28,10 +28,10 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/design/YYYY-MM-DD-<topic>-design.md` and commit (working draft; the final design lands in `openspec/changes/<name>/design.md` when you run /openspec-propose)
+6. **Write design doc** — save to `docs/design/YYYY-MM-DD-<topic>-design.md` and commit
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — run `/openspec-propose <name>` to turn the design into an OpenSpec change (proposal.md + design.md + tasks.md)
+9. **Hand off** — pass the approved design to the project's change-tracking skill, or stop (see After the Design)
 
 ## Process Flow
 
@@ -45,7 +45,7 @@ digraph brainstorming {
     "Write design doc" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
     "User reviews spec?" [shape=diamond];
-    "Run /openspec-propose" [shape=doublecircle];
+    "Hand off design" [shape=doublecircle];
 
     "Explore project context" -> "Ask clarifying questions";
     "Ask clarifying questions" -> "Propose 2-3 approaches";
@@ -56,11 +56,11 @@ digraph brainstorming {
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Run /openspec-propose" [label="approved"];
+    "User reviews spec?" -> "Hand off design" [label="approved"];
 }
 ```
 
-**The terminal state is running /openspec-propose.** Brainstorming produces a validated design; /openspec-propose turns it into a tracked OpenSpec change (proposal + design + tasks). Do NOT jump straight to implementation or worktree creation.
+**The terminal state is the approved design doc.** Brainstorming produces a validated design and stops there. Do NOT jump straight to implementation or worktree creation.
 
 ## The Process
 
@@ -106,7 +106,7 @@ digraph brainstorming {
 **Documentation:**
 
 - Write the validated design (spec) to `docs/design/YYYY-MM-DD-<topic>-design.md`
-  - This is a working draft; the canonical design moves to `openspec/changes/<name>/design.md` when /openspec-propose runs
+  - A project with a change-tracking workflow may move the design to its own location during handoff
   - (User preferences for spec location override this default)
 - Commit the design document to git
 
@@ -127,10 +127,15 @@ After the spec review loop passes, ask the user to review the written spec befor
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
 
-**Implementation:**
+**Handoff:**
 
-- Run `/openspec-propose` to turn the design into an OpenSpec change (proposal.md + design.md + tasks.md)
-- This is the only next step. After design approval, hand off to /openspec-propose immediately.
+The approved design is the output. What happens next depends on the project:
+
+1. Check whether the project ships a change-tracking skill, for example `openspec-propose`. Look in the project's `.agents/skills/` and its `AGENTS.md`.
+2. If one exists, run it right after design approval and pass it the design. That is the only next step.
+3. If none exists, stop here. Report the design doc path and ask the user how to proceed.
+
+Do not start implementation yourself in either case.
 
 ## Key Principles
 

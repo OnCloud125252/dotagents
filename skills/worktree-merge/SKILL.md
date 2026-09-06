@@ -8,7 +8,7 @@ user-invocable: true
 
 # Merge Worktree Branch Locally
 
-Merge a worktree's feature branch into a target branch locally, without going through a pull request. This command only merges — it does NOT remove worktrees or delete branches. Use `/worktree.cleanup` separately for that.
+Merge a worktree's feature branch into a target branch locally, without going through a pull request. This command only merges — it does NOT remove worktrees or delete branches. Use `/worktree-cleanup` separately for that.
 
 **Announce at start:** "Preparing to merge worktree..."
 
@@ -38,10 +38,10 @@ If that fails, fall back to `main`. Store the result as `<target-branch>`.
 
 | Command | Source | Target |
 |---|---|---|
-| `/worktree.merge a b` | `a` | `b` |
-| `/worktree.merge a` | `a` | default branch (`main`) |
-| `/worktree.merge a develop --rebase` | `a` | `develop` |
-| `/worktree.merge` | (ask user) | default branch (`main`) |
+| `/worktree-merge a b` | `a` | `b` |
+| `/worktree-merge a` | `a` | default branch (`main`) |
+| `/worktree-merge a develop --rebase` | `a` | `develop` |
+| `/worktree-merge` | (ask user) | default branch (`main`) |
 
 ## Steps
 
@@ -204,7 +204,7 @@ Merged: <branch-name> → <target-branch> (<strategy>)
 Commits: <N> commits merged
 ```
 
-Suggest the user can run `/worktree.cleanup` to remove the worktree and branch if desired.
+Suggest the user can run `/worktree-cleanup` to remove the worktree and branch if desired.
 
 ## Safety
 
@@ -216,7 +216,7 @@ Suggest the user can run `/worktree.cleanup` to remove the worktree and branch i
 
 ## Do NOT
 
-- Remove worktrees, delete branches, or clean up anything — use `/worktree.cleanup` for that
+- Remove worktrees, delete branches, or clean up anything — use `/worktree-cleanup` for that
 - Push to remote (this is a local-only operation)
 - Run tests or install dependencies
 - Modify files in the worktree
