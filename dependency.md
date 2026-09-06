@@ -9,35 +9,32 @@ All external tools required by this environment. Install everything with the [qu
 # Install Homebrew if not present: https://brew.sh
 
 # Core CLI tools
-brew install git gh jq curl trash bun node pnpm direnv ripgrep
+brew install git gh jq curl trash bun node pnpm direnv ripgrep python
 
-# OpenSpec CLI
-npm install -g openspec
+# Status line
+bun install -g ccstatusline
 
 # Notifications
 brew tap moltenbits/tap
 brew install growlrrr
 grrr authorize
-grrr apps add --appId claude-code --appIcon ~/.claude/hooks/claude-icon.png
-
-# Status line
-bunx -y ccstatusline@latest
-
-# setup-hooks skill — target repo tool requirements (install in each target repo's environment)
-brew install gitleaks golangci-lint
+grrr apps add --appId claude-code --appIcon ~/.agents/hooks/claude-icon.png
 
 # Environment variables
 # Set CLAUDE_CODE_SUMMARIZER_API_KEY to an OpenAI API key for notification summaries
+# Write a Discord webhook URL to skills/discord-notify/scripts/webhook.url for /discord-notify
 ```
+
+Docker is needed only by the `image-diet` skill. Install it separately from <https://docs.docker.com/get-docker/>.
 
 ---
 
 ## Bun
 
-JavaScript runtime. Provides `bunx` for running npm packages without global install.
+JavaScript runtime and package manager. Also installs the `ccstatusline` binary used by the status line.
 
 - **Install:** `brew install bun`
-- **Used by:** `claude-statusline/statusline.sh`, `skills/git-commit/SKILL.md`, `skills/pr-review/SKILL.md`
+- **Used by:** `claude-statusline/statusline.sh`, `skills/git-commit/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/setup-hooks/SKILL.md`, `skills/image-diet/SKILL.md`, `skills/image-diet/scripts/detect-project.mjs`
 
 ---
 
@@ -45,68 +42,81 @@ JavaScript runtime. Provides `bunx` for running npm packages without global inst
 
 npm package that renders the Claude Code status line in the terminal.
 
-- **Invoked as:** `bunx -y ccstatusline@latest`
-- **Configured in:** `~/.claude/settings.json` -> `statusLine`
+- **Install:** `bun install -g ccstatusline`
+- **Invoked as:** `~/.bun/bin/ccstatusline`
+- **Configured in:** `~/.config/ccstatusline/settings.json`
 - **Receives:** session JSON via stdin, `CCSTATUSLINE_CLAUDE_SESSION_ID` env var
 - **Used by:** `claude-statusline/statusline.sh`
+
+The scripts `claude-statusline/last-user-input.sh`, `claude-statusline/peer-id.sh`, `claude-statusline/short-pwd.sh`, and `claude-statusline/thinking-effort.sh` run as `custom-command` widgets inside ccstatusline.
+
+---
+
+## claude-peers broker
+
+Local HTTP service that tracks peer agent sessions. The status line asks it which peer ID belongs to the current session.
+
+- **Endpoint:** `http://127.0.0.1:$CLAUDE_PEERS_PORT/list-peers` (port defaults to `7899`)
+- **Environment variable:** `CLAUDE_PEERS_PORT` (optional)
+- **Used by:** `claude-statusline/peer-id.sh`
+
+The script prints nothing and exits 0 when the broker does not answer, so the status line still works without it.
 
 ---
 
 ## curl
 
-HTTP client for making API requests. Pre-installed on macOS but listed here as a critical runtime dependency.
+HTTP client for API requests.
 
 - **Install:** `brew install curl` (or use macOS system curl)
-- **Used by:** `helpers/summarize.sh` (calls OpenAI API)
+- **Used by:** `helpers/summarize.sh` (calls the OpenAI API), `claude-statusline/peer-id.sh` (calls the claude-peers broker)
 
 ---
 
 ## direnv
 
-Directory-specific environment variables. Automatically activates `.envrc` when entering a new worktree.
+Directory-specific environment variables. Activates `.envrc` when entering a new worktree.
 
 - **Install:** `brew install direnv`
 - **Used by:** `skills/worktree-create/SKILL.md` (optional — silently skipped if not installed)
 
 ---
 
+## Discord webhook
+
+External service that receives task notifications in a Discord forum channel.
+
+- **Setup:** create a forum-channel webhook in Discord, then save the URL to `skills/discord-notify/scripts/webhook.url`
+- **Used by:** `skills/discord-notify/scripts/discord_notify.py`, `skills/discord-notify/SKILL.md`
+
+The webhook URL is a secret. `skills/discord-notify/scripts/.gitignore` keeps it out of git.
+
+---
+
+## Docker
+
+Container engine. The image-diet skill builds images and reads their layer sizes to measure each slimming stage.
+
+- **Install:** <https://docs.docker.com/get-docker/>
+- **Used by:** `skills/image-diet/scripts/measure-image.sh`, `skills/image-diet/references/capability-probes.md`
+
+---
+
 ## gh (GitHub CLI)
 
-GitHub's official CLI for managing issues, pull requests, and repository operations.
+GitHub's official CLI for issues, pull requests, and repository operations.
 
 - **Install:** `brew install gh`
 - **Used by:** `skills/git-issue/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`
 
 ---
 
-## gitleaks
-
-Secret scanning tool. Detects accidentally committed credentials and API keys.
-
-- **Install:** `brew install gitleaks`
-- **Required by generated hooks in:** `skills/setup-hooks/templates/go/pre-commit`, `skills/setup-hooks/templates/go/pre-push`, `skills/setup-hooks/templates/bun-biome/pre-commit`, `skills/setup-hooks/templates/bun-biome/pre-push`, `skills/setup-hooks/templates/pnpm-biome/pre-commit`, `skills/setup-hooks/templates/pnpm-biome/pre-push`
-
-> **Note:** gitleaks is a requirement of the hook scripts generated by the `setup-hooks` command, not of this project itself. Install it in the target repo's environment. For the bun-biome and pnpm-biome stacks it is optional — only required if `.gitleaks.toml` exists in the target repo.
-
----
-
 ## git
 
-Distributed version control system. Used by nearly every command in this project.
+Distributed version control system. Used by nearly every skill in this project.
 
 - **Install:** `brew install git` (or use Xcode Command Line Tools)
-- **Used by:** `skills/git-commit/SKILL.md`, `skills/git-changelog/SKILL.md`, `skills/git-issue/SKILL.md`, `skills/git-pull/SKILL.md`, `skills/git-push/SKILL.md`, `skills/git-version/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/setup-hooks/SKILL.md`, `skills/worktree-cleanup/SKILL.md`, `skills/worktree-create/SKILL.md`, `skills/worktree-merge/SKILL.md`, `skills/worktree-sync/SKILL.md`, `skills/docs-update/SKILL.md`, `hooks/suggest-worktree.sh`, `skills/commit/SKILL.md`, `skills/docs-writer/SKILL.md`, `skills/setup-hooks/detect.sh`
-
----
-
-## golangci-lint
-
-Go meta-linter with auto-fix support. Runs on pre-push in Go repos managed by the setup-hooks skill.
-
-- **Install:** `brew install golangci-lint`
-- **Required by generated hooks in:** `skills/setup-hooks/templates/go/pre-push`, `skills/setup-hooks/templates/go/setup-hooks.sh`
-
-> **Note:** golangci-lint is a requirement of the hook scripts generated by the `setup-hooks` command for Go stacks, not of this project itself. Install it in the target Go repo's environment.
+- **Used by:** `skills/api-doc/SKILL.md`, `skills/claude-rules-gen/SKILL.md`, `skills/commit-message-style/SKILL.md`, `skills/docs-update/SKILL.md`, `skills/find-simplifications/SKILL.md`, `skills/git-changelog/SKILL.md`, `skills/git-commit/SKILL.md`, `skills/git-issue/SKILL.md`, `skills/git-pull/SKILL.md`, `skills/git-push/SKILL.md`, `skills/git-version/SKILL.md`, `skills/handoff/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/pr-resolve/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/setup-hooks/SKILL.md`, `skills/worktree-cleanup/SKILL.md`, `skills/worktree-create/SKILL.md`, `skills/worktree-merge/SKILL.md`, `skills/worktree-sync/SKILL.md`, `hooks/suggest-worktree.sh`, `.agents/skills/publish/SKILL.md`
 
 ---
 
@@ -135,7 +145,7 @@ grrr authorize
 Required once so notifications display the Claude icon:
 
 ```bash
-grrr apps add --appId claude-code --appIcon ~/.claude/hooks/claude-icon.png
+grrr apps add --appId claude-code --appIcon ~/.agents/hooks/claude-icon.png
 ```
 
 Verify:
@@ -190,17 +200,26 @@ growlrrr send [<options>] <message>
 **Custom icon not showing:**
 
 1. Verify app exists: `grrr apps list`
-2. Re-register: `grrr apps add --appId claude-code --appIcon ~/.claude/hooks/claude-icon.png`
+2. Re-register: `grrr apps add --appId claude-code --appIcon ~/.agents/hooks/claude-icon.png`
 3. Update bundles after brew upgrade: `grrr apps update`
 
 ---
 
 ## Homebrew
 
-macOS package manager. Required to install everything else.
+macOS package manager. Required to install most other dependencies.
 
 - **Install:** <https://brew.sh>
 - **Used by:** all dependency installation below
+
+---
+
+## Huly MCP Server
+
+MCP server providing access to Huly issue tracking. It exposes a proxy, so tools are reached through `search_tools`, `get_tool_schema`, and `invoke_tool`.
+
+- **Configured in:** agent MCP settings
+- **Used by:** `skills/huly-mcp-guide/SKILL.md`, `skills/api-doc/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/worktree-create/SKILL.md`
 
 ---
 
@@ -209,32 +228,44 @@ macOS package manager. Required to install everything else.
 JSON processor for parsing hook event data and session files.
 
 - **Install:** `brew install jq`
-- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/statusline.sh`, `skills/setup-hooks/SKILL.md`, `helpers/summarize.sh`, `hooks/notify.sh`, `hooks/suggest-worktree.sh`, `skills/setup-hooks/detect.sh`
+- **Used by:** `claude-statusline/last-user-input.sh`, `claude-statusline/peer-id.sh`, `claude-statusline/statusline.sh`, `claude-statusline/thinking-effort.sh`, `helpers/summarize.sh`, `hooks/notify.sh`, `hooks/suggest-worktree.sh`, `skills/setup-hooks/SKILL.md`
+
+---
+
+## kitty
+
+Terminal emulator. Notifications focus the exact kitty window that started the session, and fall back to raising the app.
+
+- **Bundle ID:** `net.kovidgoyal.kitty`
+- **Install:** <https://sw.kovidgoyal.net/kitty/binary/>
+- **Used by:** `hooks/notify.sh` (`kitten @ focus-window`, `open -b net.kovidgoyal.kitty`)
+
+Precise window focus needs kitty remote control turned on. Without it the hook still raises the app.
 
 ---
 
 ## Linear MCP Server
 
-MCP server providing access to Linear issue tracking. Enables commands to fetch issue details for branch naming, PR context, and issue status updates. Two named instances are supported (`Lazco` and `Zeabur`) — commands use the wildcard pattern `mcp__Linear*__*` to work with either.
+MCP server providing access to Linear issue tracking. Skills use it to fetch issue details for branch naming, PR context, and issue status updates. Several named instances can be configured at once, one per workspace.
 
-- **Tool prefix:** `mcp__Linear_Lazco__*` / `mcp__Linear_Zeabur__*`
-- **Configured in:** Claude Code MCP settings
-- **Used by:** `skills/linear-api-doc/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/worktree-create/SKILL.md`
+- **Tool prefix:** `mcp__Linear_<workspace>__*`
+- **Configured in:** agent MCP settings
+- **Used by:** `skills/linear-mcp-guide/SKILL.md`, `skills/api-doc/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`, `skills/worktree-create/SKILL.md`
 
 ---
 
 ## Node.js (npm / npx)
 
-JavaScript runtime providing `npm` (package manager) and `npx` (package executor). Required for several commands and npx-based tools.
+JavaScript runtime providing `npm` (package manager) and `npx` (package executor). Also runs the brainstorming server and the image-diet analysis scripts.
 
 - **Install:** `brew install node`
-- **Used by:** `skills/git-version/SKILL.md` (`npm version`), `skills/code-react-doctor/SKILL.md` (`npx -y react-doctor@latest`), `skills/find-skills/SKILL.md` (`npx skills`)
+- **Used by:** `skills/git-version/SKILL.md` (`npm version`), `skills/code-react-doctor/SKILL.md` (`npx -y react-doctor@latest`), `skills/brainstorming/scripts/start-server.sh`, `skills/brainstorming/scripts/server.cjs`, `skills/image-diet/scripts/bundle-roots.mjs`, `skills/image-diet/scripts/detect-project.mjs`, `skills/image-diet/scripts/prune-runtime-modules.mjs`
 
 ---
 
 ## OpenAI API
 
-Used for summarizing notification messages via GPT-4.1-nano. Requires an API key set as an environment variable.
+Used for summarizing notification messages via `gpt-4.1-nano`. Requires an API key set as an environment variable.
 
 - **Environment variable:** `CLAUDE_CODE_SUMMARIZER_API_KEY`
 - **Endpoint:** `https://api.openai.com/v1/chat/completions`
@@ -245,30 +276,30 @@ Falls back to raw message truncation if the API key is missing.
 
 ---
 
-## openspec
-
-CLI tool for managing structured change workflows (proposals, designs, specs, tasks).
-
-- **Install:** `npm install -g openspec`
-- **Used by:** `skills/openspec-apply-change/SKILL.md`, `skills/openspec-archive-change/SKILL.md`, `skills/openspec-explore/SKILL.md`, `skills/openspec-propose/SKILL.md`
-
----
-
 ## pbcopy / pbpaste
 
 macOS clipboard utilities. Pre-installed on all Macs. `pbcopy` writes to the clipboard; `pbpaste` reads from it.
 
 - **Install:** built-in (macOS system utilities)
-- **Used by:** `skills/git-changelog/SKILL.md`, `skills/git-issue/SKILL.md`, `skills/linear-project-update/SKILL.md`, `skills/pr-create/SKILL.md`
+- **Used by:** `skills/pbcopy/SKILL.md`, `skills/git-changelog/SKILL.md`, `skills/git-issue/SKILL.md`, `skills/linear-project-update/SKILL.md`
 
 ---
 
 ## pnpm
 
-Fast, disk space efficient package manager. Referenced as an alternative to npm in documentation workflows.
+Fast, disk space efficient package manager. Used to run Biome and project test scripts in pnpm-based repos.
 
 - **Install:** `brew install pnpm`
-- **Used by:** `skills/docs-update/SKILL.md`, `skills/pr-review/SKILL.md`
+- **Used by:** `skills/setup-hooks/SKILL.md`, `skills/pr-review/SKILL.md`, `skills/image-diet/scripts/detect-project.mjs`
+
+---
+
+## Python 3
+
+Scripting runtime. The discord-notify script uses only the standard library, so no extra packages are needed.
+
+- **Install:** `brew install python` (or use the macOS system python3)
+- **Used by:** `skills/discord-notify/scripts/discord_notify.py`, `skills/pr-review/SKILL.md` (`python -m pytest` in Python repos)
 
 ---
 
@@ -290,21 +321,12 @@ Fast recursive code search. Used to prove or reject simplification candidates by
 
 ---
 
-## skills CLI
-
-npm package for discovering and installing agent skills from the open skills ecosystem. Auto-installs via npx.
-
-- **Invoked as:** `npx skills find [query]`, `npx skills add <package>`
-- **Used by:** `skills/find-skills/SKILL.md`
-
----
-
 ## trash
 
-Safe file deletion -- moves to Trash instead of permanent `rm`. Required by project conventions (see `CLAUDE.md`).
+Safe file deletion -- moves to Trash instead of permanent `rm`. Required by project conventions (see `AGENTS.md`).
 
 - **Install:** `brew install trash`
-- **Used by:** all file deletion operations, `skills/worktree-cleanup/SKILL.md`, `skills/pr-review/SKILL.md`
+- **Used by:** all file deletion operations, `skills/worktree-cleanup/SKILL.md`, `skills/realistic-scenario-runbook/SKILL.md`, `.agents/skills/publish/SKILL.md`
 
 | Command | Description |
 |---|---|
