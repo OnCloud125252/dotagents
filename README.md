@@ -4,7 +4,7 @@
 
 ## What's Inside
 
-- **40 skills** — user-invoked workflows (git, PR, worktree, Linear, docs) plus contextual skills that activate automatically (React best practices, Next.js, Cloudflare, writing style, and more)
+- **28 skills** — user-invoked workflows (git, PR, worktree, issue trackers, docs) plus contextual skills that activate automatically (React best practices, Next.js, writing style, and more)
 - **Rules** — path-scoped instructions loaded by the [pi-rules](https://www.npmjs.com/package/@tigorhutasuhut/pi-rules) extension
 - **Global AGENTS.md** — design principles and workflow rules shared by every project
 

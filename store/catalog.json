@@ -4,307 +4,32 @@
   "categories": [],
   "commands": {},
   "skills": {
-    "commit": {
-      "name": "commit",
-      "description": "Create a well-formatted git commit message based on the changes staged for commit. Follow best practices for commit message style and content.",
-      "path": "skills/commit",
-      "trigger": "When creating git commits",
-      "requires_tools": ["git"],
-      "has_subdirs": false
-    },
-    "readme": {
-      "name": "readme",
-      "description": "Guidelines for writing and editing Plain package READMEs.",
-      "path": "skills/readme",
-      "trigger": "When creating or updating README files",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
-    "cli-output-style": {
-      "name": "cli-output-style",
-      "description": "CLI output style guide for writing shell scripts and commands with consistent colors, symbols, dividers, and formatting.",
-      "path": "skills/cli-output-style",
-      "trigger": "When writing or modifying shell scripts that produce terminal output",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
-    "react-best-practices": {
-      "name": "react-best-practices",
-      "description": "React and Next.js performance optimization guidelines from Vercel Engineering. 64 rules covering async patterns, bundle optimization, server components, and more.",
-      "path": "skills/react-best-practices",
-      "trigger": "When working with React/Next.js code, components, data fetching, or bundle optimization",
-      "requires_tools": [],
-      "has_subdirs": true
-    },
-    "grafana-dashboards": {
-      "name": "grafana-dashboards",
-      "description": "Create and manage production Grafana dashboards for real-time visualization of system and application metrics.",
-      "path": "skills/grafana-dashboards",
-      "trigger": "When building monitoring dashboards, visualizing metrics, or creating operational observability interfaces",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
-    "openspec-propose": {
-      "name": "openspec-propose",
-      "description": "Propose a new change with all artifacts generated in one step.",
-      "path": "skills/openspec-propose",
-      "trigger": "When the user wants to describe what they want to build and get a complete proposal",
-      "requires_tools": ["openspec"],
-      "has_subdirs": false
-    },
-    "openspec-apply-change": {
-      "name": "openspec-apply-change",
-      "description": "Implement tasks from an OpenSpec change.",
-      "path": "skills/openspec-apply-change",
-      "trigger": "When the user wants to start or continue implementing tasks from a change",
-      "requires_tools": ["openspec"],
-      "has_subdirs": false
-    },
-    "openspec-explore": {
-      "name": "openspec-explore",
-      "description": "Enter explore mode - a thinking partner for exploring ideas, investigating problems, and clarifying requirements.",
-      "path": "skills/openspec-explore",
-      "trigger": "When the user wants to think through something before or during a change",
-      "requires_tools": ["openspec"],
-      "has_subdirs": false
-    },
-    "openspec-archive-change": {
-      "name": "openspec-archive-change",
-      "description": "Archive a completed change in the experimental workflow.",
-      "path": "skills/openspec-archive-change",
-      "trigger": "When the user wants to finalize and archive a change after implementation is complete",
-      "requires_tools": ["openspec"],
-      "has_subdirs": false
-    },
     "api-doc": {
       "name": "api-doc",
-      "description": "Generate a frontend-oriented API guide document for a given issue or task. Analyzes git diff and source code to identify API changes (GraphQL, REST, gRPC, tRPC, etc.).",
+      "description": "Generate a frontend-oriented API guide document for a given issue or task. Analyzes git diff and source code to identify API changes (GraphQL, REST, gRPC, tRPC, etc.), then creates a comprehensive document with types, endpoints, examples, validation rules, and error handling. Publishes to the project's issue tracker (Linear, Huly, GitHub, Notion, etc.) if available. Use when the user asks to \"create an API doc\", \"write frontend API guide\", \"document the API changes\", or after completing backend API work that frontend needs to consume. Also use when the user says \"寫 API 文件\", \"產生前端文件\", or \"建立文件\".",
       "path": "skills/api-doc",
       "trigger": "When asked to create API docs, write frontend API guides, or document API changes after backend work",
-      "requires_tools": ["git"],
-      "has_subdirs": false
-    },
-    "claude-rules-gen": {
-      "name": "claude-rules-gen",
-      "description": "Generate a CLAUDE.md and path-scoped .claude/rules/ files for a repository.",
-      "path": "skills/claude-rules-gen",
-      "trigger": "When bootstrapping Claude Code project context, creating CLAUDE.md, generating rules, or onboarding a new codebase",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
-    "make-interfaces-feel-better": {
-      "name": "make-interfaces-feel-better",
-      "description": "Design engineering principles for making interfaces feel polished - animations, hover states, shadows, borders, typography, and micro-interactions.",
-      "path": "skills/make-interfaces-feel-better",
-      "trigger": "When building UI components, reviewing frontend code, or working on visual polish and micro-interactions",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
-    "nextjs": {
-      "name": "nextjs",
-      "description": "Next.js App Router expert guidance - routing, Server Components, Server Actions, data fetching, rendering strategies, and deployment on Vercel.",
-      "path": "skills/nextjs",
-      "trigger": "When building, debugging, or architecting Next.js applications",
-      "requires_tools": [],
-      "has_subdirs": true
-    },
-    "discord-notify": {
-      "name": "discord-notify",
-      "description": "Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. User-invocable only (/discord-notify): the first message creates a new forum post, later checkpoints append to that same post. Pairs with goal mode, loop mode, or any long job.",
-      "path": "skills/discord-notify",
-      "trigger": "When the user explicitly invokes /discord-notify to be notified on Discord about a long-running task",
-      "requires_tools": [],
-      "has_subdirs": true
-    },
-    "image-diet": {
-      "name": "image-diet",
-      "description": "Progressively shrink a JavaScript/TypeScript project's container (Docker/OCI) image through a staged pipeline, letting the user choose how aggressive to get by deciding where to stop. Detects the runtime/package-manager/bundler and verifies every change by building and exercising the app.",
-      "path": "skills/image-diet",
-      "trigger": "When the user wants to reduce or slim a Docker/container image for a Node, Bun, or Deno app",
-      "requires_tools": ["docker"],
-      "has_subdirs": true
-    },
-    "cloudflare": {
-      "name": "cloudflare",
-      "description": "Comprehensive Cloudflare platform skill covering Workers, Pages, storage (KV, D1, R2), AI (Workers AI, Vectorize, Agents SDK), feature flags (Flagship), networking (Tunnel, Spectrum), security (WAF, DDoS), and infrastructure-as-code (Terraform, Pulumi).",
-      "path": "skills/cloudflare",
-      "trigger": "When doing any Cloudflare development task",
-      "requires_tools": ["npx"],
-      "has_subdirs": true
-    },
-    "ste-writing": {
-      "name": "ste-writing",
-      "description": "Rewrite prose (docs, READMEs, PR descriptions, error messages, release notes, comments - never code) into ASD-STE100 Simplified Technical English to remove AI slop. Two modes: strict (procedures/safety) and STE-flavored (general prose).",
-      "path": "skills/ste-writing",
-      "trigger": "When asked to make writing not sound like AI, make docs plain, or enforce a controlled writing style",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
-    "linear-mcp-guide": {
-      "name": "linear-mcp-guide",
-      "description": "Outlines critical constraints, formatting quirks, and data-safety protocols when interacting with the Linear Model Context Protocol (MCP) tool.",
-      "path": "skills/linear-mcp-guide",
-      "trigger": "Whenever reading, creating, or updating Linear issues and documents via Linear MCP",
-      "requires_tools": [],
+      "requires_tools": [
+        "git"
+      ],
       "has_subdirs": false
     },
     "brainstorming": {
       "name": "brainstorming",
-      "description": "Explores user intent, requirements and design before any creative work - creating features, building components, adding functionality, or modifying behavior. After design approval, transitions to /openspec-propose to create an OpenSpec change.",
+      "description": "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation. After design approval, transitions to /openspec-propose to create an OpenSpec change.",
       "path": "skills/brainstorming",
       "trigger": "Invoke before any creative work to explore intent and design before implementation",
-      "requires_skills": ["openspec-propose"],
-      "requires_tools": ["openspec"],
+      "requires_tools": [
+        "node"
+      ],
       "has_subdirs": true
     },
-    "realistic-scenario-runbook": {
-      "name": "realistic-scenario-runbook",
-      "description": "Author and run a realistic, multi-scenario end-to-end test runbook that simulates a real user driving a product through its live API, then triage the results into tracker tickets and hand the fixes to another agent. Each scenario does create -> verify -> cleanup, graded into tiers, run by a fleet of isolated subagents, and rolled up into a report.",
-      "path": "skills/realistic-scenario-runbook",
-      "trigger": "Invoke to author and run a multi-scenario E2E test runbook against a live environment",
-      "requires_tools": ["trash"],
-      "has_subdirs": true
-    },
-    "git-commit": {
-      "name": "git-commit",
-      "description": "Create commits for recent changes. Multiple commits are allowed for logical grouping.",
-      "path": "skills/git-commit",
-      "trigger": "Invoke /git-commit to create commits for recent changes, split into logical groups",
-      "requires_skills": ["commit"],
-      "requires_tools": ["git", "bun"],
-      "has_subdirs": false
-    },
-    "git-pull": {
-      "name": "git-pull",
-      "description": "Run git pull and resolve issues if there's any output from git hook, and ask user how to resolve conflicts.",
-      "path": "skills/git-pull",
-      "trigger": "Invoke /git-pull to pull and resolve hook issues or conflicts interactively",
-      "requires_tools": ["git"],
-      "has_subdirs": false
-    },
-    "git-push": {
-      "name": "git-push",
-      "description": "Run git push and resolve issues if there's any output from git hook, and ask user how to resolve conflicts.",
-      "path": "skills/git-push",
-      "trigger": "Invoke /git-push to push and resolve hook issues or conflicts interactively",
-      "requires_tools": ["git"],
-      "has_subdirs": false
-    },
-    "git-changelog": {
-      "name": "git-changelog",
-      "description": "Generate a user-facing changelog of new features and bug fixes since a commit.",
-      "path": "skills/git-changelog",
-      "trigger": "Invoke /git-changelog to generate a user-facing changelog since a commit",
-      "requires_tools": ["git"],
-      "has_subdirs": false
-    },
-    "git-version": {
-      "name": "git-version",
-      "description": "Analyze git changes and create a new version using npm version based on conventional commits.",
-      "path": "skills/git-version",
-      "trigger": "Invoke /git-version to bump the version from conventional commits",
-      "requires_tools": ["git", "npm"],
-      "has_subdirs": false
-    },
-    "git-issue": {
-      "name": "git-issue",
-      "description": "Create a GitHub issue with intelligent label detection and optional template support.",
-      "path": "skills/git-issue",
-      "trigger": "Invoke /git-issue to create a GitHub issue with smart label detection",
-      "requires_tools": ["gh"],
-      "has_subdirs": false
-    },
-    "pr-create": {
-      "name": "pr-create",
-      "description": "Push current branch and create a GitHub pull request with smart defaults.",
-      "path": "skills/pr-create",
-      "trigger": "Invoke /pr-create to push the branch and open a PR with smart defaults",
-      "requires_tools": ["git", "gh"],
-      "optional_tools": ["mcp:linear"],
-      "has_subdirs": false
-    },
-    "pr-review": {
-      "name": "pr-review",
-      "description": "Fetch a PR into a temporary worktree, run CI checks (tests, lint, type-check), invoke /code-review, and present an interactive summary with inline review posting. Use this for an external PR (by number or URL); for your current working diff, run /code-review directly.",
-      "path": "skills/pr-review",
-      "trigger": "Invoke /pr-review to fetch a PR into a worktree, run CI, and review",
-      "requires_tools": ["git", "gh", "trash"],
-      "has_subdirs": false
-    },
-    "pr-resolve": {
-      "name": "pr-resolve",
-      "description": "Fetch unresolved PR review threads, fix the issues, reply with commit SHA, resolve threads via GraphQL, and post a summary comment. Use when asked to resolve or address PR review feedback. If no argument is given, auto-detects the PR for the current branch.",
-      "path": "skills/pr-resolve",
-      "trigger": "Invoke /pr-resolve to fix unresolved review threads and resolve them",
-      "requires_tools": ["git", "gh"],
-      "has_subdirs": false
-    },
-    "worktree-create": {
-      "name": "worktree-create",
-      "description": "Create a git worktree from a branch name or Linear issue. Fetches branch name from Linear MCP when given an issue ID/URL.",
-      "path": "skills/worktree-create",
-      "trigger": "Invoke /worktree-create to create a worktree from a branch or Linear issue",
-      "requires_tools": ["git"],
-      "optional_tools": ["mcp:linear"],
-      "has_subdirs": false
-    },
-    "worktree-sync": {
-      "name": "worktree-sync",
-      "description": "Sync a worktree branch with main by merging origin/main into it. Use when the worktree branch has fallen behind main.",
-      "path": "skills/worktree-sync",
-      "trigger": "Invoke /worktree-sync to merge origin/main into a worktree branch",
-      "requires_tools": ["git"],
-      "has_subdirs": false
-    },
-    "worktree-merge": {
-      "name": "worktree-merge",
-      "description": "Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.",
-      "path": "skills/worktree-merge",
-      "trigger": "Invoke /worktree-merge to merge a worktree branch into a target branch locally",
-      "requires_tools": ["git"],
-      "has_subdirs": false
-    },
-    "worktree-cleanup": {
-      "name": "worktree-cleanup",
-      "description": "Remove a git worktree and optionally delete its branch. Lists worktrees if no argument given.",
-      "path": "skills/worktree-cleanup",
-      "trigger": "Invoke /worktree-cleanup to remove a worktree and optionally its branch",
-      "requires_tools": ["git"],
-      "has_subdirs": false
-    },
-    "docs-agentsmd": {
-      "name": "docs-agentsmd",
-      "description": "Create, update, or refactor AGENTS.md with progressive disclosure principles.",
-      "path": "skills/docs-agentsmd",
-      "trigger": "Invoke /docs-agentsmd to create, update, or refactor AGENTS.md",
+    "cli-output-style": {
+      "name": "cli-output-style",
+      "description": "CLI output style guide for writing shell scripts and commands with consistent colors, symbols, dividers, and formatting. Use this skill whenever writing or modifying shell scripts that produce terminal output — CLI tools, setup scripts, health checks, status dashboards, deployment scripts, or any bash/zsh program that prints colored or structured output to the user. Also triggers when the user asks about terminal formatting, ANSI colors, CLI UX patterns, stripping ANSI color when output is piped or redirected, TTY / isatty / NO_COLOR / CLICOLOR_FORCE detection, or how to make shell output look professional and consistent.",
+      "path": "skills/cli-output-style",
+      "trigger": "When writing or modifying shell scripts that produce terminal output",
       "requires_tools": [],
-      "has_subdirs": false
-    },
-    "docs-update": {
-      "name": "docs-update",
-      "description": "Guided workflow for updating documentation based on code changes. Analyzes diffs, identifies affected docs, and applies updates with confirmation.",
-      "path": "skills/docs-update",
-      "trigger": "Invoke /docs-update to update documentation based on code changes",
-      "requires_tools": ["git", "pnpm"],
-      "has_subdirs": false
-    },
-    "linear-api-doc": {
-      "name": "linear-api-doc",
-      "description": "Generate a frontend-oriented API guide document on Linear for a given issue. Analyzes git diff and source code to identify API changes, then creates a comprehensive document with types, endpoints, examples, validation rules, and error handling attached to the Linear issue.",
-      "path": "skills/linear-api-doc",
-      "trigger": "Invoke /linear-api-doc to generate a frontend API guide attached to a Linear issue",
-      "requires_skills": ["api-doc"],
-      "requires_tools": ["git"],
-      "optional_tools": ["mcp:linear"],
-      "has_subdirs": false
-    },
-    "linear-project-update": {
-      "name": "linear-project-update",
-      "description": "Draft a Traditional Chinese project update for a Linear project by correlating its milestones and issues with recent git commits and GitHub PRs, then copy the markdown body to the clipboard via pbcopy.",
-      "path": "skills/linear-project-update",
-      "trigger": "Invoke /linear-project-update to draft a zh-TW project update for Linear",
-      "requires_tools": ["git", "gh"],
-      "optional_tools": ["mcp:linear"],
       "has_subdirs": false
     },
     "code-react-doctor": {
@@ -312,39 +37,72 @@
       "description": "Scan React codebase for security, performance, correctness, and architecture issues. Outputs a 0-100 score with actionable diagnostics.",
       "path": "skills/code-react-doctor",
       "trigger": "Invoke /code-react-doctor to scan a React codebase and score it 0-100",
-      "requires_tools": ["npx"],
+      "requires_tools": [
+        "npx"
+      ],
       "has_subdirs": false
     },
-    "search": {
-      "name": "search",
-      "description": "Provides a /search command that makes AI Agent act as a search engine, performing web searches and returning summarized results with citations.",
-      "path": "skills/search",
-      "trigger": "Invoke /search to run a web search and return summarized results with citations",
+    "commit-message-style": {
+      "name": "commit-message-style",
+      "description": "Create a well-formatted git commit message based on the changes staged for commit. Follow best practices for commit message style and content.",
+      "path": "skills/commit-message-style",
+      "trigger": "When writing the message for a git commit",
+      "requires_tools": [
+        "git"
+      ],
+      "has_subdirs": false
+    },
+    "discord-notify": {
+      "name": "discord-notify",
+      "description": "Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. Trigger ONLY when the user explicitly invokes `/discord-notify`, or explicitly asks to be notified on Discord while pointing at this skill (e.g. \"結束時通知我\" / \"有重要進度時通知我\"); never auto-fire it. The first message creates a new forum post; later checkpoints append to that same post. Pairs with goal mode, loop mode, or any job long enough that the user steps away.",
+      "path": "skills/discord-notify",
+      "trigger": "When the user explicitly invokes /discord-notify to be notified on Discord about a long-running task",
+      "requires_tools": [
+        "python3"
+      ],
+      "has_subdirs": true
+    },
+    "find-simplifications": {
+      "name": "find-simplifications",
+      "description": "Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary. Covers dead, duplicated, speculative, over-built, added-then-removed, and hand-rolled-where-a-dependency-exists surfaces.",
+      "path": "skills/find-simplifications",
+      "trigger": "Invoke /find-simplifications to survey a repository for evidence-backed simplification candidates",
+      "requires_tools": [
+        "git",
+        "rg"
+      ],
+      "has_subdirs": false
+    },
+    "git-commit": {
+      "name": "git-commit",
+      "description": "Create commits for recent changes. Multiple commits are allowed for logical grouping.",
+      "path": "skills/git-commit",
+      "trigger": "Invoke /git-commit to create commits for recent changes, split into logical groups",
+      "requires_skills": [
+        "commit-message-style"
+      ],
+      "requires_tools": [
+        "bun",
+        "git"
+      ],
+      "has_subdirs": false
+    },
+    "git-push": {
+      "name": "git-push",
+      "description": "Run `git push` and resolve issues if there's any output from git hook, and ask user how to resolve conflicts",
+      "path": "skills/git-push",
+      "trigger": "Invoke /git-push to push and resolve hook issues or conflicts interactively",
+      "requires_tools": [
+        "git"
+      ],
+      "has_subdirs": false
+    },
+    "grafana-dashboards": {
+      "name": "grafana-dashboards",
+      "description": "Create and manage production Grafana dashboards for real-time visualization of system and application metrics. Use when building monitoring dashboards, visualizing metrics, or creating operational observability interfaces.",
+      "path": "skills/grafana-dashboards",
+      "trigger": "When building monitoring dashboards, visualizing metrics, or creating operational observability interfaces",
       "requires_tools": [],
-      "has_subdirs": false
-    },
-    "auto-resolve": {
-      "name": "auto-resolve",
-      "description": "Auto-diagnose and fix errors in commands to achieve Exit Code 0.",
-      "path": "skills/auto-resolve",
-      "trigger": "Invoke /auto-resolve to run a command and auto-fix errors until exit code 0",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
-    "organize-dir": {
-      "name": "organize-dir",
-      "description": "Organize a directory by moving subdirectories older than a specified time into an archive folder. Accepts optional time threshold and archive directory name.",
-      "path": "skills/organize-dir",
-      "trigger": "Invoke /organize-dir to archive old subdirectories into an archive folder",
-      "requires_tools": [],
-      "has_subdirs": false
-    },
-    "setup-hooks": {
-      "name": "setup-hooks",
-      "description": "Scaffold a stack-appropriate git-hooks pipeline (.githooks/ + scripts/setup-hooks.sh + .claude/settings.json patch) into the current repo. Detects Go / bun+biome / pnpm+biome automatically.",
-      "path": "skills/setup-hooks",
-      "trigger": "Invoke /setup-hooks to scaffold a stack-appropriate git-hooks pipeline",
-      "requires_tools": ["git", "jq"],
       "has_subdirs": false
     },
     "handoff": {
@@ -355,84 +113,301 @@
       "requires_tools": [],
       "has_subdirs": false
     },
+    "huly-mcp-guide": {
+      "name": "huly-mcp-guide",
+      "description": "Outlines how the Huly Model Context Protocol (MCP) proxy works, its parameter shapes, and data-safety rules when reading, creating, or updating Huly issues, comments, and documents. Invoke these rules whenever a task touches Huly.",
+      "path": "skills/huly-mcp-guide",
+      "trigger": "Whenever reading, creating, or updating Huly issues, comments, and documents via Huly MCP",
+      "requires_tools": [],
+      "optional_tools": [
+        "mcp:huly"
+      ],
+      "has_subdirs": false
+    },
+    "image-diet": {
+      "name": "image-diet",
+      "description": "Progressively shrink a JavaScript/TypeScript project's container (Docker/OCI) image through a staged pipeline, letting the user choose how aggressive to get by deciding where to stop. Use this whenever the user wants to reduce, slim, shrink, or optimize a Docker/container image size for a Node, Bun, or Deno app - or complains an image is \"too big\", \"bloated\", slow to pull/push/deploy, or wants a smaller final image, leaner Dockerfile, or trimmed node_modules. Trigger even when they don't say \"Docker\" explicitly (e.g. \"my API image is 1.3GB\", \"make the build smaller\", \"縮小 image\", \"image 優化\"). Detects the runtime/package-manager/bundler and adapts each step; verifies every change by building and exercising the app before moving on.",
+      "path": "skills/image-diet",
+      "trigger": "When the user wants to reduce or slim a Docker/container image for a Node, Bun, or Deno app",
+      "requires_tools": [
+        "bun",
+        "docker",
+        "node"
+      ],
+      "has_subdirs": true
+    },
+    "linear-mcp-guide": {
+      "name": "linear-mcp-guide",
+      "description": "Outlines critical constraints, formatting quirks, and data-safety protocols when interacting with the Linear Model Context Protocol (MCP) tool. Invoke these rules whenever reading, creating, or updating Linear issues and documents.",
+      "path": "skills/linear-mcp-guide",
+      "trigger": "Whenever reading, creating, or updating Linear issues and documents via Linear MCP",
+      "requires_tools": [],
+      "optional_tools": [
+        "mcp:linear"
+      ],
+      "has_subdirs": false
+    },
+    "make-interfaces-feel-better": {
+      "name": "make-interfaces-feel-better",
+      "description": "Design engineering principles for making interfaces feel polished. Use when building UI components, reviewing frontend code, implementing animations, hover states, shadows, borders, typography, micro-interactions, enter/exit animations, or any visual detail work. Triggers on UI polish, design details, \"make it feel better\", \"feels off\", stagger animations, border radius, optical alignment, font smoothing, tabular numbers, image outlines, box shadows.",
+      "path": "skills/make-interfaces-feel-better",
+      "trigger": "When building UI components, reviewing frontend code, or working on visual polish and micro-interactions",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
+    "nextjs": {
+      "name": "nextjs",
+      "description": "Next.js App Router expert guidance. Use when building, debugging, or architecting Next.js applications — routing, Server Components, Server Actions, Cache Components, layouts, middleware/proxy, data fetching, rendering strategies, and deployment on Vercel.",
+      "path": "skills/nextjs",
+      "trigger": "When building, debugging, or architecting Next.js applications",
+      "requires_tools": [],
+      "has_subdirs": true
+    },
+    "organize-dir": {
+      "name": "organize-dir",
+      "description": "Organize a directory by moving subdirectories older than a specified time into an archive folder. Accepts optional time threshold and archive directory name.",
+      "path": "skills/organize-dir",
+      "trigger": "Invoke /organize-dir to archive old subdirectories into an archive folder",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
     "pbcopy": {
       "name": "pbcopy",
-      "description": "Copy output to the macOS clipboard via pbcopy. Trigger when the user appends or includes /pbcopy anywhere in their prompt - it is a suffix flag on a normal request, not a standalone command. Supports optional override flags /pbcopy full and /pbcopy raw.",
+      "description": "Copy output to the macOS clipboard via `pbcopy`. Trigger when the user appends or includes `/pbcopy` anywhere in their prompt — it is a suffix flag on a normal request, not a standalone command. Supports optional override flags `/pbcopy full` (copy entire response verbatim) and `/pbcopy raw` (copy only the literal output of commands/tools you ran). With no flag, pick the substantive artifact (logs, JSON, code, generated text, or the whole answer when the answer IS the artifact) and skip conversational framing.",
       "path": "skills/pbcopy",
       "trigger": "Invoke /pbcopy as a suffix flag to copy output to the macOS clipboard",
       "requires_tools": [],
       "has_subdirs": false
     },
-    "find-simplifications": {
-      "name": "find-simplifications",
-      "description": "Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary.",
-      "path": "skills/find-simplifications",
-      "trigger": "Invoke /find-simplifications to survey a repository for evidence-backed simplification candidates",
-      "requires_tools": ["git", "rg"],
+    "pr-create": {
+      "name": "pr-create",
+      "description": "Push current branch and create a GitHub pull request with smart defaults",
+      "path": "skills/pr-create",
+      "trigger": "Invoke /pr-create to push the branch and open a PR with smart defaults",
+      "requires_tools": [
+        "gh",
+        "git"
+      ],
+      "optional_tools": [
+        "mcp:huly",
+        "mcp:linear"
+      ],
+      "has_subdirs": false
+    },
+    "pr-resolve": {
+      "name": "pr-resolve",
+      "description": "Fetch unresolved PR review threads, fix the issues, reply with commit SHA, resolve threads via GraphQL, and post a summary comment. Use when asked to resolve or address PR review feedback. If no argument is given, auto-detects the PR for the current branch.",
+      "path": "skills/pr-resolve",
+      "trigger": "Invoke /pr-resolve to fix unresolved review threads and resolve them",
+      "requires_tools": [
+        "gh",
+        "git"
+      ],
+      "has_subdirs": false
+    },
+    "pr-review": {
+      "name": "pr-review",
+      "description": "Fetch a PR into a temporary worktree, run CI checks (tests, lint, type-check), invoke /code-review, and present an interactive summary with inline review posting. Use this for an external PR (by number or URL); for your current working diff, run /code-review directly.",
+      "path": "skills/pr-review",
+      "trigger": "Invoke /pr-review to fetch a PR into a worktree, run CI, and review",
+      "requires_tools": [
+        "bun",
+        "gh",
+        "git",
+        "npm",
+        "pnpm"
+      ],
+      "has_subdirs": false
+    },
+    "react-best-practices": {
+      "name": "react-best-practices",
+      "description": "React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be used when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements.",
+      "path": "skills/react-best-practices",
+      "trigger": "When working with React/Next.js code, components, data fetching, or bundle optimization",
+      "requires_tools": [],
+      "has_subdirs": true
+    },
+    "readme": {
+      "name": "readme",
+      "description": "Guidelines for writing and editing Plain package READMEs. Use this when creating or updating README files.",
+      "path": "skills/readme",
+      "trigger": "When creating or updating README files",
+      "requires_tools": [],
+      "has_subdirs": false
+    },
+    "realistic-scenario-runbook": {
+      "name": "realistic-scenario-runbook",
+      "description": "Author and run a realistic, multi-scenario end-to-end test runbook that simulates a real user driving a product through its live API, then triage the results into tracker tickets and hand the fixes to another agent. Trigger when the user asks to build a scenario suite / regression runbook that verifies a batch of \"done\" fixes or probes an epic's sub-issues against a real environment - each scenario doing create -> verify -> cleanup, graded into tiers, run by a fleet of isolated subagents, and rolled up into a report. This is the multi-scenario, tiered, subagent-orchestrated sibling of a single-flow smoke test; reach for smoke-test instead when the user only wants one flow exercised once.",
+      "path": "skills/realistic-scenario-runbook",
+      "trigger": "Invoke to author and run a multi-scenario E2E test runbook against a live environment",
+      "requires_tools": [
+        "trash"
+      ],
+      "has_subdirs": true
+    },
+    "worktree-cleanup": {
+      "name": "worktree-cleanup",
+      "description": "Remove a git worktree and optionally delete its branch. Lists worktrees if no argument given.",
+      "path": "skills/worktree-cleanup",
+      "trigger": "Invoke /worktree-cleanup to remove a worktree and optionally its branch",
+      "requires_tools": [
+        "git",
+        "trash"
+      ],
+      "has_subdirs": false
+    },
+    "worktree-create": {
+      "name": "worktree-create",
+      "description": "Create a git worktree from a branch name or a tracker issue (Linear or Huly). Fetches issue details from the tracker MCP when given an issue ID/URL.",
+      "path": "skills/worktree-create",
+      "trigger": "Invoke /worktree-create to create a worktree from a branch or Linear issue",
+      "requires_tools": [
+        "git",
+        "npm",
+        "pnpm"
+      ],
+      "optional_tools": [
+        "mcp:huly",
+        "mcp:linear"
+      ],
+      "has_subdirs": false
+    },
+    "worktree-merge": {
+      "name": "worktree-merge",
+      "description": "Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.",
+      "path": "skills/worktree-merge",
+      "trigger": "Invoke /worktree-merge to merge a worktree branch into a target branch locally",
+      "requires_tools": [
+        "git"
+      ],
+      "has_subdirs": false
+    },
+    "worktree-sync": {
+      "name": "worktree-sync",
+      "description": "Sync a worktree branch with main by merging origin/main into it. Use when the worktree branch has fallen behind main.",
+      "path": "skills/worktree-sync",
+      "trigger": "Invoke /worktree-sync to merge origin/main into a worktree branch",
+      "requires_tools": [
+        "git"
+      ],
       "has_subdirs": false
     }
   },
   "bundles": {
     "essential-git": {
       "label": "Essential Git Kit",
-      "description": "Git workflow skills for commits, pull/push, changelog, versioning, and issues",
+      "description": "Git workflow skills for creating commits and pushing branches",
       "commands": [],
-      "skills": ["git-commit", "git-pull", "git-push", "git-changelog", "git-version", "git-issue", "commit"]
+      "skills": [
+        "git-commit",
+        "git-push"
+      ]
     },
     "pr-workflow": {
       "label": "PR Workflow",
       "description": "GitHub pull request creation, review, and resolution",
       "commands": [],
-      "skills": ["pr-create", "pr-review", "pr-resolve"]
+      "skills": [
+        "pr-create",
+        "pr-review",
+        "pr-resolve"
+      ]
     },
     "worktree": {
       "label": "Worktree Management",
       "description": "Git worktree creation, syncing, merging, and cleanup",
       "commands": [],
-      "skills": ["worktree-create", "worktree-sync", "worktree-merge", "worktree-cleanup"]
+      "skills": [
+        "worktree-create",
+        "worktree-sync",
+        "worktree-merge",
+        "worktree-cleanup"
+      ]
     },
     "docs": {
       "label": "Documentation",
-      "description": "AGENTS.md management and documentation updates",
+      "description": "README authoring guidelines",
       "commands": [],
-      "skills": ["docs-agentsmd", "docs-update", "readme"]
-    },
-    "openspec-suite": {
-      "label": "OpenSpec Suite",
-      "description": "Full OpenSpec workflow: propose, apply, explore, archive",
-      "commands": [],
-      "skills": ["openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change"]
+      "skills": [
+        "readme"
+      ]
     },
     "all-skills": {
       "label": "All Skills",
-      "description": "Every skill (45 total)",
+      "description": "Every skill (28 total)",
       "commands": [],
       "skills": [
-        "commit", "readme", "cli-output-style", "react-best-practices", "grafana-dashboards",
-        "openspec-propose", "openspec-apply-change", "openspec-explore", "openspec-archive-change",
-        "api-doc", "claude-rules-gen", "make-interfaces-feel-better", "nextjs", "discord-notify",
-        "image-diet", "cloudflare", "ste-writing", "linear-mcp-guide", "brainstorming", "realistic-scenario-runbook",
-        "git-commit", "git-pull", "git-push", "git-changelog", "git-version", "git-issue",
-        "pr-create", "pr-review", "pr-resolve",
-        "worktree-create", "worktree-sync", "worktree-merge", "worktree-cleanup",
-        "docs-agentsmd", "docs-update",
-        "linear-api-doc", "linear-project-update",
+        "api-doc",
+        "brainstorming",
+        "cli-output-style",
         "code-react-doctor",
-        "search", "auto-resolve", "organize-dir", "setup-hooks", "handoff", "pbcopy",
-        "find-simplifications"
+        "commit-message-style",
+        "discord-notify",
+        "find-simplifications",
+        "git-commit",
+        "git-push",
+        "grafana-dashboards",
+        "handoff",
+        "huly-mcp-guide",
+        "image-diet",
+        "linear-mcp-guide",
+        "make-interfaces-feel-better",
+        "nextjs",
+        "organize-dir",
+        "pbcopy",
+        "pr-create",
+        "pr-resolve",
+        "pr-review",
+        "react-best-practices",
+        "readme",
+        "realistic-scenario-runbook",
+        "worktree-cleanup",
+        "worktree-create",
+        "worktree-merge",
+        "worktree-sync"
       ]
     }
   },
   "external_tools": {
-    "git": {
-      "check": "git --version",
-      "install": "brew install git",
-      "description": "Version control system"
+    "bun": {
+      "check": "command -v bun",
+      "install": "brew install bun",
+      "description": "Fast JavaScript runtime"
+    },
+    "curl": {
+      "check": "command -v curl",
+      "install": "brew install curl",
+      "description": "HTTP client for API requests"
+    },
+    "docker": {
+      "check": "command -v docker",
+      "install": "brew install --cask docker",
+      "description": "Container runtime used by image-diet to build and verify shrunk images"
     },
     "gh": {
       "check": "gh --version",
       "install": "brew install gh",
       "description": "GitHub CLI for issues and PRs"
+    },
+    "git": {
+      "check": "git --version",
+      "install": "brew install git",
+      "description": "Version control system"
+    },
+    "grrr": {
+      "check": "command -v grrr",
+      "install": "brew install nicholaswilde/tap/growlrrr",
+      "description": "macOS notification CLI (growlrrr) used by the notify.sh hook"
+    },
+    "jq": {
+      "check": "command -v jq",
+      "install": "brew install jq",
+      "description": "JSON processor for shell scripts"
+    },
+    "node": {
+      "check": "command -v node",
+      "install": "brew install node",
+      "description": ""
     },
     "npm": {
       "check": "command -v npm",
@@ -444,56 +419,49 @@
       "install": "brew install node",
       "description": "Node.js package executor"
     },
-    "openspec": {
-      "check": "command -v openspec",
-      "install": "npm install -g openspec",
-      "description": "Structured change workflow CLI"
+    "open": {
+      "check": "command -v open",
+      "install": "Built into macOS",
+      "description": "macOS command to open files and applications"
     },
     "pnpm": {
       "check": "command -v pnpm",
       "install": "npm install -g pnpm",
       "description": "Fast, disk-efficient Node.js package manager"
     },
-    "trash": {
-      "check": "command -v trash",
-      "install": "brew install trash",
-      "description": "Safe file deletion (moves to Trash)"
-    },
-    "bun": {
-      "check": "command -v bun",
-      "install": "brew install bun",
-      "description": "Fast JavaScript runtime"
-    },
-    "jq": {
-      "check": "command -v jq",
-      "install": "brew install jq",
-      "description": "JSON processor for shell scripts"
-    },
-    "curl": {
-      "check": "command -v curl",
-      "install": "brew install curl",
-      "description": "HTTP client for API requests"
-    },
-    "grrr": {
-      "check": "command -v grrr",
-      "install": "brew install nicholaswilde/tap/growlrrr",
-      "description": "macOS notification CLI (growlrrr) used by the notify.sh hook"
+    "python3": {
+      "check": "command -v python3",
+      "install": "brew install python3",
+      "description": ""
     },
     "rg": {
       "check": "command -v rg",
       "install": "brew install ripgrep",
       "description": "Fast recursive code search (ripgrep)"
     },
-    "docker": {
-      "check": "command -v docker",
-      "install": "brew install --cask docker",
-      "description": "Container runtime used by image-diet to build and verify shrunk images"
+    "trash": {
+      "check": "command -v trash",
+      "install": "brew install trash",
+      "description": "Safe file deletion (moves to Trash)"
     }
   },
   "optional_integrations": {
+    "mcp:huly": {
+      "description": "Huly issue tracking MCP server. Enables fetching issue details for branch naming and PR context.",
+      "used_by": [
+        "huly-mcp-guide",
+        "pr-create",
+        "worktree-create"
+      ],
+      "setup": "Configure the Huly MCP server in your agent's MCP settings."
+    },
     "mcp:linear": {
       "description": "Linear issue tracking MCP server. Enables fetching issue details for branch naming and PR context.",
-      "used_by": ["pr-create", "worktree-create", "linear-api-doc", "linear-project-update"],
+      "used_by": [
+        "linear-mcp-guide",
+        "pr-create",
+        "worktree-create"
+      ],
       "setup": "Configure the Linear MCP server in your Claude Code MCP settings."
     }
   }
