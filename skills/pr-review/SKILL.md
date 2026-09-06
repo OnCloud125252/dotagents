@@ -191,24 +191,24 @@ Two angles often flag one defect. Merge findings that share a file, a line, and 
 
 Spawn one subagent per merged finding from 4c. Give it the finding, the diff, and the `AGENTS.md` paths from 4a. Each agent returns two separate scores.
 
-**Confidence (0 to 100): is the finding real?** Give the agent this rubric verbatim:
+**Confidence (0 to 100): is the finding real?** Pick the nearest band. Give the agent this rubric verbatim:
 
 | Score | Meaning |
 |---|---|
-| 0 | Not confident. A false positive that fails light scrutiny, or a pre-existing issue. |
-| 25 | Somewhat confident. Might be real, might not. The agent could not verify it. If the issue is stylistic, no `AGENTS.md` calls it out. |
-| 50 | Moderately confident. Verified as real, but the agent could not confirm every step. |
-| 75 | Highly confident. Double checked and very likely to be hit in practice. |
-| 100 | Certain. Double checked and confirmed. The evidence confirms it. |
+| 0 to 20 | Not confident. A false positive that fails light scrutiny, or a pre-existing issue. |
+| 21 to 50 | Somewhat confident. Might be real, might not. The agent could not verify it. If the issue is stylistic, no `AGENTS.md` calls it out. |
+| 51 to 79 | Moderately confident. Verified as real, but the agent could not confirm every step. |
+| 80 to 94 | Highly confident. Double checked and very likely to be hit in practice. |
+| 95 to 100 | Certain. Double checked and confirmed. The evidence confirms it. |
 
-When a finding cites an `AGENTS.md` rule, the agent must confirm that file names the issue. If it does not, confidence is 25 or lower.
+When a finding cites an `AGENTS.md` rule, the agent must confirm that file names the issue. If it does not, confidence is 50 or lower.
 
-**Severity: how much does it hurt if real?** This is a separate judgment. A certain typo is high confidence and low severity.
+**Severity: how much does it hurt if real?** This is a separate judgment. A certain typo is high confidence and low severity. Take the first row that fits.
 
 | Severity | Meaning |
 |---|---|
-| high | Breaks correctness, loses data, or opens a security hole. The PR's approach is not enough. An `AGENTS.md` names it directly. |
-| low | Real, but a nitpick, rare in practice, or cosmetic next to the rest of the PR. |
+| high | Breaks correctness, loses data, or opens a security hole. The PR's approach is not enough. |
+| low | Everything else: a nitpick, a rare case, or a style or guideline point, including one an `AGENTS.md` names. |
 
 ### 4e. Filter
 
@@ -223,7 +223,7 @@ Confidence decides whether a finding is reported at all. Severity decides how lo
 
 ### What is a false positive
 
-Do not report these in 4c, and score them 0 in 4d:
+Do not report these in 4c. If one reaches 4d, give it a confidence of 0:
 
 - A pre-existing issue on a line the PR did not touch
 - Something that looks like a bug but is not
