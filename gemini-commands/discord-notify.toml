@@ -1,0 +1,103 @@
+description = "Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. Trigger ONLY when the user explicitly invokes `/discord-notify`, or explicitly asks to be notified on Discord while pointing at this skill (e.g. \"結束時通知我\" / \"有重要進度時通知我\"); never auto-fire it. The first message creates a new forum post; later checkpoints append to that same post. Pairs with goal mode, loop mode, or any job long enough that the user steps away."
+
+prompt = '''---
+name: discord-notify
+---
+
+# discord-notify
+
+Push a task summary to a Discord forum channel via webhook, so the user gets pinged while a long job runs unattended.
+
+This skill is **user-invocable only**.
+Run it only when the user explicitly asks for a Discord notification (via `/discord-notify` or an equivalent instruction that names this skill).
+Never notify Discord on your own initiative.
+
+## The one idea to hold onto
+
+A Discord forum channel needs each message to belong to a **post** (a thread).
+This skill keys every post by a `--key` you choose:
+
+- The **first** call for a key **creates** a new forum post.
+- **Every later** call with the **same key** **appends** to that same post.
+
+So the two usage patterns are really the same mechanism:
+
+| User says | What you do |
+| --- | --- |
+| "notify me when it's done" | One call at the end, with a fresh `--key`. |
+| "notify me on important progress" | Same `--key` at each checkpoint: the first creates the post, the rest append. |
+
+## How to use it
+
+At the start of the task, decide two things and reuse them for the whole run:
+
+1. **`--key`** - a short, stable slug unique to this task (e.g. `refactor-ai-agent-docs`).
+   Reusing the exact same key is what makes follow-up messages land in the same post.
+2. **`--title`** - a human-readable description of the task (e.g. `計劃 AI Agent 重構文件`).
+   Do **not** add a date/time yourself.
+   The script appends ` - %Y/%m/%d %H:%M:%S` (local time) when it creates the post, per the deterministic-values rule.
+
+Then call the script. Define it once:
+
+```bash
+SCRIPT="$HOME/.claude/skills/discord-notify/scripts/discord_notify.py"
+```
+
+### Pattern 1 - notify when done
+
+Call once, when the work finishes. Pipe the summary via a quoted heredoc (`-m -` reads stdin) so multi-line Markdown and special characters survive untouched:
+
+```bash
+python3 "$SCRIPT" --key "refactor-ai-agent-docs" --title "計劃 AI Agent 重構文件" -m - <<'EOF'
+✅ 重構完成
+
+- 拆分為 3 個模組
+- 測試 42/42 通過
+- 待辦：更新 README 的架構圖
+EOF
+```
+
+### Pattern 2 - notify on important progress
+
+Use the **same key** at each meaningful checkpoint.
+Passing `--title` every time is fine - it is only used the first time (when the post is created) and ignored afterward.
+
+```bash
+# First checkpoint -> creates the post
+python3 "$SCRIPT" --key "refactor-ai-agent-docs" --title "計劃 AI Agent 重構文件" -m "📍 階段一完成：介面抽離，開始搬移實作。"
+
+# Later checkpoints -> append to the same post
+python3 "$SCRIPT" --key "refactor-ai-agent-docs" -m "📍 階段二完成：核心邏輯已搬移，開始整合測試。"
+
+# Final message -> still the same post
+python3 "$SCRIPT" --key "refactor-ai-agent-docs" -m - <<'EOF'
+🏁 全部完成，測試通過，PR 已開。
+EOF
+```
+
+## Writing good summaries
+
+- Discord renders Markdown: use `**bold**`, bullet lists, `` `inline code` ``, fenced code blocks, and links.
+- Lead with the outcome (✅ done / ⚠️ blocked / 📍 progress), then the details that matter.
+- Keep it skimmable - the user is reading a phone notification, not a report.
+- Messages over 2000 characters are split automatically into multiple messages in the same post; you do not need to trim.
+
+## First-run setup (webhook config)
+
+The webhook URL is a secret kept out of version control (gitignored), in a single file:
+
+```
+~/.agents/discord-notify/webhook.url
+```
+
+If the script exits with `webhook not configured`, the user has not set this up yet.
+Do **not** invent or guess a webhook URL.
+Walk the user through `references/setup.md` (create a webhook on the target forum channel, paste its URL into that file), then retry.
+
+## Reference
+
+- Exit codes: `0` success, `1` Discord/network error, `2` config or usage error.
+  A non-zero exit means the notification did not send - surface it, do not claim success.
+- Full options: `python3 "$SCRIPT" --help`.
+- One-time webhook setup: `references/setup.md`.
+'''
