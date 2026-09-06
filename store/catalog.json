@@ -16,7 +16,7 @@
     },
     "brainstorming": {
       "name": "brainstorming",
-      "description": "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation. After design approval, transitions to /openspec-propose to create an OpenSpec change.",
+      "description": "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation. Ends at a reviewed design doc, then hands off to the project's change-tracking skill when it has one.",
       "path": "skills/brainstorming",
       "trigger": "Invoke before any creative work to explore intent and design before implementation",
       "requires_tools": [
@@ -207,7 +207,7 @@
     },
     "pr-review": {
       "name": "pr-review",
-      "description": "Fetch a PR into a temporary worktree, run CI checks (tests, lint, type-check), invoke /code-review, and present an interactive summary with inline review posting. Use this for an external PR (by number or URL); for your current working diff, run /code-review directly.",
+      "description": "Fetch a PR into a temporary worktree, run CI checks (tests, lint, type-check), review the change from five angles with scored findings, and present an interactive summary with inline review posting. Use this for an external PR, by number or URL.",
       "path": "skills/pr-review",
       "trigger": "Invoke /pr-review to fetch a PR into a worktree, run CI, and review",
       "requires_tools": [
