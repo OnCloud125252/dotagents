@@ -8,7 +8,7 @@ user-invocable: true
 
 # Sync Worktree with Main
 
-Merge the latest `origin/main` into a worktree branch to bring it up-to-date. This is the inverse of `/worktree-merge` — instead of merging the worktree into main, it merges main into the worktree.
+Merge the latest `origin/main` into a worktree branch to bring it up-to-date. This is the inverse of the `worktree-merge` skill — instead of merging the worktree into main, it merges main into the worktree.
 
 **Announce at start:** "Syncing worktree with main..."
 
@@ -142,7 +142,7 @@ If the merge produces conflicts:
    > - `<file1>`
    > - `<file2>`
    >
-   > Resolve the conflicts, then re-run `/worktree-sync`.
+   > Resolve the conflicts, then run this skill again.
 
 4. Stop — do NOT attempt automatic conflict resolution.
 

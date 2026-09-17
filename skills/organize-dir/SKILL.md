@@ -37,7 +37,7 @@ Parse the following from `$ARGUMENTS`:
    - The time threshold used
 2. Show the total count: `X directories to archive, Y directories to keep`
 3. If `--dry` flag is set: print `(Dry run — no directories will be moved)` and **STOP here**. Do NOT ask for confirmation and do NOT proceed to Step 3.
-4. Otherwise, **ALWAYS ask the user for confirmation before moving any directories.** Use the AskUserQuestion tool to confirm. Do NOT proceed without explicit approval.
+4. Otherwise, **ALWAYS ask the user for confirmation before moving any directories.** Use a structured interaction UI when available, or ask in normal chat and wait for the answer. Do NOT proceed without explicit approval.
 
 ### Step 3: Execute (skipped in dry mode)
 

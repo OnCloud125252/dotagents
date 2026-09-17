@@ -33,7 +33,7 @@ DEFAULT_STATE_FILE = CONFIG_DIR / "state.json"
 
 CONTENT_LIMIT = 2000
 THREAD_NAME_LIMIT = 100
-DEFAULT_USERNAME = "Claude Code"
+DEFAULT_USERNAME = "Coding Agent"
 TIMESTAMP_FORMAT = "%Y/%m/%d %H:%M:%S"
 USER_AGENT = "discord-notify-skill (https://github.com/OnCloud125252/dotagents, 1.0)"
 

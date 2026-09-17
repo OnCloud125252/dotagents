@@ -7,7 +7,7 @@
 
 ## 1. Goal
 
-A **global** Claude Code skill (lives in `~/.claude/skills/`, applies to any JS
+A **global** agent skill (lives in `~/.agents/skills/`, applies to any JS
 project) that slims a project's container image through a **progressive pipeline**
 of optimization stages ordered small/safe -> large/code-changing. The user picks
 the optimization *intensity* by deciding where to **escape** the pipeline after
@@ -117,7 +117,7 @@ third-party binaries), hand off per project convention (open PR / stay on branch
 ## 6. File structure
 
 ```
-~/.claude/skills/image-diet/
+~/.agents/skills/image-diet/
 ├── SKILL.md                      # controller: frontmatter(name + trigger phrases) + onboarding + gate loop + escape
 ├── references/
 │   ├── detection.md              # how to detect runtime/pkgmgr/bundler/base/native+glibc deps; JSON shape

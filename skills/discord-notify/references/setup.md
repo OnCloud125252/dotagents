@@ -15,7 +15,7 @@ This is a one-time setup per machine.
 2. Go to **Integrations** then **Webhooks**.
 3. Click **New Webhook** (or **Create Webhook**).
 4. Optionally rename it; the avatar/name here is just a default.
-   Each message overrides the display name to `Claude Code`.
+   Each message overrides the display name to `Coding Agent`.
 5. Click **Copy Webhook URL**.
 
 ## 3. Save the URL to the config file
@@ -35,7 +35,7 @@ chmod 600 ~/.agents/discord-notify/webhook.url
 This sends a real test post to the channel:
 
 ```bash
-python3 ~/.claude/skills/discord-notify/scripts/discord_notify.py \
+python3 ~/.agents/skills/discord-notify/scripts/discord_notify.py \
   --key setup-test --title "discord-notify 設定測試" -m "✅ Webhook 設定成功。"
 ```
 
