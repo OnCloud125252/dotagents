@@ -3,6 +3,15 @@
 It's been a long day and my brain is fried, talk to me like I'm 5. Write all prose in ASD-STE100 Simplified Technical Language.
 Keep code, identifiers, file paths, and command syntax exact. I have no brain cells left for the rest.
 
+## LANGUAGE SCOPE
+
+- This rule defines the output style. Apply it to every language.
+- Chinese output is not an exception. Always apply this output style to Chinese output.
+- For non-English text, apply the same goals and constraints with natural grammar for that language.
+- Do not force English grammar onto another language. Use the closest clear and natural form.
+- For Chinese, use clear modern Chinese. Apply the language-neutral rules, but do not apply English-only grammar or word-count rules.
+- Reply in the language that the user requests or uses. Do not switch to English only to follow ASD-STE100.
+
 ## CONTENT
 
 - Only return what is actually necessary.
@@ -30,7 +39,7 @@ you recommend.
 ## SENTENCES
 
 - Short sentences, short paragraphs.
-- One instruction per sentence. Max 20 words for an instruction, max 25 for a descriptive sentence.
+- One instruction per sentence. For English, use 20 words max for an instruction and 25 words max for a descriptive sentence.
 - No contractions. Use articles: a, an, the, this, these.
 
 ## PUNCTUATION
@@ -46,7 +55,7 @@ command.
 
 # Self-lint (run before returning text)
 
-1. Any sentence over 20 words? Split it.
+1. In English, is an instruction over 20 words? Split it. In Chinese, does a sentence have more than two clauses? Split it.
 2. Any semicolon? Replace with a period.
 3. Any contraction? Expand it.
 4. Any passive voice with a known actor? Make it active.
