@@ -16,7 +16,7 @@ Find all `skills/*/SKILL.md` files. **Exclude** `skills/.system/` and nested ski
 1. Read the YAML frontmatter
 2. Extract: `name`, `description`, `version`, `disable-model-invocation`, `user-invocable`, `license`, `compatibility`, `metadata`
 3. Scan the body for:
-   - Trigger condition summary (usually described in the first section). For skills with `disable-model-invocation: true`, phrase the trigger as `Invoke /<name> to ...`
+   - Trigger condition summary (usually described in the first section). For skills with `disable-model-invocation: true`, phrase the trigger as `Invoke the <name> skill to ...`. Keep the trigger harness-neutral: never print a slash command, because the syntax differs per agent.
    - Skill references: patterns like "Invoke the /X skill" or "/X skill" → record as `requires_skills`
    - External CLI tools: `npx`, `gh`, `npm`, `pnpm`, `grrr`, `bunx`, `trash`, `jq`, `bun`, `curl`, `docker` → record as `requires_tools`
    - MCP server tools: `mcp__*` references → record as `optional_tools` with key `mcp:<server-name>`
@@ -76,11 +76,13 @@ Read the current `README.md` and check if it needs updates based on the scan res
 1. **Overview counts** — The bullet list says "X skills". Update the number if it changed.
 2. **Skills table** — The skill-trigger table. If a skill was added/removed, update the table.
 3. **Directory tree** — If a new top-level directory was added (unlikely), update the tree. Also ensure `store/` is listed.
+4. **Prompt-native store** — Ensure `store-prompt.md` remains documented as a top-level feature and the only installation path.
 
 ### Rules
 
 - Only edit sections that actually need changes. Do NOT rewrite the entire file.
 - Preserve all other sections (Hooks, Status Line, FAQs, Installation, etc.) untouched.
+- Keep the skill Installation section prompt-only and harness-neutral: link to `store-prompt.md`, state that the store distributes top-level skills only, mention `~/.agents/skills/`, a session reload, and the per-agent skill command syntax. Never add clone or manual file-copy alternatives. The only allowed symlink step is `~/.claude/skills` → `~/.agents/skills` for Claude Code.
 - Match the existing markdown style exactly (table alignment, link format, etc.).
 - If nothing changed, skip this phase entirely and report "README.md is up to date."
 

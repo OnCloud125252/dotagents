@@ -36,7 +36,7 @@
       "name": "code-react-doctor",
       "description": "Scan React codebase for security, performance, correctness, and architecture issues. Outputs a 0-100 score with actionable diagnostics.",
       "path": "skills/code-react-doctor",
-      "trigger": "Invoke /code-react-doctor to scan a React codebase and score it 0-100",
+      "trigger": "Invoke the code-react-doctor skill to scan a React codebase and score it 0-100",
       "requires_tools": [
         "npx"
       ],
@@ -54,9 +54,9 @@
     },
     "discord-notify": {
       "name": "discord-notify",
-      "description": "Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. Trigger ONLY when the user explicitly invokes `/discord-notify`, or explicitly asks to be notified on Discord while pointing at this skill (e.g. \"結束時通知我\" / \"有重要進度時通知我\"); never auto-fire it. The first message creates a new forum post; later checkpoints append to that same post. Pairs with goal mode, loop mode, or any job long enough that the user steps away.",
+      "description": "Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. Trigger ONLY when the user explicitly invokes the discord-notify skill, or explicitly asks to be notified on Discord while pointing at this skill (e.g. \"結束時通知我\" / \"有重要進度時通知我\"); never auto-fire it. The first message creates a new forum post; later checkpoints append to that same post. Pairs with goal mode, loop mode, or any job long enough that the user steps away.",
       "path": "skills/discord-notify",
-      "trigger": "When the user explicitly invokes /discord-notify to be notified on Discord about a long-running task",
+      "trigger": "When the user explicitly invokes the discord-notify skill to be notified on Discord about a long-running task",
       "requires_tools": [
         "python3"
       ],
@@ -66,7 +66,7 @@
       "name": "find-simplifications",
       "description": "Find non-obvious simplification candidates in any repository and turn them into evidence-backed proposals, inline TODO/FIXME/XXX markers, or a PR summary. Covers dead, duplicated, speculative, over-built, added-then-removed, and hand-rolled-where-a-dependency-exists surfaces.",
       "path": "skills/find-simplifications",
-      "trigger": "Invoke /find-simplifications to survey a repository for evidence-backed simplification candidates",
+      "trigger": "Invoke the find-simplifications skill to survey a repository for evidence-backed simplification candidates",
       "requires_tools": [
         "git",
         "rg"
@@ -77,7 +77,7 @@
       "name": "git-commit",
       "description": "Create commits for recent changes. Multiple commits are allowed for logical grouping.",
       "path": "skills/git-commit",
-      "trigger": "Invoke /git-commit to create commits for recent changes, split into logical groups",
+      "trigger": "Invoke the git-commit skill to create commits for recent changes, split into logical groups",
       "requires_skills": [
         "commit-message-style"
       ],
@@ -91,7 +91,7 @@
       "name": "git-push",
       "description": "Run `git push` and resolve issues if there's any output from git hook, and ask user how to resolve conflicts",
       "path": "skills/git-push",
-      "trigger": "Invoke /git-push to push and resolve hook issues or conflicts interactively",
+      "trigger": "Invoke the git-push skill to push and resolve hook issues or conflicts interactively",
       "requires_tools": [
         "git"
       ],
@@ -109,7 +109,7 @@
       "name": "handoff",
       "description": "Generates a durable, standalone session handoff document and outputs a resumption prompt for the next agent session.",
       "path": "skills/handoff",
-      "trigger": "Invoke /handoff to generate a session handoff document and resumption prompt",
+      "trigger": "Invoke the handoff skill to generate a session handoff document and resumption prompt",
       "requires_tools": [],
       "has_subdirs": false
     },
@@ -167,15 +167,15 @@
       "name": "organize-dir",
       "description": "Organize a directory by moving subdirectories older than a specified time into an archive folder. Accepts optional time threshold and archive directory name.",
       "path": "skills/organize-dir",
-      "trigger": "Invoke /organize-dir to archive old subdirectories into an archive folder",
+      "trigger": "Invoke the organize-dir skill to archive old subdirectories into an archive folder",
       "requires_tools": [],
       "has_subdirs": false
     },
     "pbcopy": {
       "name": "pbcopy",
-      "description": "Copy output to the macOS clipboard via `pbcopy`. Trigger when the user appends or includes `/pbcopy` anywhere in their prompt — it is a suffix flag on a normal request, not a standalone command. Supports optional override flags `/pbcopy full` (copy entire response verbatim) and `/pbcopy raw` (copy only the literal output of commands/tools you ran). With no flag, pick the substantive artifact (logs, JSON, code, generated text, or the whole answer when the answer IS the artifact) and skip conversational framing.",
+      "description": "Copy output to the macOS clipboard via `pbcopy`. Invoke the pbcopy skill with an optional mode and a request. By default, copy the substantive artifact; `full` copies the complete response and `raw` copies only command or tool output.",
       "path": "skills/pbcopy",
-      "trigger": "Invoke /pbcopy as a suffix flag to copy output to the macOS clipboard",
+      "trigger": "Invoke the pbcopy skill to copy selected output to the macOS clipboard",
       "requires_tools": [],
       "has_subdirs": false
     },
@@ -183,7 +183,7 @@
       "name": "pr-create",
       "description": "Push current branch and create a GitHub pull request with smart defaults",
       "path": "skills/pr-create",
-      "trigger": "Invoke /pr-create to push the branch and open a PR with smart defaults",
+      "trigger": "Invoke the pr-create skill to push the branch and open a PR with smart defaults",
       "requires_tools": [
         "gh",
         "git"
@@ -198,7 +198,7 @@
       "name": "pr-resolve",
       "description": "Fetch unresolved PR review threads, fix the issues, reply with commit SHA, resolve threads via GraphQL, and post a summary comment. Use when asked to resolve or address PR review feedback. If no argument is given, auto-detects the PR for the current branch.",
       "path": "skills/pr-resolve",
-      "trigger": "Invoke /pr-resolve to fix unresolved review threads and resolve them",
+      "trigger": "Invoke the pr-resolve skill to fix unresolved review threads and resolve them",
       "requires_tools": [
         "gh",
         "git"
@@ -209,7 +209,7 @@
       "name": "pr-review",
       "description": "Fetch a PR into a temporary worktree, run CI checks (tests, lint, type-check), review the change from five angles with scored findings, and present an interactive summary with inline review posting. Use this for an external PR, by number or URL.",
       "path": "skills/pr-review",
-      "trigger": "Invoke /pr-review to fetch a PR into a worktree, run CI, and review",
+      "trigger": "Invoke the pr-review skill to fetch a PR into a worktree, run CI, and review",
       "requires_tools": [
         "bun",
         "gh",
@@ -249,7 +249,7 @@
       "name": "worktree-cleanup",
       "description": "Remove a git worktree and optionally delete its branch. Lists worktrees if no argument given.",
       "path": "skills/worktree-cleanup",
-      "trigger": "Invoke /worktree-cleanup to remove a worktree and optionally its branch",
+      "trigger": "Invoke the worktree-cleanup skill to remove a worktree and optionally its branch",
       "requires_tools": [
         "git",
         "trash"
@@ -260,7 +260,7 @@
       "name": "worktree-create",
       "description": "Create a git worktree from a branch name or a tracker issue (Linear or Huly). Fetches issue details from the tracker MCP when given an issue ID/URL.",
       "path": "skills/worktree-create",
-      "trigger": "Invoke /worktree-create to create a worktree from a branch or Linear issue",
+      "trigger": "Invoke the worktree-create skill to create a worktree from a branch or Linear issue",
       "requires_tools": [
         "git",
         "npm",
@@ -276,7 +276,7 @@
       "name": "worktree-merge",
       "description": "Merge a worktree branch into a target branch locally. Does not remove worktrees or branches.",
       "path": "skills/worktree-merge",
-      "trigger": "Invoke /worktree-merge to merge a worktree branch into a target branch locally",
+      "trigger": "Invoke the worktree-merge skill to merge a worktree branch into a target branch locally",
       "requires_tools": [
         "git"
       ],
@@ -286,7 +286,7 @@
       "name": "worktree-sync",
       "description": "Sync a worktree branch with main by merging origin/main into it. Use when the worktree branch has fallen behind main.",
       "path": "skills/worktree-sync",
-      "trigger": "Invoke /worktree-sync to merge origin/main into a worktree branch",
+      "trigger": "Invoke the worktree-sync skill to merge origin/main into a worktree branch",
       "requires_tools": [
         "git"
       ],
@@ -453,7 +453,7 @@
         "pr-create",
         "worktree-create"
       ],
-      "setup": "Configure the Huly MCP server in your agent's MCP settings."
+      "setup": "Configure the Huly MCP server through the MCP extension or integration used by your coding agent."
     },
     "mcp:linear": {
       "description": "Linear issue tracking MCP server. Enables fetching issue details for branch naming and PR context.",
@@ -462,7 +462,7 @@
         "pr-create",
         "worktree-create"
       ],
-      "setup": "Configure the Linear MCP server in your Claude Code MCP settings."
+      "setup": "Configure the Linear MCP server through the MCP extension or integration used by your coding agent."
     }
   }
 }
