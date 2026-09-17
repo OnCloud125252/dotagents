@@ -1,31 +1,28 @@
 ---
 name: pbcopy
-description: Copy output to the macOS clipboard via `pbcopy`. Trigger when the user appends or includes `/pbcopy` anywhere in their prompt — it is a suffix flag on a normal request, not a standalone command. Supports optional override flags `/pbcopy full` (copy entire response verbatim) and `/pbcopy raw` (copy only the literal output of commands/tools you ran). With no flag, pick the substantive artifact (logs, JSON, code, generated text, or the whole answer when the answer IS the artifact) and skip conversational framing.
-argument-hint: "[instruction for the agent to select content]"
+description: Copy output to the macOS clipboard via `pbcopy`. Invoke the pbcopy skill with an optional mode and a request. By default, copy the substantive artifact; `full` copies the complete response and `raw` copies only command or tool output.
+argument-hint: "[full|raw] <request>"
 disable-model-invocation: true
 user-invocable: true
 ---
 
 # pbcopy
 
-Inline modifier: when the user includes `/pbcopy` in a prompt, copy the relevant output of your response to the macOS clipboard.
+Run the requested task and copy the relevant output to the macOS clipboard.
 
-## How to recognize it
+## How to invoke it
 
-`/pbcopy` is a suffix flag, not a command. Examples:
+The skill command syntax depends on the agent: `/skill:pbcopy` in pi, `/pbcopy` in Claude Code. After the command, give an optional mode and the request:
 
-- `what is today's weather? /pbcopy`
-- `what is the docker log of this server? /pbcopy`
-- `/pbcopy generate a commit message for these changes`
-- `what is the docker log of this server? /pbcopy full`
+- `<pbcopy command> generate a commit message for these changes`
+- `<pbcopy command> full explain this stack trace`
+- `<pbcopy command> raw show the docker logs for this service`
 
-Treat the rest of the prompt as the real task. After answering, perform the copy step.
+The first argument selects `full` or `raw` only when it exactly matches one of those mode names. All remaining arguments are the real task. With no mode, use the default behavior. If no task is supplied, ask what the user wants copied instead of guessing.
 
 ## What to copy
 
-The token immediately after `/pbcopy` (if any) selects the mode:
-
-### Default — `/pbcopy` with no flag
+### Default — no mode
 
 Copy the substantive artifact, agent's best judgment:
 
@@ -35,13 +32,13 @@ Copy the substantive artifact, agent's best judgment:
 
 When in doubt, prefer the narrower selection — the user can re-run with `full` if they wanted more.
 
-### `/pbcopy full`
+### `full` mode
 
 Copy **everything** the agent produced in this turn, verbatim — prose, framing, artifacts, all of it. Use when the user is overriding the smart default because it would have narrowed too aggressively.
 
 The full text is whatever the user will see in the terminal as your response, in reading order. Tool-call internals are not part of the response — only the user-visible message text.
 
-### `/pbcopy raw`
+### `raw` mode
 
 Copy **only** the literal stdout/stderr of commands or tools the agent ran during this turn, with no agent-authored text mixed in. Use when even the smart default includes too much framing.
 

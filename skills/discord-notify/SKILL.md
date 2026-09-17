@@ -1,6 +1,6 @@
 ---
 name: discord-notify
-description: Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. Trigger ONLY when the user explicitly invokes `/discord-notify`, or explicitly asks to be notified on Discord while pointing at this skill (e.g. "結束時通知我" / "有重要進度時通知我"); never auto-fire it. The first message creates a new forum post; later checkpoints append to that same post. Pairs with goal mode, loop mode, or any job long enough that the user steps away.
+description: Send progress or completion notifications from a long-running task to a Discord forum channel via webhook. Trigger ONLY when the user explicitly invokes the discord-notify skill, or explicitly asks to be notified on Discord while pointing at this skill (e.g. "結束時通知我" / "有重要進度時通知我"); never auto-fire it. The first message creates a new forum post; later checkpoints append to that same post. Pairs with goal mode, loop mode, or any job long enough that the user steps away.
 disable-model-invocation: true
 user-invocable: true
 ---
@@ -10,7 +10,7 @@ user-invocable: true
 Push a task summary to a Discord forum channel via webhook, so the user gets pinged while a long job runs unattended.
 
 This skill is **user-invocable only**.
-Run it only when the user explicitly asks for a Discord notification (via `/discord-notify` or an equivalent instruction that names this skill).
+Run it only when the user explicitly asks for a Discord notification (by invoking this skill, or by an equivalent instruction that names it).
 Never notify Discord on your own initiative.
 
 ## The one idea to hold onto
@@ -41,7 +41,7 @@ At the start of the task, decide two things and reuse them for the whole run:
 Then call the script. Define it once:
 
 ```bash
-SCRIPT="$HOME/.claude/skills/discord-notify/scripts/discord_notify.py"
+SCRIPT="$HOME/.agents/skills/discord-notify/scripts/discord_notify.py"
 ```
 
 ### Pattern 1 - notify when done
