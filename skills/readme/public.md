@@ -11,17 +11,23 @@ Use these sections in this order.
 Remove an optional section if it has no real content.
 
 ````markdown
-# <project-name>
+<div align="center">
 
-<badges: optional, at most 4>
+# <project-name>
 
 <One sentence: what the project does and for whom. Under 120 characters.>
 
-<Proof: a screenshot, a GIF, a terminal recording, or a benchmark chart. Optional for libraries.>
+<badges on one line: optional, at most 4>
+
+<img src="<path-to-proof>" width="720" alt="<what the image shows>">
+
+[Installation](#installation) · [Usage](#usage) · [<Section>](#<section>)
+
+</div>
 
 ## Highlights
 
-- <A capability, with a number or a concrete detail>
+- **<Short label>.** <A capability, with a number or a concrete detail.>
 - <3 to 6 items>
 
 ## Installation
@@ -44,10 +50,33 @@ Remove an optional section if it has no real content.
 
 ## Limitations
 
+- **<Short label>.** <What the project does not do.>
+
 ## Contributing
 
 ## License
 ````
+
+## Layout
+
+The README must look clean on GitHub and on npm.
+The reader scans before the reader reads.
+
+- Center the header block with `<div align="center">`. Put a blank line after the opening tag and before the closing tag, so that Markdown inside the block still renders.
+- Put all badges on one line. Some previews show each source line on its own line.
+- Use `<img>` with `width="720"` for screenshots and GIFs, so that an image does not fill the full page.
+- Below the proof, add one line of links to the main sections, separated by ` · `. Use this line instead of a full table of contents.
+- Start each item in Highlights and Limitations with a bold short label that ends with a period. The reader can then scan the labels only.
+- When the product has two or more commands or modes, start Usage with a table that compares them: the name, when to use it, and what it gives.
+- When the output of the product is Markdown or rich text, show the sample output as a blockquote, not as a code block. A code block shows raw syntax and can scroll sideways.
+- Do not depend on line breaks for layout. GitHub and npm join the lines of one paragraph. Use a blank line or a list to separate items.
+
+### Tables
+
+- Put the key column first and short columns, such as Default or Required, right after it. Put the long text column last.
+- If every row has the same value in a column, remove the column and state the value once above the table.
+- If one table mixes two kinds of rows, split it into two tables under two `###` headings.
+- Keep cell text short. If a cell needs more than one sentence, move the details below the table.
 
 ## Rules for each section
 

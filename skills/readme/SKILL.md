@@ -77,7 +77,7 @@ If `AGENTS.md` already explains a topic, link to it from the README. Do not repe
 
 - Use one `#` heading, the project name.
 - Use `##` for sections and `###` for subsections. Do not go deeper than `###`.
-- Add a table of contents only if the README is longer than about 100 lines.
+- Add a table of contents only if the README is longer than about 100 lines. A public README uses the one line of section links from [public.md](public.md) instead.
 - Use tables for options, environment variables, and commands.
 - Mark every code block with a language, such as `sh`, `ts`, or `toml`.
 
@@ -91,3 +91,11 @@ Do all of these steps before you report that the README is done:
 3. Make sure every relative link points to a file that exists.
 4. Make sure the one-line description matches the package manifest description and the repo description.
 5. Make sure the README names no command, flag, or file that the code does not have.
+6. Render the README with the GitHub API and look at the result in a browser:
+
+   ```sh
+   jq -n --rawfile text README.md '{text: $text, mode: "markdown"}' | gh api markdown --input - > <output-file>.html
+   ```
+
+   Use `mode: "markdown"`. The `gfm` mode renders like a comment and turns each line break into a hard break.
+   Look for tables with squeezed columns, code blocks that scroll sideways, and images that are too large.
