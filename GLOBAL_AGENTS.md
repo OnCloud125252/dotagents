@@ -33,3 +33,4 @@
 - **Attribution:** NEVER output "Generated with <agent>", "Co-Authored-By", or auto-add agent as co-author.
 - **Agent doc updates:** Put doc updates on a dedicated branch (`update-agent-docs/$(date +%Y-%m-%d.%H-%M-%S)`) and open a PR. Don't bundle with features/fixes.
 - **Agent doc content:** Record schemas and rules only. Use `<placeholders>`; NO real names, IDs, paths, or sample values as examples.
+- **Worktree Placement:** All worktrees should be placed in the `.worktrees/` directory at the root of the repository.
