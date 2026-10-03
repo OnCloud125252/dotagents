@@ -229,9 +229,9 @@
     },
     "readme": {
       "name": "readme",
-      "description": "Guidelines for writing and editing Plain package READMEs. Use this when creating or updating README files.",
+      "description": "Write or edit a README.md for a project or a directory. Use it when the user asks to create, rewrite, review, or update a README, or says \"寫 README\", \"改 README\", or \"整理 README\". It covers two audiences - public products that people outside the team install and use, and developer tools that only the owner or the team uses.",
       "path": "skills/readme",
-      "trigger": "When creating or updating README files",
+      "trigger": "When creating, rewriting, reviewing, or updating a README for a public product or a developer tool",
       "requires_tools": [],
       "has_subdirs": false
     },
